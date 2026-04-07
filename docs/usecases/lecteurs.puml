@@ -2,8 +2,6 @@
 left to right direction
 
 actor lecteurs
-actor bibliothécaires
-actor administrateurs
 
 
 rectangle BookHub {
@@ -13,14 +11,6 @@ rectangle BookHub {
 (Réserver des livres déjà empruntés) as UC4
 (Consulter l'historique de ses emprunts) as UC5
 (Noter et commenter les livres lus) as UC6
-
-
-(Gérer le catalogue ajouter, modifier, supprimer des livres) as UC7
-(Valider les emprunts et les retours) as UC8
-(Gérer les retards) as UC9
-(Accéder aux statistiques d'emprunt optionnel) as UC10
-
-(Gérer les utilisateurs et leurs rôles) as UC11
 }
 
     lecteurs -> UC1
@@ -29,12 +19,5 @@ rectangle BookHub {
     lecteurs -> UC4
     lecteurs -> UC5
     lecteurs -> UC6
-
-    bibliothécaires -> UC7
-    bibliothécaires -> UC8
-    bibliothécaires -> UC9
-    bibliothécaires -> UC10
-
-    administrateurs -> UC11
 
 @enduml
