@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+
+
+actor bibliothécaires
+
+
+rectangle BookHub {
+
+
+
+(Gérer le catalogue ajouter, modifier, supprimer des livres) as UC7
+(Valider les emprunts et les retours) as UC8
+(Gérer les retards) as UC9
+(Accéder aux statistiques d'emprunt optionnel) as UC10
+}
+
+
+
+    bibliothécaires -> UC7
+    bibliothécaires -> UC8
+    bibliothécaires -> UC9
+    bibliothécaires -> UC10
+
+@enduml
