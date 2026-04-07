@@ -1,0 +1,17 @@
+@startuml
+left to right direction
+
+actor administrateurs
+
+
+rectangle BookHub {
+
+
+(Gérer les utilisateurs et leurs rôles) as UC11
+}
+
+
+
+    administrateurs -> UC11
+
+@enduml

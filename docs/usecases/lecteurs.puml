@@ -1,0 +1,23 @@
+@startuml
+left to right direction
+
+actor lecteurs
+
+
+rectangle BookHub {
+(Consulter le catalogue de livres en ligne) as UC1
+(Rechercher des livres par titre, auteur ou catégorie) as UC2
+(Emprunter des livres disponibles) as UC3
+(Réserver des livres déjà empruntés) as UC4
+(Consulter l'historique de ses emprunts) as UC5
+(Noter et commenter les livres lus) as UC6
+}
+
+    lecteurs -> UC1
+    lecteurs -> UC2
+    lecteurs -> UC3
+    lecteurs -> UC4
+    lecteurs -> UC5
+    lecteurs -> UC6
+
+@enduml
