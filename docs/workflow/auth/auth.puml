@@ -1,0 +1,30 @@
+@startuml
+skinparam style strictuml
+actor Utilisateur
+participant "Frontend (Angular)" as Front
+participant "Backend (Spring Boot)" as Back
+database "SQL Server" as DB
+
+Utilisateur -> Front : Saisie email et mot de passe
+Front -> Back : POST /api/auth/login
+activate Back
+
+Back -> DB : Rechercher utilisateur par email
+activate DB
+DB --> Back : Données utilisateur (hash mot de passe)
+deactivate DB
+
+Back -> Back : Vérification BCrypt (password, hash)
+
+alt Identifiants valides
+    Back -> Back : Générer Token JWT (24h)
+    Back --> Front : 200 OK {token, role, prenom}
+    Front -> Front : Stocker token (localStorage/session)
+    Front -> Utilisateur : Redirection vers Dashboard
+else Identifiants invalides
+    Back --> Front : 401 Unauthorized
+    Front -> Utilisateur : Afficher message d'erreur
+end
+
+deactivate Back
+@enduml
