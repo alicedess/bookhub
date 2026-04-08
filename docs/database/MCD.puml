@@ -1,0 +1,92 @@
+@startuml MCD
+skinparam linetype ortho
+skinparam entityStyle plain
+
+entity "UTILISATEUR" {
+  pseudo
+  email
+  password
+  nom
+  prenom
+  date_naissance
+  telephone
+  date_suppression
+  commentaire_avec_pseudo
+}
+
+entity "ROLE" {
+  libelle
+}
+
+entity "LIVRE" {
+  isbn
+  titre
+  resume
+  image_couverture
+}
+
+entity "AUTEUR" {
+  nom
+  prénom
+}
+
+entity "CATEGORIE" {
+  libelle
+}
+
+entity "EXEMPLAIRE" {
+  code_barre
+  etat
+  est_disponible
+}
+
+entity "EMPRUNT" {
+  date_debut
+  date_retour_prevue
+  date_retour_effective
+  statut
+}
+
+entity "RESERVATION" {
+  date_reservation
+  rang_file
+  statut
+}
+
+entity "EVALUATION" {
+  note
+  commentaire
+  est_modere
+  date_publication
+}
+
+' Un utilisateur a exactement 1 rôle, un rôle est attribué à 0 ou plusieurs utilisateurs
+UTILISATEUR }o--|| ROLE : "a"
+
+' Un utilisateur effectue 0 ou plusieurs emprunts, un emprunt concerne exactement 1 utilisateur
+UTILISATEUR "1" ||--o{ "0..*" EMPRUNT : "effectue"
+' Un exemplaire est concerné par 0 ou plusieurs emprunts, un emprunt porte sur exactement 1 exemplaire
+EXEMPLAIRE "1" ||--o{ "0..*" EMPRUNT : "concerne"
+
+' Un utilisateur effectue 0 ou plusieurs réservations, une réservation concerne exactement 1 utilisateur
+UTILISATEUR "1" ||--o{ "0..*" RESERVATION : "effectue"
+' Un livre est concerné par 0 ou plusieurs réservations, une réservation porte sur exactement 1 livre
+LIVRE "1" ||--o{ "0..*" RESERVATION : "concerne"
+
+' Un utilisateur rédige 0 ou plusieurs évaluations, une évaluation est rédigée par exactement 1 utilisateur
+UTILISATEUR "1" ||--o{ "0..*" EVALUATION : "redige"
+' Un livre est concerné par 0 ou plusieurs évaluations, une évaluation porte sur exactement 1 livre
+LIVRE "1" ||--o{ "0..*" EVALUATION : "concerne"
+
+' Un livre possède 1 ou plusieurs exemplaires, un exemplaire appartient à exactement 1 livre
+LIVRE "1" ||--|{ "1..*" EXEMPLAIRE : "possede"
+
+' Un livre est écrit par exactement 1 auteur, un auteur écrit 0 ou plusieurs livres
+LIVRE }o--|| AUTEUR : "ecrit par"
+AUTEUR "1" ||--o{ "0..*" LIVRE : "ecrit"
+
+' Un livre appartient à exactement 1 catégorie, une catégorie regroupe 0 ou plusieurs livres
+LIVRE }o--|| CATEGORIE : "appartient a"
+CATEGORIE "1" ||--o{ "0..*" LIVRE : "regroupe"
+
+@enduml

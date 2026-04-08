@@ -12,8 +12,10 @@
 ## Base de données
 
 ### MCD
+![MCD](./docs/database/MCD.png)
 
 ### MLD
+![MLD](./docs/database/MLD.png)
 
 ### MPD
 ![MPD](./docs/database/MPD.jpg)
