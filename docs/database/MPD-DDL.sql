@@ -34,7 +34,7 @@ CREATE TABLE "livres"(
     "id" INT NOT NULL,
     "isbn" NVARCHAR(13) NOT NULL,
     "titre" NVARCHAR(255) NOT NULL,
-    "id_auteur" NVARCHAR(255) NOT NULL,
+    "id_auteur" INT NOT NULL,
     "resume" NVARCHAR(255) NULL,
     "image_couverture" NVARCHAR(255) NULL,
     "id_categorie" INT NOT NULL
@@ -73,7 +73,7 @@ CREATE TABLE "evaluations"(
 ALTER TABLE
     "evaluations" ADD CONSTRAINT "evaluations_id_primary" PRIMARY KEY("id");
 CREATE TABLE "auteurs"(
-    "id" BIGINT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
+    "id" INT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
     "nom" NVARCHAR(100) NOT NULL,
     "prénom" NVARCHAR(100) NOT NULL
 );
