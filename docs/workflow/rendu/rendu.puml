@@ -1,0 +1,27 @@
+@startuml
+actor "Bibliothécaire" as Lib
+participant "Système BookHub" as System
+
+Lib -> System : Saisie code-barre de l'exemplaire
+System -> System : Identifier l'emprunt actif
+
+alt Livre rendu en retard
+    System -> System : Calculer jours de retard
+    System -> System : Marquer l'emprunt comme "RETARD_RENDU"
+else Dans les délais
+    System -> System : Marquer l'emprunt comme "RETURNED"
+end
+
+System -> System : Mettre à jour l'exemplaire (disponible = true)
+
+group Gestion de la file d'attente
+    System -> System : Vérifier si réservations en attente
+
+    alt Réservation existante
+            System -> System : Passer rang 1 à "DISPONIBLE"
+            System -> System : Envoyer notification à l'adhérent
+    end
+end
+
+System -> Lib : Affichage succès du retour
+@enduml
