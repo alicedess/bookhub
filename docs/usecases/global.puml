@@ -1,40 +1,61 @@
 @startuml
 left to right direction
+skinparam packageStyle rectangle
 
-actor lecteurs
-actor bibliothécaires
-actor administrateurs
-
+actor "Adhérent" as User
+actor "Bibliothécaire" as Librarian
+actor "Administrateur" as Admin
 
 rectangle BookHub {
-(Consulter le catalogue de livres en ligne) as UC1
-(Rechercher des livres par titre, auteur ou catégorie) as UC2
-(Emprunter des livres disponibles) as UC3
-(Réserver des livres déjà empruntés) as UC4
-(Consulter l'historique de ses emprunts) as UC5
-(Noter et commenter les livres lus) as UC6
+  (S'authentifier) as (Auth)
+  (Gérer son profil) as (Profile)
 
+  (Consulter le catalogue) as (Catalogue)
+  (Rechercher un livre) as (Search)
+  (Gérer le stock / CRUD Livres) as (CRUD)
 
-(Gérer le catalogue ajouter, modifier, supprimer des livres) as UC7
-(Valider les emprunts et les retours) as UC8
-(Gérer les retards) as UC9
-(Accéder aux statistiques d'emprunt optionnel) as UC10
+  (Emprunter un livre) as (Loan)
+  (Enregistrer un retour) as (Return)
+  (Consulter ses emprunts) as (MyLoans)
 
-(Gérer les utilisateurs et leurs rôles) as UC11
+  (Réserver un livre) as (Resa)
+  (Annuler une réservation) as (CancelResa)
+
+  (Noter et commenter) as (Rate)
+  (Modérer les commentaires) as (Moderate)
+
+  (Consulter Dashboard Adhérent) as (DashUser)
+  (Consulter Dashboard Pro) as (DashPro)
+  (Suppression définitive livre) as (Delete)
 }
 
-    lecteurs -> UC1
-    lecteurs -> UC2
-    lecteurs -> UC3
-    lecteurs -> UC4
-    lecteurs -> UC5
-    lecteurs -> UC6
+' Relations Adhérent
+User --> (Auth)
+User --> (Profile)
+User --> (Catalogue)
+User --> (Search)
+User --> (Loan)
+User --> (MyLoans)
+User --> (Resa)
+User --> (CancelResa)
+User --> (Rate)
+User --> (DashUser)
 
-    bibliothécaires -> UC7
-    bibliothécaires -> UC8
-    bibliothécaires -> UC9
-    bibliothécaires -> UC10
+' Relations Bibliothécaire
+Librarian --|> User
+Librarian --> (CRUD)
+Librarian --> (Return)
+Librarian --> (Moderate)
+Librarian --> (DashPro)
 
-    administrateurs -> UC11
+' Relations Administrateur
+Admin --|> Librarian
+Admin --> (Delete)
 
-@enduml
+' Relations d'inclusion/extension
+(Search) ..> (Catalogue) : <<extend>>
+(Loan) ..> (Auth) : <<include>>
+(Rate) ..> (Auth) : <<include>>
+(CRUD) ..> (Auth) : <<include>>
+
+@endum
