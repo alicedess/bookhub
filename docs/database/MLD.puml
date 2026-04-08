@@ -1,0 +1,120 @@
+@startuml MLD
+skinparam linetype ortho
+
+entity "roles" {
+  * id : INT <<PK>>
+  --
+  * libelle : NVARCHAR(20)
+}
+
+entity "utilisateurs" {
+  * id : INT <<PK>>
+  --
+  * pseudo : NVARCHAR(100) <<UNIQUE>>
+  * email : NVARCHAR(100) <<UNIQUE>>
+  * password : NVARCHAR(255)
+  * nom : NVARCHAR(50)
+  * prenom : NVARCHAR(50)
+  * date_naissance : DATETIME2
+  telephone : NVARCHAR(20)
+  * id_role : INT <<FK>>
+  * date_suppression : DATETIME2
+  * commentaire_avec_pseudo : BIT = 0
+}
+
+entity "auteurs" {
+  * id : INT <<PK, IDENTITY>>
+  --
+  * nom : NVARCHAR(100)
+  * prénom : NVARCHAR(100)
+}
+
+entity "categories" {
+  * id : INT <<PK>>
+  --
+  * libelle : NVARCHAR(50)
+}
+
+entity "livres" {
+  * id : INT <<PK>>
+  --
+  * isbn : NVARCHAR(13) <<UNIQUE>>
+  * titre : NVARCHAR(255)
+  * id_auteur : INT <<FK>>
+  resume : NVARCHAR(255)
+  image_couverture : NVARCHAR(255)
+  * id_categorie : INT <<FK>>
+}
+
+entity "exemplaires" {
+  * id : INT <<PK>>
+  --
+  * code_barre : NVARCHAR(50) <<UNIQUE>>
+  etat : NVARCHAR(50)
+  est_disponible : BIT = 1
+  * id_livre : INT <<FK>>
+}
+
+entity "emprunts" {
+  * id : INT <<PK>>
+  --
+  date_debut : DATETIME2 = GETDATE()
+  * date_retour_prevue : DATETIME2
+  date_retour_effective : DATETIME2
+  statut : NVARCHAR(20) = 'EN_COURS'
+  * id_utilisateur : INT <<FK>>
+  * id_exemplaire : INT <<FK>>
+}
+
+entity "reservations" {
+  * id : INT <<PK>>
+  --
+  date_reservation : DATETIME2 = GETDATE()
+  * rang_file : INT
+  statut : NVARCHAR(20) = 'ATTENTE'
+  * id_utilisateur : INT <<FK>>
+  * id_livre : INT <<FK>>
+}
+
+entity "evaluations" {
+  * id : INT <<PK>>
+  --
+  note : INT
+  commentaire : NVARCHAR(1000)
+  est_modere : BIT
+  date_publication : DATETIME2 = GETDATE()
+  * id_utilisateur : INT <<FK>>
+  * id_livre : INT <<FK>>
+}
+
+' 1 rôle pour 0..* utilisateurs | 1 utilisateur a exactement 1 rôle
+roles "1" ||--o{ "0..*" utilisateurs : "id_role"
+
+' 1 utilisateur pour 0..* emprunts | 1 emprunt pour exactement 1 utilisateur
+utilisateurs "1" ||--o{ "0..*" emprunts : "id_utilisateur"
+
+' 1 exemplaire pour 0..* emprunts | 1 emprunt pour exactement 1 exemplaire
+exemplaires "1" ||--o{ "0..*" emprunts : "id_exemplaire"
+
+' 1 utilisateur pour 0..* réservations | 1 réservation pour exactement 1 utilisateur
+utilisateurs "1" ||--o{ "0..*" reservations : "id_utilisateur"
+
+' 1 livre pour 0..* réservations | 1 réservation pour exactement 1 livre
+livres "1" ||--o{ "0..*" reservations : "id_livre"
+
+' 1 utilisateur pour 0..* évaluations | 1 évaluation pour exactement 1 utilisateur
+utilisateurs "1" ||--o{ "0..*" evaluations : "id_utilisateur"
+
+' 1 livre pour 0..* évaluations | 1 évaluation pour exactement 1 livre
+livres "1" ||--o{ "0..*" evaluations : "id_livre"
+
+' 1 livre pour 1..* exemplaires | 1 exemplaire pour exactement 1 livre
+livres "1" ||--|{ "1..*" exemplaires : "id_livre"
+
+' 1 auteur pour 0..* livres | 1 livre pour exactement 1 auteur
+auteurs "1" ||--o{ "0..*" livres : "id_auteur"
+
+' 1 catégorie pour 0..* livres | 1 livre pour exactement 1 catégorie
+categories "1" ||--o{ "0..*" livres : "id_categorie"
+
+@enduml

@@ -1,5 +1,8 @@
 # Bookhub
 
+# Navigation Utilisateur (Front)
+[Navigation](./docs/Navigation.md)
+
 ## Cas utilisation
 ![UseCases](./docs/usecases/global.png)
 
@@ -10,5 +13,13 @@
 [Diagramme de classe](./docs/diagramme-classe/BookHub%20Diagramme%20de%20classe.drawio.pdf)
 
 ## Base de données
-![Database](./docs/database/drawSQL-image-export-2026-04-08.jpg)
+
+### MCD
+![MCD](./docs/database/MCD.png)
+
+### MLD
+![MLD](./docs/database/MLD.png)
+
+### MPD
+![MPD](./docs/database/MPD.jpg)
 
