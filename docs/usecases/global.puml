@@ -1,0 +1,61 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Adhérent" as User
+actor "Bibliothécaire" as Librarian
+actor "Administrateur" as Admin
+
+rectangle BookHub {
+  (S'authentifier) as (Auth)
+  (Gérer son profil) as (Profile)
+
+  (Consulter le catalogue) as (Catalogue)
+  (Rechercher un livre) as (Search)
+  (Gérer le stock / CRUD Livres) as (CRUD)
+
+  (Emprunter un livre) as (Loan)
+  (Enregistrer un retour) as (Return)
+  (Consulter ses emprunts) as (MyLoans)
+
+  (Réserver un livre) as (Resa)
+  (Annuler une réservation) as (CancelResa)
+
+  (Noter et commenter) as (Rate)
+  (Modérer les commentaires) as (Moderate)
+
+  (Consulter Dashboard Adhérent) as (DashUser)
+  (Consulter Dashboard Pro) as (DashPro)
+  (Suppression définitive livre) as (Delete)
+}
+
+' Relations Adhérent
+User --> (Auth)
+User --> (Profile)
+User --> (Catalogue)
+User --> (Search)
+User --> (Loan)
+User --> (MyLoans)
+User --> (Resa)
+User --> (CancelResa)
+User --> (Rate)
+User --> (DashUser)
+
+' Relations Bibliothécaire
+Librarian --|> User
+Librarian --> (CRUD)
+Librarian --> (Return)
+Librarian --> (Moderate)
+Librarian --> (DashPro)
+
+' Relations Administrateur
+Admin --|> Librarian
+Admin --> (Delete)
+
+' Relations d'inclusion/extension
+(Search) ..> (Catalogue) : <<extend>>
+(Loan) ..> (Auth) : <<include>>
+(Rate) ..> (Auth) : <<include>>
+(CRUD) ..> (Auth) : <<include>>
+
+@endum
