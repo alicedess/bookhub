@@ -1,0 +1,35 @@
+@startuml
+
+title "Workflow d'emprunt"
+
+start
+:L'utilisateur clique sur "Emprunter";
+
+if (L'utilisateur est-il connecté ?) then (non)
+  :Rediriger vers Connexion;
+  stop
+else (oui)
+  partition "Vérification des règles de gestion" {
+    if (<b>RG-LOAN-01</b>\n Nombre d'emprunts actifs < 3 ?) then (non)
+      :Erreur : Maximum d'emprunts atteint;
+      stop
+    elseif (<b>RG-LOAN-03</b>\nL'utilisateur a-t-il un retard ?) then (oui)
+      :Erreur : Emprunt bloqué;
+      stop
+    elseif (L'exemplaire est-il disponible ?) then (non)
+      :Proposer la réservation;
+      stop
+    endif
+  }
+
+  partition "Validation de l'emprunt" {
+    :Créer enregistrement Emprunt;
+    :Fixer date retour = Date du jour + 14 jours (<b>RG-LOAN-02</b>);
+    :Mettre à jour statut exemplaire (disponible = false);
+    :Incrémenter compteur de lecture utilisateur;
+  }
+
+  :Afficher confirmation et date de retour;
+endif
+stop
+@enduml
