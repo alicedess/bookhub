@@ -1,0 +1,138 @@
+<div class="conteneur-inscription">
+    <div class="carte">
+  
+      <h1>Créer un compte</h1>
+  
+      <!-- (ex email déjà pris) -->
+      @if (erreurServeur) {
+        <div class="alerte alerte-erreur" role="alert">
+          {{ erreurServeur }}
+        </div>
+      }
+  
+      <form [formGroup]="formulaire" (ngSubmit)="soumettre()" novalidate>
+  
+        <div class="rangee">
+  
+          <div class="champ">
+            <label for="prenom">Prénom</label>
+            <input
+              id="prenom"
+              type="text"
+              formControlName="prenom"
+              placeholder="Prénom"
+              autocomplete="given-name"
+              [class.invalide]="afficherErreur(prenom)"
+            />
+            @if (afficherErreur(prenom)) {
+              <span class="erreur">
+                @if (prenom.errors?.['required'])   { Votre prénom est requis. }
+                @if (prenom.errors?.['minlength'])  { 2 caractères minimum. }
+              </span>
+            }
+          </div>
+  
+          <div class="champ">
+            <label for="nom">Nom</label>
+            <input
+              id="nom"
+              type="text"
+              formControlName="nom"
+              placeholder="Nom"
+              autocomplete="family-name"
+              [class.invalide]="afficherErreur(nom)"
+            />
+            @if (afficherErreur(nom)) {
+              <span class="erreur">
+                @if (nom.errors?.['required'])  { Votre nom est requis. }
+                @if (nom.errors?.['minlength']) { 2 caractères minimum. }
+              </span>
+            }
+          </div>
+  
+        </div>
+  
+        <!-- Email -->
+        <div class="champ">
+          <label for="email">Adresse email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="marie.dupont@email.fr"
+            autocomplete="email"
+            [class.invalide]="afficherErreur(email)"
+          />
+          @if (afficherErreur(email)) {
+            <span class="erreur">
+              @if (email.errors?.['required']) { L'adresse email est requise. }
+              @if (email.errors?.['email'])    { Le format de l'email est invalide. }
+            </span>
+          }
+        </div>
+  
+        <!-- Mot de passe -->
+        <div class="champ">
+          <label for="motDePasse">Mot de passe</label>
+          <div class="champ-avec-icone">
+            <input
+              id="motDePasse"
+              formControlName="motDePasse"
+              placeholder="12 caractères minimum"
+              autocomplete="new-password"
+              [class.invalide]="afficherErreur(motDePasse)"
+            />
+            
+          </div>
+          @if (afficherErreur(motDePasse)) {
+            <span class="erreur">
+              @if (motDePasse.errors?.['required']) { Le mot de passe est requis. }
+              @if (motDePasse.errors?.['pattern']) {
+                12 caractères min., avec une majuscule, un chiffre et un caractère spécial.
+              }
+            </span>
+          }
+          @else {
+            <span class="indication">
+              12 caractères min. · 1 majuscule · 1 chiffre · 1 caractère spécial
+            </span>
+          }
+        </div>
+  
+        <!-- Confirmation  -->
+        <div class="champ">
+          <label for="confirmation">Confirmer le mot de passe</label>
+          <input
+            id="confirmation"
+            type="password"
+            formControlName="confirmation"
+            placeholder="Confirmer le mot de passe"
+            autocomplete="new-password"
+            [class.invalide]="afficherErreur(confirmation) || (formulaire.errors?.['nonIdentiques'] && confirmation.touched)"
+          />
+          @if (afficherErreur(confirmation) && confirmation.errors?.['required']) {
+            <span class="erreur">La confirmation est requise.</span>
+          }
+          @if (formulaire.errors?.['nonIdentiques'] && confirmation.touched) {
+            <span class="erreur">Les mots de passe ne correspondent pas.</span>
+          }
+        </div>
+  
+        <!-- Bouton validation formulaire -->
+        <button
+          type="submit"
+          class="bouton-principal"
+          [disabled]="chargement"
+        >
+          @if (chargement) { Inscription en cours… }
+          @else             { Créer mon compte }
+        </button>
+  
+      </form>
+  
+      <p class="lien-connexion">
+        Déjà inscrit ? <a routerLink="/connexion">Se connecter</a>
+      </p>
+  
+    </div>
+  </div>
