@@ -8,6 +8,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,10 +25,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1. Désactivation du CSRF pour permettre les POST (indispensable pour les tests API)
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login").permitAll() // Autorise la page de login
                         .anyRequest().authenticated()
-                );
+                )
+
+                // 2. Active le formulaire de login par défaut de Spring Security
+                .formLogin(form -> form
+                        // .loginPage("/mon-login") // Si tu as une page HTML perso, sinon utilise celle par défaut
+                        .defaultSuccessUrl("/api/books", true) // Redirection après succès
+                        .permitAll()
+                )
+
+                // 3. Permet de se déconnecter
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
