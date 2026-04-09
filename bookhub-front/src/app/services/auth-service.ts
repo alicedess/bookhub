@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 export interface DemandeInscription {
   prenom: string;
   nom: string;
+  dateNaissance: string;
   email: string;
   motDePasse: string;
 }

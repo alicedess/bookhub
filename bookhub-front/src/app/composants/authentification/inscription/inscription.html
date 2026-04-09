@@ -13,7 +13,25 @@
       <form [formGroup]="formulaire" (ngSubmit)="soumettre()" novalidate>
   
         <div class="rangee">
-  
+    
+          <div class="champ">
+            <label for="nom">Nom</label>
+            <input
+              id="nom"
+              type="text"
+              formControlName="nom"
+              placeholder="Nom"
+              [class.invalide]="afficherErreur(nom)"
+            />
+            @if (afficherErreur(nom)) {
+              <span class="erreur">
+                @if (nom.errors?.['required'])  { Votre nom est requis. }
+                @if (nom.errors?.['minlength']) { 2 caractères minimum. }
+              </span>
+            }
+          </div>
+
+          
           <div class="champ">
             <label for="prenom">Prénom</label>
             <input
@@ -21,7 +39,6 @@
               type="text"
               formControlName="prenom"
               placeholder="Prénom"
-              autocomplete="given-name"
               [class.invalide]="afficherErreur(prenom)"
             />
             @if (afficherErreur(prenom)) {
@@ -32,25 +49,25 @@
             }
           </div>
   
-          <div class="champ">
-            <label for="nom">Nom</label>
-            <input
-              id="nom"
-              type="text"
-              formControlName="nom"
-              placeholder="Nom"
-              autocomplete="family-name"
-              [class.invalide]="afficherErreur(nom)"
-            />
-            @if (afficherErreur(nom)) {
-              <span class="erreur">
-                @if (nom.errors?.['required'])  { Votre nom est requis. }
-                @if (nom.errors?.['minlength']) { 2 caractères minimum. }
-              </span>
-            }
-          </div>
-  
         </div>
+
+             <!-- Date de naissance -->
+             <div class="champ">
+              <label for="dateNaissance">Date de naissance</label>
+              <input
+                id="dateNaissance"
+                type="date"
+                formControlName="dateNaissance"
+                placeholder="Date de Naissance"
+                [class.invalide]="afficherErreur(dateNaissance)"
+              />
+              @if (afficherErreur(dateNaissance)) {
+                <span class="erreur">
+                  @if (dateNaissance.errors?.['required']) { La date de naissance est requise. }
+                  @if (dateNaissance.errors?.['dateNaissance'])    { La date de naissance est invalide. }
+                </span>
+              }
+            </div>
   
         <!-- Email -->
         <div class="champ">
@@ -59,8 +76,7 @@
             id="email"
             type="email"
             formControlName="email"
-            placeholder="marie.dupont@email.fr"
-            autocomplete="email"
+            placeholder="Email"
             [class.invalide]="afficherErreur(email)"
           />
           @if (afficherErreur(email)) {
@@ -79,7 +95,6 @@
               id="motDePasse"
               formControlName="motDePasse"
               placeholder="12 caractères minimum"
-              autocomplete="new-password"
               [class.invalide]="afficherErreur(motDePasse)"
             />
             
@@ -107,7 +122,6 @@
             type="password"
             formControlName="confirmation"
             placeholder="Confirmer le mot de passe"
-            autocomplete="new-password"
             [class.invalide]="afficherErreur(confirmation) || (formulaire.errors?.['nonIdentiques'] && confirmation.touched)"
           />
           @if (afficherErreur(confirmation) && confirmation.errors?.['required']) {
@@ -121,11 +135,8 @@
         <!-- Bouton validation formulaire -->
         <button
           type="submit"
-          class="bouton-principal"
-          [disabled]="chargement"
+          class="bouton-soumission"
         >
-          @if (chargement) { Inscription en cours… }
-          @else             { Créer mon compte }
         </button>
   
       </form>

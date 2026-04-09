@@ -22,9 +22,9 @@ export class InscriptionComponent {
   formulaire: FormGroup;
   chargement = false;
   erreurServeur: string | null = null;
-  motDePasseVisible = false;
 
   private readonly REGEX_MDP = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
+  private readonly REGEX_DATE = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +35,7 @@ export class InscriptionComponent {
       {
         prenom: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         nom:    ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+        dateNaissance: ['', [Validators.required, Validators.pattern(this.REGEX_DATE)]],
         email:  ['', [Validators.required, Validators.email]],
         motDePasse:  ['', [Validators.required, Validators.pattern(this.REGEX_MDP)]],
         confirmation: ['', Validators.required],
@@ -46,6 +47,7 @@ export class InscriptionComponent {
   // raccourcis template
   get prenom()       { return this.formulaire.get('prenom')!; }
   get nom()          { return this.formulaire.get('nom')!; }
+  get dateNaissance() {return this.formulaire.get('dateNaissance')!;}
   get email()        { return this.formulaire.get('email')!; }
   get motDePasse()   { return this.formulaire.get('motDePasse')!; }
   get confirmation() { return this.formulaire.get('confirmation')!; }
@@ -63,9 +65,9 @@ export class InscriptionComponent {
     this.chargement = true;
     this.erreurServeur = null;
 
-    const { prenom, nom, email, motDePasse } = this.formulaire.value;
+    const { prenom, nom, dateNaissance, email, motDePasse } = this.formulaire.value;
 
-    this.authService.sinscrire({ prenom, nom, email, motDePasse }).subscribe({
+    this.authService.sinscrire({ prenom, nom, dateNaissance, email, motDePasse }).subscribe({
       next: () => {
         this.router.navigate(['/connexion'], {
           queryParams: { inscriptionReussie: true }
