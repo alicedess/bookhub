@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "CATEGORIE")
+@Table(name = "CATEGORIES")
 @Data
 public class Categorie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "categorie", unique = true)
-    private String categorie;
+    @Column(name = "libelle", unique = true)
+    private String libelle;
 }

@@ -1,30 +1,84 @@
 package fr.eni.bookhub.controller;
 
+import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
-import fr.eni.bookhub.service.ILivreService;
+import fr.eni.bookhub.service.LivreService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/books")
 @AllArgsConstructor
 public class LivreController {
 
-    private ILivreService livreService;
+    private LivreService livreService;
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll()
+    /**
+     * Récupère la liste des livres paginée par 20
+     */
+    @GetMapping({"", "/search"})
+    public ResponseEntity<?> listAllLivres(
+        @RequestParam(required = false) String query,
+        @RequestParam(required = false) Long auteurId,
+        @RequestParam(required = false) Long catId,
+        @RequestParam(defaultValue = "0") int page
+    )
     {
         try {
-            Iterable<LivreDTO> livres = livreService.getAll();
+            Page<LivreDTO> livres = livreService.searchLivres(
+                    query,
+                    auteurId,
+                    catId,
+                    page
+            );
 
             return ResponseEntity.ok().body(livres);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e);
         }
     }
 
+    /**
+     * Récupère les données d'un livre
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getLivreById(@PathVariable Long id)
+    {
+        try {
+            return livreService.getById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> createLivre(CreateLivreDTO payload)
+    {
+        try {
+            if (livreService.createLivre(payload)) {
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }
+
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    /*
+    @PutMapping("")
+    public ResponseEntity<?> updateLivre(CreateLivreDTO payload)
+    {
+        try {
+            return livreService.updateLivre(payload);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+     */
 }
