@@ -3,19 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
+import { Header } from '../../../layout/header/header';
 
-// les deux mdp doivent correspondre
-function motsDePasseIdentiques(groupe: AbstractControl) {
-  const mdp = groupe.get('motDePasse')?.value;
-  const confirmation = groupe.get('confirmation')?.value;
-  return mdp === confirmation ? null : { nonIdentiques: true };
-}
 
 @Component({
   selector: 'app-inscription',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './inscription.component.html',
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, Header],
+  templateUrl: './inscription.html',
 })
 export class InscriptionComponent {
 
@@ -40,10 +35,10 @@ export class InscriptionComponent {
         motDePasse:  ['', [Validators.required, Validators.pattern(this.REGEX_MDP)]],
         confirmation: ['', Validators.required],
       },
-      { validators: motsDePasseIdentiques }
+      { validators: this.motsDePasseIdentiques }
     );
   }
-
+  
   // raccourcis template
   get prenom()       { return this.formulaire.get('prenom')!; }
   get nom()          { return this.formulaire.get('nom')!; }
@@ -51,6 +46,14 @@ export class InscriptionComponent {
   get email()        { return this.formulaire.get('email')!; }
   get motDePasse()   { return this.formulaire.get('motDePasse')!; }
   get confirmation() { return this.formulaire.get('confirmation')!; }
+
+  // les deux mdp doivent correspondre
+motsDePasseIdentiques(groupe: AbstractControl) {
+  const mdp = groupe.get('motDePasse')?.value;
+  const confirmation = groupe.get('confirmation')?.value;
+  return mdp === confirmation ? null : { nonIdentiques: true };
+}
+
 
   afficherErreur(champ: AbstractControl): boolean {
     return champ.invalid && (champ.dirty || champ.touched);
@@ -69,7 +72,7 @@ export class InscriptionComponent {
 
     this.authService.sinscrire({ prenom, nom, dateNaissance, email, motDePasse }).subscribe({
       next: () => {
-        this.router.navigate(['/connexion'], {
+        this.router.navigate(['/auth/login'], {
           queryParams: { inscriptionReussie: true }
         });
       },

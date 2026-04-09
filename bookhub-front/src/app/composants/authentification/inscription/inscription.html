@@ -1,149 +1,159 @@
-<div class="conteneur-inscription">
-    <div class="carte">
-  
-      <h1>Créer un compte</h1>
-  
-      <!-- (ex email déjà pris) -->
-      @if (erreurServeur) {
-        <div class="alerte alerte-erreur" role="alert">
-          {{ erreurServeur }}
-        </div>
-      }
-  
-      <form [formGroup]="formulaire" (ngSubmit)="soumettre()" novalidate>
-  
-        <div class="rangee">
-    
-          <div class="champ">
-            <label for="nom">Nom</label>
-            <input
-              id="nom"
-              type="text"
-              formControlName="nom"
-              placeholder="Nom"
-              [class.invalide]="afficherErreur(nom)"
-            />
-            @if (afficherErreur(nom)) {
-              <span class="erreur">
-                @if (nom.errors?.['required'])  { Votre nom est requis. }
-                @if (nom.errors?.['minlength']) { 2 caractères minimum. }
-              </span>
-            }
-          </div>
+<app-header></app-header>
+<div class="max-w-md mx-auto m-10">
 
-          
-          <div class="champ">
-            <label for="prenom">Prénom</label>
-            <input
-              id="prenom"
-              type="text"
-              formControlName="prenom"
-              placeholder="Prénom"
-              [class.invalide]="afficherErreur(prenom)"
-            />
-            @if (afficherErreur(prenom)) {
-              <span class="erreur">
-                @if (prenom.errors?.['required'])   { Votre prénom est requis. }
-                @if (prenom.errors?.['minlength'])  { 2 caractères minimum. }
-              </span>
-            }
-          </div>
-  
-        </div>
-
-             <!-- Date de naissance -->
-             <div class="champ">
-              <label for="dateNaissance">Date de naissance</label>
-              <input
-                id="dateNaissance"
-                type="date"
-                formControlName="dateNaissance"
-                placeholder="Date de Naissance"
-                [class.invalide]="afficherErreur(dateNaissance)"
-              />
-              @if (afficherErreur(dateNaissance)) {
-                <span class="erreur">
-                  @if (dateNaissance.errors?.['required']) { La date de naissance est requise. }
-                  @if (dateNaissance.errors?.['dateNaissance'])    { La date de naissance est invalide. }
-                </span>
-              }
-            </div>
-  
-        <!-- Email -->
-        <div class="champ">
-          <label for="email">Adresse email</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="Email"
-            [class.invalide]="afficherErreur(email)"
-          />
-          @if (afficherErreur(email)) {
-            <span class="erreur">
-              @if (email.errors?.['required']) { L'adresse email est requise. }
-              @if (email.errors?.['email'])    { Le format de l'email est invalide. }
-            </span>
-          }
-        </div>
-  
-        <!-- Mot de passe -->
-        <div class="champ">
-          <label for="motDePasse">Mot de passe</label>
-          <div class="champ-avec-icone">
-            <input
-              id="motDePasse"
-              formControlName="motDePasse"
-              placeholder="12 caractères minimum"
-              [class.invalide]="afficherErreur(motDePasse)"
-            />
-            
-          </div>
-          @if (afficherErreur(motDePasse)) {
-            <span class="erreur">
-              @if (motDePasse.errors?.['required']) { Le mot de passe est requis. }
-              @if (motDePasse.errors?.['pattern']) {
-                12 caractères min., avec une majuscule, un chiffre et un caractère spécial.
-              }
-            </span>
-          }
-          @else {
-            <span class="indication">
-              12 caractères min. · 1 majuscule · 1 chiffre · 1 caractère spécial
-            </span>
-          }
-        </div>
-  
-        <!-- Confirmation  -->
-        <div class="champ">
-          <label for="confirmation">Confirmer le mot de passe</label>
-          <input
-            id="confirmation"
-            type="password"
-            formControlName="confirmation"
-            placeholder="Confirmer le mot de passe"
-            [class.invalide]="afficherErreur(confirmation) || (formulaire.errors?.['nonIdentiques'] && confirmation.touched)"
-          />
-          @if (afficherErreur(confirmation) && confirmation.errors?.['required']) {
-            <span class="erreur">La confirmation est requise.</span>
-          }
-          @if (formulaire.errors?.['nonIdentiques'] && confirmation.touched) {
-            <span class="erreur">Les mots de passe ne correspondent pas.</span>
-          }
-        </div>
-  
-        <!-- Bouton validation formulaire -->
-        <button
-          type="submit"
-          class="bouton-soumission"
-        >
-        </button>
-  
-      </form>
-  
-      <p class="lien-connexion">
-        Déjà inscrit ? <a routerLink="/connexion">Se connecter</a>
-      </p>
-  
+  @if (erreurServeur) {
+    <div class="bg-red-100 text-red-400 p-3 rounded mb-4">
+      {{ erreurServeur }}
     </div>
-  </div>
+  }
+
+  <form
+    class="bg-green-950 shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-4"
+    [formGroup]="formulaire"
+    (ngSubmit)="soumettre()"
+    novalidate
+  >
+
+  <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Créer un compte</h1>
+
+    <div>
+      <input
+        id="nom"
+        type="text"
+        formControlName="nom"
+        placeholder="Nom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(nom),
+          'border-gray-300': !afficherErreur(nom)
+        }"
+      />
+
+      @if (afficherErreur(nom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (nom.errors?.['required'])  { Votre nom est requis. }
+          @if (nom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="prenom"
+        type="text"
+        formControlName="prenom"
+        placeholder="Prénom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(prenom),
+          'border-gray-300': !afficherErreur(prenom)
+        }"
+      />
+
+      @if (afficherErreur(prenom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (prenom.errors?.['required']) { Votre prénom est requis. }
+          @if (prenom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="dateNaissance"
+        type="date"
+        formControlName="dateNaissance"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(dateNaissance),
+          'border-gray-300': !afficherErreur(dateNaissance)
+        }"
+      />
+
+      @if (afficherErreur(dateNaissance)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (dateNaissance.errors?.['required']) { La date de naissance est requise. }
+          @if (dateNaissance.errors?.['dateNaissance']) { Date invalide. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Email"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-500': afficherErreur(email),
+          'border-gray-300': !afficherErreur(email)
+        }"
+      />
+
+      @if (afficherErreur(email)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (email.errors?.['required']) { Email requis. }
+          @if (email.errors?.['email']) { Format invalide. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="motDePasse"
+        type="password"
+        formControlName="motDePasse"
+        placeholder="Mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(motDePasse),
+          'border-gray-300': !afficherErreur(motDePasse)
+        }"
+      />
+
+      @if (afficherErreur(motDePasse)) {
+        <p class="text-red-400 text-sm mt-1">
+          Mot de passe invalide
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="confirmation"
+        type="password"
+        formControlName="confirmation"
+        placeholder="Confirmer le mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-500':
+            afficherErreur(confirmation) ||
+            (formulaire.errors?.['nonIdentiques'] && confirmation.touched),
+          'border-gray-300': !afficherErreur(confirmation)
+        }"
+      />
+
+      @if (formulaire.errors?.['nonIdentiques'] && confirmation.touched) {
+        <p class="text-red-400 text-sm mt-1">
+          Les mots de passe ne correspondent pas.
+        </p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-orange-300 text-green-950 py-2 px-4 rounded hover:bg-orange-200 transition cursor-pointer"
+    >
+      Créer un compte
+    </button>
+
+  </form>
+
+  <p class="text-center text-sm">
+    <a routerLink="/auth/login" class="text-orange-50 hover:underline">
+      J'ai déjà un compte
+    </a>
+  </p>
+
+</div>

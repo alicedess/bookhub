@@ -1,1 +1,73 @@
-<p>connexion works!</p>
+<div class="conteneur-connexion">
+    <div class="carte">
+  
+      <h1>Connexion</h1>
+
+        
+        <!-- si première connexion après inscription -->
+        @if (inscriptionReussie) {
+            <div class="alerte alerte-succes" role="alert">
+                Compte créé avec succès. Vous pouvez vous connecter.
+            </div>
+        }
+
+        <!-- (mauvais identifiants par exemple) -->
+        @if (erreurServeur) {
+            <div class="alerte alerte-erreur" role="alert">
+                {{ erreurServeur}}
+            </div>
+        }
+
+        <form [formGroup]="formulaire" (ngSubmit)="soumettre()" novalidate>
+  
+        <!-- Email -->
+        <div class="champ">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Email"
+            [class.invalide]="afficherErreur(email)"
+          />
+          @if (afficherErreur(email)) {
+            <span class="erreur">
+              @if (email.errors?.['required']) { L'adresse email est requise. }
+              @if (email.errors?.['email'])    { Le format de l'email est invalide. }
+            </span>
+          }
+        </div>
+  
+        <!-- Mot de passe -->
+        <div class="champ">
+          <label for="motDePasse">Mot de passe</label>
+            <input
+              id="motDePasse"
+              formControlName="motDePasse"
+              placeholder="Mot de passe"
+              [class.invalide]="afficherErreur(motDePasse)"
+            />
+            
+          @if (afficherErreur(motDePasse)) {
+            <span class="erreur">
+              @if (motDePasse.errors?.['required']) { Le mot de passe est requis. }
+            </span>
+          }
+        </div>
+  
+        <!-- Bouton validation formulaire -->
+        <button 
+        label = "Se connecter"
+        type="submit"
+        class="bouton-soumission"
+        >
+        </button>
+  
+      </form>
+  
+      <p class="lien-inscription">
+        <a routerLink="/auth/register">Créer un compte</a>
+      </p>
+  
+    </div>
+  </div>
