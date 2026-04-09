@@ -5,14 +5,14 @@ import lombok.Data;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
-@Table(name = "LIVRE")
+@Table(name = "LIVRES")
 @Data
 public class Livre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @NotNull
     private String isbn;
@@ -21,14 +21,14 @@ public class Livre {
     private String titre;
 
     @ManyToOne
-    @JoinColumn(name = "AUTEUR")
+    @JoinColumn(name = "ID_AUTEUR")
     private Auteur auteur;
 
     private String resume;
 
-    private String imgCouverture;
+    private String imageCouverture;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORIE")
+    @JoinColumn(name = "ID_CATEGORIE")
     private Categorie categorie;
 }
