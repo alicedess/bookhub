@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -88,9 +89,37 @@ public class LivreService {
     }
 
     /**
-     * Modification d'un nouveau livre.
+     * Modification d'un livre.
      */
-    public Boolean updateLivre(CreateLivreDTO payload) {
+    @Transactional
+    public Boolean updateLivre(Long id, CreateLivreDTO payload) {
+        Livre livre = livreRepository.findById(id)
+                .orElseThrow(() -> new OperationException("Impossible de trouver le Livre"));
+
+        if (!Objects.equals(livre.getCategorie().getId(), payload.getCategorieId())) {
+            Categorie categorie = categorieRepository.findById(payload.getCategorieId())
+                    .orElseThrow(() -> new OperationException("Impossible de trouver la Categorie"));
+            livre.setCategorie(categorie);
+        }
+
+        if (!Objects.equals(livre.getAuteur().getId(), payload.getAuteurId())) {
+            Auteur auteur = auteurRepository.findById(payload.getAuteurId())
+                    .orElseThrow(() -> new OperationException("Impossible de trouver l'Auteur"));
+            livre.setAuteur(auteur);
+        }
+
+        modelMapper.map(payload, livre);
+        livreRepository.save(livre);
+
         return true;
+    }
+
+    /**
+     * Supprime un livre
+     * @todo Il faut vérifier si des emprunts / réservation sont en cours
+     */
+    @Transactional
+    public void deleteLivre(Long id) {
+        livreRepository.deleteById(id);
     }
 }
