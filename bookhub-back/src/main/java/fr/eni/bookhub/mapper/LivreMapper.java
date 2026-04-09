@@ -27,9 +27,9 @@ public class LivreMapper {
                 .collect(Collectors.toList());
     }
 
-    public Livre convertToEntity(LivreDTO livre)
+    public Livre convertToEntity(LivreDTO livreDTO)
     {
-        return modelMapper.map(livre, Livre.class);
+        return modelMapper.map(livreDTO, Livre.class);
     }
 
     public Iterable<Livre> convertToEntity(Iterable<LivreDTO> livres)
