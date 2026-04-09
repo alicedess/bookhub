@@ -21,7 +21,7 @@ public class ModelMapperConfig {
 
         modelMapper.typeMap(CreateLivreDTO.class, Livre.class).addMappings(mapper -> {
             mapper.skip(Livre::setId);
-            mapper.map(CreateLivreDTO::getAuteurId, (dest, v) -> dest.getAuteur().setId((Integer) v));
+            mapper.map(CreateLivreDTO::getAuteurId, (dest, v) -> dest.getAuteur().setId((Long) v));
             mapper.map(CreateLivreDTO::getCategorieId, (dest, v) -> dest.getCategorie().setId((Long) v));
         });
 
