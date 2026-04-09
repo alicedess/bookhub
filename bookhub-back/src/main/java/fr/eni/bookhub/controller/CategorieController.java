@@ -1,7 +1,7 @@
 package fr.eni.bookhub.controller;
 
-import fr.eni.bookhub.dto.AuteurDTO;
-import fr.eni.bookhub.service.AuteurService;
+import fr.eni.bookhub.dto.CategorieDTO;
+import fr.eni.bookhub.service.CategorieService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/authors")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
-public class AuteurController {
+public class CategorieController {
 
-    private AuteurService auteurService;
+    private CategorieService categorieService;
 
     @GetMapping("")
-    public ResponseEntity<?> getAuteurs(){
+    public ResponseEntity<?> getCategories(){
         try {
-            Iterable<AuteurDTO> auteurs = auteurService.findAll();
+            Iterable<CategorieDTO> categories = categorieService.findAll();
 
-            return ResponseEntity.ok().body(auteurs);
+            return ResponseEntity.ok().body(categories);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }

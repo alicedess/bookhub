@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuteurDTO {
+public class CategorieDTO {
+
     private Integer id;
 
-    private String nom;
+    private String libelle;
 
-    private String prenom;
 }
