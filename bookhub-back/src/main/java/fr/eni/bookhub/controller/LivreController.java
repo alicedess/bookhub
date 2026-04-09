@@ -20,7 +20,7 @@ public class LivreController {
      * Récupère la liste des livres paginée par 20
      */
     @GetMapping({"", "/search"})
-    public ResponseEntity<?> listAllLivres(
+    public ResponseEntity<?> searchLivres(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
         @RequestParam(required = false) Long catId,
@@ -70,15 +70,28 @@ public class LivreController {
         }
     }
 
-    /*
-    @PutMapping("")
-    public ResponseEntity<?> updateLivre(CreateLivreDTO payload)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateLivre(@PathVariable Long id, CreateLivreDTO payload)
     {
         try {
-            return livreService.updateLivre(payload);
+            if (livreService.updateLivre(id, payload)) {
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }
+
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
     }
-     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteLivre(@PathVariable Long id)
+    {
+        try {
+            livreService.deleteLivre(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
 }
