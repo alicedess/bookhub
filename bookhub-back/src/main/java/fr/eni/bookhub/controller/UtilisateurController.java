@@ -1,5 +1,6 @@
 package fr.eni.bookhub.controller;
 
+import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.UtilisteurService;
 import lombok.AllArgsConstructor;
@@ -17,9 +18,8 @@ public class UtilisateurController {
     private UtilisteurService utilisteurService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Utilisateur> getUtilisateur(@PathVariable Integer id){
-        Utilisateur utilisateur = utilisteurService.getUtilisateurById(id);
+    public ResponseEntity<UtilisateurDTO> getUtilisateur(@PathVariable Long id){
+        UtilisateurDTO utilisateur = utilisteurService.getUtilisateurActif(id);
         return ResponseEntity.ok().body(utilisateur);
     }
-
 }
