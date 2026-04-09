@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Livre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -20,15 +20,15 @@ public class Livre {
     @NotNull
     private String titre;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_AUTEUR")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_auteur")
     private Auteur auteur;
 
     private String resume;
 
     private String imageCouverture;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_CATEGORIE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categorie")
     private Categorie categorie;
 }
