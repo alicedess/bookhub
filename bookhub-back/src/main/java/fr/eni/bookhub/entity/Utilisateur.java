@@ -2,9 +2,11 @@ package fr.eni.bookhub.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.sql.DataSource;
 import java.util.Date;
 
 @Entity
@@ -15,7 +17,7 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "email", unique = true)
     private String email;
