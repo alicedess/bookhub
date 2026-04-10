@@ -1,6 +1,6 @@
 package fr.eni.bookhub.entity;
 
-import fr.eni.bookhub.enumeration.EtatExemplaire;
+import fr.eni.bookhub.enumeration.EtatExemplaireEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class Exemplaire {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "etat", nullable = true, length = 50)
-    private EtatExemplaire etat;
+    private EtatExemplaireEnum etat;
 
     @Column(name = "est_disponible")
     private Boolean estDisponible = true;
