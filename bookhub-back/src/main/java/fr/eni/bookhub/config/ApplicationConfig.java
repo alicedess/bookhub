@@ -18,12 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
     private final UtilisateurRepository userRepository;
 
+    //On recherche dans le cache l'utilisateur par son email
     @Bean
     UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmailAndDateSuppressionIsNull(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    //On encode le mdp
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
