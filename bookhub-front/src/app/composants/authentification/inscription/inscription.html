@@ -86,7 +86,7 @@
         placeholder="Email"
         class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
         [ngClass]="{
-          'border-red-500': afficherErreur(email),
+          'border-red-400': afficherErreur(email),
           'border-gray-300': !afficherErreur(email)
         }"
       />
@@ -148,12 +148,12 @@
       Créer un compte
     </button>
 
-  </form>
+    <p class="text-center text-sm">
+      <a routerLink="/auth/login" class="text-orange-50 hover:underline">
+        J'ai déjà un compte
+      </a>
+    </p>
 
-  <p class="text-center text-sm">
-    <a routerLink="/auth/login" class="text-orange-50 hover:underline">
-      J'ai déjà un compte
-    </a>
-  </p>
+  </form>
 
 </div>

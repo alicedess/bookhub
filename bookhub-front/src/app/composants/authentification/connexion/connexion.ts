@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
+import { Header } from '../../../layout/header/header';
 
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, Header],
   templateUrl: './connexion.html',
 })
 export class ConnexionComponent implements OnInit {
@@ -58,6 +59,7 @@ export class ConnexionComponent implements OnInit {
       next: (reponse) => {
         this.authService.sauvegarderToken(reponse.token);
         this.router.navigate(['/api/books']);
+        // TODO : redirection selon rôles
       },
       error: (err) => {
         this.chargement = false;

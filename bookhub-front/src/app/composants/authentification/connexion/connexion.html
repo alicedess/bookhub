@@ -1,8 +1,6 @@
-<div class="conteneur-connexion">
-    <div class="carte">
-  
-      <h1>Connexion</h1>
+<app-header></app-header>
 
+<div class="max-w-md mx-auto m-10">  
         
         <!-- si première connexion après inscription -->
         @if (inscriptionReussie) {
@@ -18,56 +16,58 @@
             </div>
         }
 
-        <form [formGroup]="formulaire" (ngSubmit)="soumettre()" novalidate>
-  
-        <!-- Email -->
-        <div class="champ">
-          <label for="email">Email</label>
+        <form class="bg-green-950 shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-4" 
+        [formGroup]="formulaire" 
+        (ngSubmit)="soumettre()" 
+        novalidate
+        >
+
+        <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Connexion</h1>
+
+          <div>
           <input
             id="email"
             type="email"
             formControlName="email"
             placeholder="Email"
+            class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+
             [class.invalide]="afficherErreur(email)"
           />
           @if (afficherErreur(email)) {
-            <span class="erreur">
+            <span class="text-red-400">
               @if (email.errors?.['required']) { L'adresse email est requise. }
               @if (email.errors?.['email'])    { Le format de l'email est invalide. }
             </span>
           }
         </div>
   
-        <!-- Mot de passe -->
-        <div class="champ">
-          <label for="motDePasse">Mot de passe</label>
+        <div>
             <input
               id="motDePasse"
               formControlName="motDePasse"
               placeholder="Mot de passe"
+              class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
               [class.invalide]="afficherErreur(motDePasse)"
             />
             
           @if (afficherErreur(motDePasse)) {
-            <span class="erreur">
+            <span class="text-red-400">
               @if (motDePasse.errors?.['required']) { Le mot de passe est requis. }
             </span>
           }
         </div>
   
-        <!-- Bouton validation formulaire -->
         <button 
-        label = "Se connecter"
         type="submit"
-        class="bouton-soumission"
-        >
+        class="w-full bg-orange-300 text-green-950 py-2 px-4 rounded hover:bg-orange-200 transition cursor-pointer"
+        > Connexion
         </button>
   
-      </form>
-  
-      <p class="lien-inscription">
-        <a routerLink="/auth/register">Créer un compte</a>
+      <p class="text-center text-sm">
+        <a routerLink="/auth/register" class="text-orange-50 hover:underline">Créer un compte</a>
       </p>
-  
+
+      </form>
+
     </div>
-  </div>
