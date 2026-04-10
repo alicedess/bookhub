@@ -25,8 +25,15 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().authenticated())
+                        auth.requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
+                                .requestMatchers("/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
+                                .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
+                                .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
+                                .requestMatchers("/reservation/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
+                                .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
+                                .requestMatchers("/admin/**").hasRole("ADMIN") // Seuls les admins peuvent accéder à /admin
+                                .requestMatchers("/librarian/**").hasAnyRole("ADMIN", "LIBRARIAN") // Les libraires et les admins peuvent accéder à /librarian
+                                .anyRequest().authenticated()) // Pour le reste, il faut un token d'accès
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
