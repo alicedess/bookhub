@@ -5,7 +5,7 @@ import lombok.Data;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
-@Table(name = "LIVRES")
+@Table(name = "LIVRE")
 @Data
 public class Livre {
 
