@@ -1,0 +1,159 @@
+<app-header></app-header>
+<div class="max-w-md mx-auto m-10">
+
+  @if (erreurServeur) {
+    <div class="bg-red-100 text-red-400 p-3 rounded mb-4">
+      {{ erreurServeur }}
+    </div>
+  }
+
+  <form
+    class="bg-green-950 shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-4"
+    [formGroup]="formulaire"
+    (ngSubmit)="soumettre()"
+    novalidate
+  >
+
+  <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Créer un compte</h1>
+
+    <div>
+      <input
+        id="nom"
+        type="text"
+        formControlName="nom"
+        placeholder="Nom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(nom),
+          'border-gray-300': !afficherErreur(nom)
+        }"
+      />
+
+      @if (afficherErreur(nom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (nom.errors?.['required'])  { Votre nom est requis. }
+          @if (nom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="prenom"
+        type="text"
+        formControlName="prenom"
+        placeholder="Prénom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(prenom),
+          'border-gray-300': !afficherErreur(prenom)
+        }"
+      />
+
+      @if (afficherErreur(prenom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (prenom.errors?.['required']) { Votre prénom est requis. }
+          @if (prenom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="dateNaissance"
+        type="date"
+        formControlName="dateNaissance"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(dateNaissance),
+          'border-gray-300': !afficherErreur(dateNaissance)
+        }"
+      />
+
+      @if (afficherErreur(dateNaissance)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (dateNaissance.errors?.['required']) { La date de naissance est requise. }
+          @if (dateNaissance.errors?.['dateNaissance']) { Date invalide. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Email"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(email),
+          'border-gray-300': !afficherErreur(email)
+        }"
+      />
+
+      @if (afficherErreur(email)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (email.errors?.['required']) { Email requis. }
+          @if (email.errors?.['email']) { Format invalide. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="motDePasse"
+        type="password"
+        formControlName="motDePasse"
+        placeholder="Mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(motDePasse),
+          'border-gray-300': !afficherErreur(motDePasse)
+        }"
+      />
+
+      @if (afficherErreur(motDePasse)) {
+        <p class="text-red-400 text-sm mt-1">
+          Mot de passe invalide
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="confirmation"
+        type="password"
+        formControlName="confirmation"
+        placeholder="Confirmer le mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-500':
+            afficherErreur(confirmation) ||
+            (formulaire.errors?.['nonIdentiques'] && confirmation.touched),
+          'border-gray-300': !afficherErreur(confirmation)
+        }"
+      />
+
+      @if (formulaire.errors?.['nonIdentiques'] && confirmation.touched) {
+        <p class="text-red-400 text-sm mt-1">
+          Les mots de passe ne correspondent pas.
+        </p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-orange-300 text-green-950 py-2 px-4 rounded hover:bg-orange-200 transition cursor-pointer"
+    >
+      Créer un compte
+    </button>
+
+    <p class="text-center text-sm">
+      <a routerLink="/auth/login" class="text-orange-50 hover:underline">
+        J'ai déjà un compte
+      </a>
+    </p>
+
+  </form>
+
+</div>
