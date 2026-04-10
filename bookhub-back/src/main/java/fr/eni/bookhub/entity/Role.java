@@ -12,8 +12,8 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "libelle", unique = true)
-    private RoleEnum libelle;
+    private String libelle;
 }

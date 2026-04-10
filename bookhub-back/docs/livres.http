@@ -1,11 +1,41 @@
 ### Variables de configuration
 @baseUrl = http://localhost:8080/api/books
 
+### 1. Se connecter pour obtenir le Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "password"
+}
+
+### 2. Utiliser le Token pour voir les livres
+# Copie le token reçu dans la requête précédente
+GET http://localhost:8080/api/books
+Authorization: Bearer VOTRE_TOKEN_ICI
+
+### Authentification via le formulaire
+# Spring Security intercepte ce POST automatiquement
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+username=user&password=password
+
+> {%
+    // Cette partie (IntelliJ) permet de garder le cookie de session pour les requêtes suivantes
+    client.global.set("auth_cookie", response.headers.valuesOf("Set-Cookie")[0]);
+%}
+
+### Tester l'accès après login
+GET http://localhost:8080/api/books
+Cookie: {{auth_cookie}}
+
 ### 1. Créer un nouveau livre
 # Remplace les IDs d'auteur et catégorie par ceux qui existent dans ta base (ex: 1)
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Basic admin password123
+Cookie: {{auth_cookie}}
 
 {
   "isbn": "8123456789",
@@ -18,7 +48,7 @@ Authorization: Basic admin password123
 
 ### 2. Récupérer tous les livres (avec pagination et filtres)
 GET {{baseUrl}}?page=0&query=Titre
-Authorization: Basic admin password123
+Authorization: Basic admin password
 
 ### 3. Récupérer un livre spécifique par son ID
 # Remplace {id} par l'ID retourné lors de la création
