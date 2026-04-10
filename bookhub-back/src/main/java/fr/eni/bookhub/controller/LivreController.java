@@ -57,7 +57,7 @@ public class LivreController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createLivre(CreateLivreDTO payload)
+    public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
         try {
             if (livreService.createLivre(payload)) {
@@ -71,7 +71,7 @@ public class LivreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateLivre(@PathVariable Long id, CreateLivreDTO payload)
+    public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
         try {
             if (livreService.updateLivre(id, payload)) {
