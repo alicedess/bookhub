@@ -1,6 +1,9 @@
 package fr.eni.bookhub.config;
 
+import fr.eni.bookhub.security.JwtAuthenticationFilter;
+import fr.eni.bookhub.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,32 +19,35 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
 
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private CustomUserDetailsService userDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 1. Désactivation du CSRF pour permettre les POST (indispensable pour les tests API)
                 .csrf(AbstractHttpConfigurer::disable)
-
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/login").permitAll() // Autorise la page de login
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll() // Endpoints JWT publics
                         .anyRequest().authenticated()
                 )
-
-                // 2. Active le formulaire de login par défaut de Spring Security
                 .formLogin(form -> form
-                        // .loginPage("/mon-login") // Si tu as une page HTML perso, sinon utilise celle par défaut
-                        .defaultSuccessUrl("/api/books", true) // Redirection après succès
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/api/books", true)
                         .permitAll()
                 )
-
-                // 3. Permet de se déconnecter
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout.permitAll())
+                // Ajoute le filtre JWT AVANT le filtre d'authentification par formulaire
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -56,6 +62,7 @@ public class SecurityConfig {
         return new ProviderManager(authenticationProvider);
     }
 
+    /**Permet de récupérer le cache de l'utilisateur*/
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails userDetails = User.withDefaultPasswordEncoder()
@@ -67,6 +74,7 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(userDetails);
     }
 
+    /**Permet de chiffrer les mots de passe*/
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

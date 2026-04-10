@@ -3,6 +3,7 @@ package fr.eni.bookhub.service;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
+    @Autowired
     private UtilisateurRepository utilisateurRepository;
 
     @Override

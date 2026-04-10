@@ -1,13 +1,15 @@
 package fr.eni.bookhub.controller;
 
-import fr.eni.bookhub.dto.LoginDTO;
-import fr.eni.bookhub.dto.LoginRequest;
+import fr.eni.bookhub.dto.AuthDTO;
 import fr.eni.bookhub.dto.LoginDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,11 +19,15 @@ public class AuthentificationController {
 
     private AuthService authService;
 
+    private AuthenticationManager authenticationManager;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody AuthDTO loginRequest) {
         try {
-            LoginDTO response = authService.login(loginRequest);
-            return ResponseEntity.ok(response);
+            Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getEmail(), loginRequest.getPassword());
+            Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+            return ResponseEntity.ok(authenticationResponse);
+
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
