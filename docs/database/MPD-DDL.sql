@@ -1,9 +1,9 @@
-CREATE TABLE "roles"(
+CREATE TABLE "role"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "libelle" NVARCHAR(20) NOT NULL
 );
 
-CREATE TABLE "utilisateurs"(
+CREATE TABLE "utilisateur"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "pseudo" NVARCHAR(100) NOT NULL,
     "email" NVARCHAR(100) NOT NULL,
@@ -13,21 +13,19 @@ CREATE TABLE "utilisateurs"(
     "date_naissance" DATETIME2 NOT NULL,
     "telephone" NVARCHAR(20) NULL,
     "id_role" INT NOT NULL,
-    "date_suppression" DATETIME2 NOT NULL,
+    "date_suppression" DATETIME2 NULL,
     "commentaire_avec_pseudo" BIT NOT NULL DEFAULT 0
 );
-CREATE UNIQUE INDEX "utilisateurs_pseudo_unique" ON
-    "utilisateurs"("pseudo");
-CREATE UNIQUE INDEX "utilisateurs_email_unique" ON
-    "utilisateurs"("email");
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'Voir dans le futur pour une table préférences', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'utilisateurs', @level2type = N'COLUMN', @level2name = N'commentaire_avec_pseudo';
+CREATE UNIQUE INDEX "utilisateur_pseudo_unique" ON "utilisateur"("pseudo");
+CREATE UNIQUE INDEX "utilisateur_email_unique" ON "utilisateur"("email");
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'Voir dans le futur pour une table préférences', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'utilisateur', @level2type = N'COLUMN', @level2name = N'commentaire_avec_pseudo';
 
-CREATE TABLE "categories"(
-    "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,,
+CREATE TABLE "categorie"(
+    "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "libelle" NVARCHAR(50) NOT NULL
 );
 
-CREATE TABLE "livres"(
+CREATE TABLE "livre"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "isbn" NVARCHAR(13) NOT NULL,
     "titre" NVARCHAR(255) NOT NULL,
@@ -38,9 +36,9 @@ CREATE TABLE "livres"(
 );
 
 
-CREATE UNIQUE INDEX "livres_isbn_unique" ON "livres"("isbn");
+CREATE UNIQUE INDEX "livre_isbn_unique" ON "livre"("isbn");
 
-CREATE TABLE "exemplaires"(
+CREATE TABLE "exemplaire"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "code_barre" NVARCHAR(50) NOT NULL,
     "etat" NVARCHAR(50) NULL,
@@ -48,46 +46,46 @@ CREATE TABLE "exemplaires"(
     "id_livre" INT NOT NULL
 );
 
-CREATE UNIQUE INDEX "exemplaires_code_barre_unique" ON "exemplaires"("code_barre");
+CREATE UNIQUE INDEX "exemplaire_code_barre_unique" ON "exemplaire"("code_barre");
 
-CREATE TABLE "emprunts"(
+CREATE TABLE "emprunt"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "date_debut" DATETIME2 NULL DEFAULT GETDATE(), "date_retour_prevue" DATETIME2 NOT NULL, "date_retour_effective" DATETIME2 NULL, "statut" NVARCHAR(20) NULL DEFAULT 'EN_COURS', "id_utilisateur" INT NOT NULL, "id_exemplaire" INT NOT NULL);
 
-CREATE TABLE "reservations"(
+CREATE TABLE "reservation"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "date_reservation" DATETIME2 NULL DEFAULT GETDATE(), "rang_file" INT NOT NULL, "statut" NVARCHAR(20) NULL DEFAULT 'ATTENTE', "id_utilisateur" INT NOT NULL, "id_livre" INT NOT NULL);
 
-CREATE TABLE "evaluations"(
+CREATE TABLE "evaluation"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     "note" INT NULL,
     "commentaire" NVARCHAR(1000) NULL,
     "est_modere" BIT NULL,
     "date_publication" DATETIME2 NULL DEFAULT GETDATE(), "id_utilisateur" INT NOT NULL, "id_livre" INT NOT NULL);
 
-CREATE TABLE "auteurs"(
+CREATE TABLE "auteur"(
     "id" INT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
     "nom" NVARCHAR(100) NOT NULL,
     "prenom" NVARCHAR(100) NOT NULL
 );
 
 ALTER TABLE
-    "emprunts" ADD CONSTRAINT "emprunts_id_exemplaire_foreign" FOREIGN KEY("id_exemplaire") REFERENCES "exemplaires"("id");
+    "emprunt" ADD CONSTRAINT "emprunt_id_exemplaire_foreign" FOREIGN KEY("id_exemplaire") REFERENCES "exemplaire"("id");
 ALTER TABLE
-    "utilisateurs" ADD CONSTRAINT "utilisateurs_id_role_foreign" FOREIGN KEY("id_role") REFERENCES "roles"("id");
+    "utilisateur" ADD CONSTRAINT "utilisateur_id_role_foreign" FOREIGN KEY("id_role") REFERENCES "role"("id");
 ALTER TABLE
-    "reservations" ADD CONSTRAINT "reservations_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livres"("id");
+    "reservation" ADD CONSTRAINT "reservation_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
 ALTER TABLE
-    "evaluations" ADD CONSTRAINT "evaluations_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livres"("id");
+    "evaluation" ADD CONSTRAINT "evaluation_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
 ALTER TABLE
-    "livres" ADD CONSTRAINT "livres_id_auteur_foreign" FOREIGN KEY("id_auteur") REFERENCES "auteurs"("id");
+    "livre" ADD CONSTRAINT "livre_id_auteur_foreign" FOREIGN KEY("id_auteur") REFERENCES "auteur"("id");
 ALTER TABLE
-    "reservations" ADD CONSTRAINT "reservations_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateurs"("id");
+    "reservation" ADD CONSTRAINT "reservation_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
 ALTER TABLE
-    "evaluations" ADD CONSTRAINT "evaluations_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateurs"("id");
+    "evaluation" ADD CONSTRAINT "evaluation_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
 ALTER TABLE
-    "livres" ADD CONSTRAINT "livres_id_categorie_foreign" FOREIGN KEY("id_categorie") REFERENCES "categories"("id");
+    "livre" ADD CONSTRAINT "livre_id_categorie_foreign" FOREIGN KEY("id_categorie") REFERENCES "categorie"("id");
 ALTER TABLE
-    "emprunts" ADD CONSTRAINT "emprunts_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateurs"("id");
+    "emprunt" ADD CONSTRAINT "emprunt_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
 ALTER TABLE
-    "exemplaires" ADD CONSTRAINT "exemplaires_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livres"("id");
+    "exemplaire" ADD CONSTRAINT "exemplaire_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
