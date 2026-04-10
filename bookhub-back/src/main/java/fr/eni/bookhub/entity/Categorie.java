@@ -9,12 +9,16 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of = {"id"})
 public class Categorie {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "libelle", unique = true)
+    @Column(name = "libelle", unique = true, nullable = false, length = 50)
     private String libelle;
+
+    /*
+    @OneToMany(mappedBy = "categorie")
+    private Set<Livre> livres = new LinkedHashSet<>();
+    */
 }
