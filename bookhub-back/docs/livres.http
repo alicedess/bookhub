@@ -1,6 +1,20 @@
 ### Variables de configuration
 @baseUrl = http://localhost:8080/api/books
 
+### 1. Se connecter pour obtenir le Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "password"
+}
+
+### 2. Utiliser le Token pour voir les livres
+# Copie le token reçu dans la requête précédente
+GET http://localhost:8080/api/books
+Authorization: Bearer VOTRE_TOKEN_ICI
+
 ### Authentification via le formulaire
 # Spring Security intercepte ce POST automatiquement
 POST http://localhost:8080/login
