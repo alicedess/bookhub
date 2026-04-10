@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../../services/auth-service';
+import { AuthService } from '../../../core/services/auth-service';
 import { Header } from '../../../layout/header/header';
 
 @Component({
@@ -58,8 +58,16 @@ export class ConnexionComponent implements OnInit {
     this.authService.seConnecter({ email, motDePasse }).subscribe({
       next: (reponse) => {
         this.authService.sauvegarderToken(reponse.token);
-        this.router.navigate(['/api/books']);
-        // TODO : redirection selon rôles
+        
+        const role = this.authService.obtenirRole();
+
+        const redirections: Record<string, string> = {
+          USER: '/dashboard',
+          LIBRARIAN: '/librarian',
+          ADMIN: '/admin',
+        };
+
+        this.router.navigate([redirections[role ?? ''] ?? '/dashboard']);
       },
       error: (err) => {
         this.chargement = false;
@@ -72,3 +80,5 @@ export class ConnexionComponent implements OnInit {
     });
   }
 }
+
+export default ConnexionComponent;

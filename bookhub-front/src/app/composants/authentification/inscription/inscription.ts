@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth-service';
+import { AuthService } from '../../../core/services/auth-service';
 import { Header } from '../../../layout/header/header';
 
 
@@ -87,3 +87,5 @@ motsDePasseIdentiques(groupe: AbstractControl) {
     });
   }
 }
+
+export default InscriptionComponent;
