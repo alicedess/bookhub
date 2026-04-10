@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+upload-dir/**/*
+!upload-dir/.gitkeep
