@@ -1,34 +1,34 @@
 package fr.eni.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "LIVRE")
 @Data
 public class Livre {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
+    @Column(length = 13, nullable = false)
     private String isbn;
 
-    @NotNull
+    @Column(nullable = false)
     private String titre;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_auteur")
-    private Auteur auteur;
 
     private String resume;
 
     private String imageCouverture;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_auteur")
+    private Auteur auteur;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categorie")
     private Categorie categorie;
 }
