@@ -56,6 +56,9 @@ public class LivreController {
         }
     }
 
+    /**
+     *  Création d'un nouveau livre
+     */
     @PostMapping("")
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
@@ -70,6 +73,9 @@ public class LivreController {
         }
     }
 
+    /**
+     * Modification d'une livre
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
@@ -84,6 +90,9 @@ public class LivreController {
         }
     }
 
+    /**
+     * Suppression d'un livre
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLivre(@PathVariable Long id)
     {
