@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,22 +22,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String authHeader = parseJwt(request);
+            String token = parseJwt(request);
 
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
+            if (token != null && jwtUtil.isTokenValid(token)) {
+                String email = jwtUtil.getEmailFromToken(token);
+                Long userId = jwtUtil.getUserIdFromToken(token);
 
-                if (jwtUtil.isTokenValid(token)) {
-                    String email = jwtUtil.getEmailFromToken(token);
-                    Long userId = jwtUtil.getUserIdFromToken(token);
+                if (email != null && userId != null) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(email, null, null);
+                    authentication.setDetails(userId);
 
-                    if (email != null && userId != null) {
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(email, null, null);
-                        authentication.setDetails(userId);
-
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
         } catch (Exception e) {
@@ -53,6 +48,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }
-
