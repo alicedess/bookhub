@@ -55,10 +55,10 @@ export class ConnexionComponent implements OnInit {
 
     const { email, motDePasse } = this.formulaire.value;
 
-    this.authService.seConnecter({ email, motDePasse }).subscribe({
+    this.authService.seConnecter({ email, password: motDePasse }).subscribe({
       next: (reponse) => {
         this.authService.sauvegarderToken(reponse.token);
-        
+
         const role = this.authService.obtenirRole();
 
         const redirections: Record<string, string> = {

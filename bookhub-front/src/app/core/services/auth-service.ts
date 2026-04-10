@@ -13,7 +13,7 @@ export interface DemandeInscription {
 
 export interface DemandeConnexion {
   email: string;
-  motDePasse: string;
+  password: string;
 }
 
 export interface ReponseConnexion {
