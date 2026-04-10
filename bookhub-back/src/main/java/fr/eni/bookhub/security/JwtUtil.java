@@ -1,9 +1,12 @@
 package fr.eni.bookhub.security;
 
+import fr.eni.bookhub.entity.Utilisateur;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -28,10 +31,11 @@ public class JwtUtil {
     }
 
     //Génère le JWT Token
-    public String generateToken(String email, Long userId) {
+    public String generateToken(Utilisateur utilisateur) {
         return Jwts.builder()
-                .subject(email)
-                .claim("utilisateurId", userId)
+                .subject(utilisateur.getUsername())
+                .claim("utilisateurId", utilisateur.getId())
+                .claim("utilisateurRole", utilisateur.getRole().getLibelle())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -82,6 +86,12 @@ public class JwtUtil {
             System.out.println("JWT claims string is empty: " + e.getMessage());
         }
         return false;
+    }
+
+    public String generateJwtToken(Authentication authenticationResponse) {
+        Utilisateur userPrincipal = (Utilisateur) authenticationResponse.getPrincipal();
+
+        return generateToken(userPrincipal);
     }
 }
 

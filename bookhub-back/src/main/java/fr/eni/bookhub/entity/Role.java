@@ -15,5 +15,5 @@ public class Role {
     private Long id;
 
     @Column(name = "libelle", unique = true)
-    private RoleEnum libelle;
+    private String libelle;
 }
