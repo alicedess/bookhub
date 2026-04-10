@@ -17,5 +17,5 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Intege
     Utilisateur findUtilisateurByIdWhereDateSuppressionIsNull(Long id);
 
     @EntityGraph(attributePaths = {"role"})
-    Optional<Utilisateur> findByEmail(String email);
+    Optional<Utilisateur> findByEmailAndDateSuppressionIsNull(String email);
 }

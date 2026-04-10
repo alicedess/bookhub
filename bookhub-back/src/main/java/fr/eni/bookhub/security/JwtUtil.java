@@ -6,7 +6,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -34,7 +33,6 @@ public class JwtUtil {
     public String generateToken(Utilisateur utilisateur) {
         return Jwts.builder()
                 .subject(utilisateur.getUsername())
-                .claim("utilisateurId", utilisateur.getId())
                 .claim("utilisateurRole", utilisateur.getRole().getLibelle())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
@@ -51,20 +49,6 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    //Récupère l'utilisateurID via le token
-    public Long getUserIdFromToken(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .get("utilisateurId", Long.class);
         } catch (Exception e) {
             return null;
         }
