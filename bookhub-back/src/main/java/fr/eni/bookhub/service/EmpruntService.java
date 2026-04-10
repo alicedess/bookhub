@@ -16,6 +16,6 @@ public class EmpruntService {
     private UtilisateurRepository utilisateurRepository;
 
     public Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
-
+        return null;
     }
 }
