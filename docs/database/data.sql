@@ -1,5 +1,5 @@
 -- 1. GÉNÉRATION DES AUTEURS (6 auteurs)
-INSERT INTO auteurs (nom, prenom)
+INSERT INTO auteur (nom, prenom)
 VALUES ('Hugo', 'Victor'),
        ('Zola', 'Émile'),
        ('Orwell', 'George'),
@@ -8,7 +8,7 @@ VALUES ('Hugo', 'Victor'),
        ('Rowling', 'J.K.');
 
 -- 2. GÉNÉRATION DES CATÉGORIES (5 catégories)
-INSERT INTO categories (libelle)
+INSERT INTO categorie (libelle)
 VALUES ('Roman Classique'),
        ('Science-Fiction'),
        ('Policier'),
@@ -18,7 +18,7 @@ VALUES ('Roman Classique'),
 -- 3. GÉNÉRATION DES LIVRES (30 livres)
 -- On alterne les auteurs (IDs 1 à 6) et les catégories (IDs 1 à 5)
 
-INSERT INTO livres (isbn, titre, resume, image_couverture, id_auteur, id_categorie)
+INSERT INTO livre (isbn, titre, resume, image_couverture, id_auteur, id_categorie)
 VALUES ('97801', 'Les Misérables', 'La vie de Jean Valjean.', 'hugo_mis.jpg', 1, 1),
        ('97802', 'Notre-Dame de Paris', 'L histoire de Quasimodo.', 'hugo_ndp.jpg', 1, 1),
        ('97803', 'Germinal', 'La grève des mineurs.', 'zola_ger.jpg', 2, 1),
@@ -49,3 +49,26 @@ VALUES ('97801', 'Les Misérables', 'La vie de Jean Valjean.', 'hugo_mis.jpg', 1
        ('97828', 'La Maison du péril', 'Enquête de Poirot.', 'christie_peril.jpg', 5, 3),
        ('97829', 'Une place à prendre', 'Roman social.', 'jk_place.jpg', 6, 1),
        ('97830', 'Le Rhin', 'Récit de voyage.', 'hugo_rhin.jpg', 1, 5);
+
+
+
+INSERT INTO role (libelle) VALUES
+    ('ROLE_ADMIN'),
+    ('ROLE_LIBRARIAN'),
+    ('ROLE_USER');
+
+-- Hash BCrypt pour "password123" : $2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2
+
+INSERT INTO utilisateur
+(pseudo, email, password, nom, prenom, date_naissance, telephone, id_role, date_suppression, commentaire_avec_pseudo)
+VALUES
+    ('admin_hub', 'admin@bookhub.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Admin', 'Système', '1990-01-01', '0102030405', 1, NULL, 1),
+    ('jdupont', 'jean.dupont@email.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
+    ('msmith', 'marie.smith@gmail.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Smith', 'Marie', '1992-11-20', '0623456789', 2, NULL, 1),
+    ('lartigaud', 'lucas.a@outlook.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Artigaud', 'Lucas', '1998-03-15', '0634567890', 2, NULL, 0),
+    ('bibliophile', 'sophie.biblio@yahoo.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Morel', 'Sophie', '1978-07-22', '0645678901', 2, NULL, 1),
+    ('thomas_eni', 'thomas.c@eni.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Ciles', 'Thomas', '1995-12-30', '0656789012', 1, NULL, 1),
+    ('book_lover', 'emma.l@test.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Lefebvre', 'Emma', '2001-09-05', '0667890123', 2, NULL, 1),
+    ('v_hugo_fan', 'victor.fan@culture.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Durand', 'Paul', '1988-04-18', '0678901234', 2, NULL, 0),
+    ('julie_dev', 'julie.dev@code.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Gauthier', 'Julie', '1993-02-28', '0689012345', 2, NULL, 1),
+    ('reader99', 'marc.reader@mail.fr', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'Bernard', 'Marc', '1982-10-10', '0690123456', 2, NULL, 1);
