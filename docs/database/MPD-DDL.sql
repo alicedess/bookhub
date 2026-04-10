@@ -50,7 +50,12 @@ CREATE UNIQUE INDEX "exemplaire_code_barre_unique" ON "exemplaire"("code_barre")
 
 CREATE TABLE "emprunt"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-    "date_debut" DATETIME2 NULL DEFAULT GETDATE(), "date_retour_prevue" DATETIME2 NOT NULL, "date_retour_effective" DATETIME2 NULL, "statut" NVARCHAR(20) NULL DEFAULT 'EN_COURS', "id_utilisateur" INT NOT NULL, "id_exemplaire" INT NOT NULL);
+    "date_debut" DATETIME2 NOT NULL DEFAULT GETDATE(),
+    "date_retour_prevue" DATETIME2 NOT NULL,
+    "date_retour_effective" DATETIME2 NULL,
+    "statut" NVARCHAR(20) NOT NULL DEFAULT 'EN_COURS',
+    "id_utilisateur" INT NOT NULL,
+    "id_exemplaire" INT NOT NULL);
 
 CREATE TABLE "reservation"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
@@ -72,6 +77,8 @@ CREATE TABLE "auteur"(
 ALTER TABLE
     "emprunt" ADD CONSTRAINT "emprunt_id_exemplaire_foreign" FOREIGN KEY("id_exemplaire") REFERENCES "exemplaire"("id");
 ALTER TABLE
+    "emprunt" ADD CONSTRAINT "emprunt_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
+ALTER TABLE
     "utilisateur" ADD CONSTRAINT "utilisateur_id_role_foreign" FOREIGN KEY("id_role") REFERENCES "role"("id");
 ALTER TABLE
     "reservation" ADD CONSTRAINT "reservation_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
@@ -85,7 +92,5 @@ ALTER TABLE
     "evaluation" ADD CONSTRAINT "evaluation_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
 ALTER TABLE
     "livre" ADD CONSTRAINT "livre_id_categorie_foreign" FOREIGN KEY("id_categorie") REFERENCES "categorie"("id");
-ALTER TABLE
-    "emprunt" ADD CONSTRAINT "emprunt_id_utilisateur_foreign" FOREIGN KEY("id_utilisateur") REFERENCES "utilisateur"("id");
 ALTER TABLE
     "exemplaire" ADD CONSTRAINT "exemplaire_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
