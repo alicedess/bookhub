@@ -3,11 +3,14 @@ package fr.eni.bookhub.controller;
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.service.LivreService;
+import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("/api/books")
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class LivreController {
 
     private LivreService livreService;
+    private StorageService storageService;
 
     /**
      * Récupère la liste des livres paginée par 20
@@ -102,5 +106,19 @@ public class LivreController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
+    }
+
+    @PutMapping("/{id}/cover")
+    public ResponseEntity<?> handleFileUpload(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes)
+    {
+        LivreDTO livre = livreService.updateCouvertureLivre(id, file);
+
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return ResponseEntity.ok().body(livre);
     }
 }
