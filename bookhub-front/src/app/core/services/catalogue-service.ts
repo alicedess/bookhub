@@ -29,4 +29,7 @@ export class CatalogueService {
       })
     }
 
+  getLivre(id: number) {
+      return this.httpClient.get<Livre>(`${this.URL_BASE}/${id}`);
+  }
 }

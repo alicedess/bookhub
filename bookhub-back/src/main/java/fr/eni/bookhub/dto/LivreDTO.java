@@ -1,6 +1,7 @@
 package fr.eni.bookhub.dto;
 
 import fr.eni.bookhub.entity.Auteur;
+import fr.eni.bookhub.entity.Categorie;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,12 @@ public class LivreDTO {
     private String resume;
     private String imageCouverture;
     private Integer nbPage;
-    private AuteurDTO auteur;
-    private CategorieDTO categorie;
+    private Long auteurId;
+    private String auteurNom;
+    private String auteurPrenom;
+    private Long categorieId;
+    private String categorieLibelle;
+    private Long nbExemplaire;
+    private Long nbExemplaireDispo;
+    private Double note;
 }

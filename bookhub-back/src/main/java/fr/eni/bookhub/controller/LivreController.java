@@ -6,7 +6,6 @@ import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +35,12 @@ public class LivreController {
     )
     {
         try {
-            Page<LivreDTO> livres = livreService.searchLivres(
+            return ResponseEntity.ok().body(livreService.searchLivres(
                     query,
                     auteurId,
                     catId,
                     page
-            );
-
-            return ResponseEntity.ok().body(livres);
+            ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
