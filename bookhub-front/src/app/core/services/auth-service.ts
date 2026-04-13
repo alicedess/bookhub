@@ -67,7 +67,13 @@ export class AuthService {
     if (!token) return null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.role ?? null;
+      const role = payload.role ?? null;
+
+      if (!role) {
+        return null;
+      }
+
+      return role.replace('ROLE_', '');
     } catch {
       return null;
     }
