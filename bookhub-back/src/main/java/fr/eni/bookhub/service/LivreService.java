@@ -57,8 +57,8 @@ public class LivreService {
     /**
      * Récupère un livre par son ID.
      */
-    public Optional<Livre> getById(Long id) {
-        return livreRepository.findById(id).map(l -> modelMapper.map(l, Livre.class));
+    public Optional<LivreDTO> getById(Long id) {
+        return livreRepository.findById(id).map(l -> modelMapper.map(l, LivreDTO.class));
     }
 
     /**

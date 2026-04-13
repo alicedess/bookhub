@@ -1,14 +1,14 @@
 import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { Header } from '../../layout/header/header';
 import { CatalogueService } from '../../core/services/catalogue-service';
-import { JsonPipe } from '@angular/common';
 import { CategorieService } from '../../core/services/categorie-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-catalogue',
   imports: [
     Header,
-    JsonPipe
+    RouterLink
   ],
   templateUrl: './catalogue.html',
   styleUrl: './catalogue.css'
@@ -25,21 +25,30 @@ export class Catalogue implements OnInit {
 
   protected searchResult = this.catalogueService.searchResult;
 
+  protected currentPage = signal(0);
+
+  private _t: number|null = null;
+
   search = effect(() => {
     const query = this.searchQuery();
     const categorieFilter = this.categorieFilter();
     const disponibiliteFilter = this.disponibiliteFilter();
+    const page = this.currentPage();
 
-    this.catalogueService.search(query, categorieFilter, disponibiliteFilter);
+    this.catalogueService.search(query, categorieFilter, disponibiliteFilter, page);
   });
 
   ngOnInit(): void {
     this.categorieService.refresh();
-    this.catalogueService.search(this.searchQuery(), this.categorieFilter(), this.disponibiliteFilter());
+    this.catalogueService.search(this.searchQuery(), this.categorieFilter(), this.disponibiliteFilter(), this.currentPage());
   }
 
   protected onSearchUpdated(sq: string) {
-    this.searchQuery.set(sq);
+    clearTimeout(this._t as number);
+
+    this._t = setTimeout(() => {
+      this.searchQuery.set(sq);
+    }, 500) as unknown as number;
   }
 
   protected onSelectCategorie(event: Event) {

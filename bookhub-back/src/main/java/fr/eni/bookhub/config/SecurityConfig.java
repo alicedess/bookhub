@@ -4,6 +4,7 @@ import fr.eni.bookhub.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,7 +37,8 @@ public class SecurityConfig {
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
+                        auth.requestMatchers(HttpMethod.GET, "/api/books/*/cover").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
                                 .requestMatchers("/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
