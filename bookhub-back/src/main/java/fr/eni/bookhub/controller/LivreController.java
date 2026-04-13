@@ -27,7 +27,7 @@ public class LivreController {
     public ResponseEntity<?> searchLivres(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
-        @RequestParam(required = false) Long catId,
+        @RequestParam(required = false, name = "categorie") Long catId,
         @RequestParam(defaultValue = "0") int page
     )
     {

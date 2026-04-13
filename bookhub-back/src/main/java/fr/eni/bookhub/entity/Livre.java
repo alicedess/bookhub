@@ -23,6 +23,8 @@ public class Livre {
 
     private String imageCouverture;
 
+    private Integer nbPage;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_auteur")
