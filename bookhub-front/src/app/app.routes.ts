@@ -5,17 +5,26 @@ import { roleGuard } from './core/guards/role-guard';
 export const routes: Routes = [
 // CF docs/Navigation.md
 // Pages publiques
-//   { path: '', loadComponent: () => import('./composants/catalogue/') },
-  { path: 'login', loadComponent: () => import('./composants/authentification/connexion/connexion') },
-  { path: 'register', loadComponent: () => import('./composants/authentification/inscription/inscription') },
-//   { path: 'books', loadComponent: () => import('') },
+  {
+    path: 'login',
+    loadComponent: () => import('./composants/authentification/connexion/connexion').then(m => m.ConnexionComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./composants/authentification/inscription/inscription').then(m => m.InscriptionComponent)
+  },
+  {
+    path: 'books',
+    loadComponent: () => import('./features/catalogue/catalogue').then(m => m.Catalogue)
+  },
+  { path: '**', redirectTo: 'books' },
 //   { path: 'books/:id', loadComponent: () => import('') },
 
- 
+
 // rôle USER
 //   {
 //     path: 'dashboard',
-//     canActivate: [authGuard],  
+//     canActivate: [authGuard],
 //     loadComponent: () => import('')
 //   },
 //   {
@@ -34,7 +43,7 @@ export const routes: Routes = [
 //     loadComponent: () => import('')
 //   },
 
-// rôle LIBRARIAN 
+// rôle LIBRARIAN
   {
     path: 'librarian',
     canActivate: [authGuard, roleGuard],
