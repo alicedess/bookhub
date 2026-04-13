@@ -43,4 +43,7 @@ public class Emprunt {
     @JoinColumn(name = "id_exemplaire", nullable = false)
     private Exemplaire exemplaire;
 
+    @Transient
+    private boolean enRetard;
+
 }

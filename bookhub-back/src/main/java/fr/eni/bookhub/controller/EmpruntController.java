@@ -1,37 +1,52 @@
 package fr.eni.bookhub.controller;
 
-import fr.eni.bookhub.entity.Emprunt;
+import fr.eni.bookhub.dto.EmpruntDTO;
+import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.EmpruntService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/loans")
 @AllArgsConstructor
 public class EmpruntController {
 
-    private EmpruntService empruntService;
+    private final EmpruntService empruntService;
 
     @PostMapping
     public ResponseEntity<?> emprunterLivre(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Utilisateur utilisateur,
             @RequestParam Long exemplaireId) {
         try {
-            Emprunt emprunt = empruntService.emprunterLivre(userId, exemplaireId);
+            EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), exemplaireId);
             return ResponseEntity.ok()
-                    .body("Emprunt confirmé ! Retour prévu le " +
-                            emprunt.getDateRetourPrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    .body(Map.of(
+                            "message", "Emprunt confirmé ! Retour prévu le " +
+                                    emprunt.getDateRetourPrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            "emprunt", emprunt
+                    ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest()
                     .body("Erreur : " + e.getMessage());
         }
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<Map<String, List<EmpruntDTO>>> mesEmprunts(@AuthenticationPrincipal Utilisateur utilisateur) {
+        List<EmpruntDTO> empruntsEnCours = empruntService.getEmpruntsEnCoursDTO(utilisateur);
+        List<EmpruntDTO> empruntsHistoriques = empruntService.getEmpruntsHistoriqueDTO(utilisateur);
 
+        Map<String, List<EmpruntDTO>> response = new HashMap<>();
+        response.put("enCours", empruntsEnCours);
+        response.put("historique", empruntsHistoriques);
+
+        return ResponseEntity.ok(response);
+    }
 }
