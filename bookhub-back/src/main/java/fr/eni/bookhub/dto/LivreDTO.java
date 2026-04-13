@@ -14,6 +14,7 @@ public class LivreDTO {
     private String titre;
     private String resume;
     private String imageCouverture;
+    private Integer nbPage;
     private AuteurDTO auteur;
     private CategorieDTO categorie;
 }
