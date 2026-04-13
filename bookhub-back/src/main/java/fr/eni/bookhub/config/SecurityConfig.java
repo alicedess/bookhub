@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
                                 .requestMatchers("/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
