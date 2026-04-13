@@ -26,7 +26,7 @@ export class ConnexionComponent implements OnInit {
   ) {
     this.formulaire = this.fb.group({
       email:      ['', [Validators.required, Validators.email]],
-      motDePasse: ['', Validators.required],
+      password: ['', Validators.required],
     });
   }
 
@@ -37,7 +37,7 @@ export class ConnexionComponent implements OnInit {
   }
 
   get email()      { return this.formulaire.get('email')!; }
-  get motDePasse() { return this.formulaire.get('motDePasse')!; }
+  get password() { return this.formulaire.get('password')!; }
 
   afficherErreur(champ: AbstractControl): boolean {
     return champ.invalid && (champ.dirty || champ.touched);
@@ -53,9 +53,9 @@ export class ConnexionComponent implements OnInit {
     this.chargement = true;
     this.erreurServeur = null;
 
-    const { email, motDePasse } = this.formulaire.value;
+    const { email, password } = this.formulaire.value;
 
-    this.authService.seConnecter({ email, password: motDePasse }).subscribe({
+    this.authService.seConnecter({ email, password: password }).subscribe({
       next: (reponse) => {
         this.authService.sauvegarderToken(reponse.token);
 

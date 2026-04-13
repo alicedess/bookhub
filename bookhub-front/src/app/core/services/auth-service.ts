@@ -8,7 +8,8 @@ export interface DemandeInscription {
   nom: string;
   dateNaissance: string;
   email: string;
-  motDePasse: string;
+  password: string;
+  telephone: string;
 }
 
 export interface DemandeConnexion {
@@ -49,6 +50,7 @@ export class AuthService {
     return localStorage.getItem(this.CLE_TOKEN);
   }
 
+  // vérifie que l'utilisateur est connecté en vérifiant le token
   estConnecte(): boolean {
     const token = this.obtenirToken();
     if (!token) return false;
@@ -58,6 +60,17 @@ export class AuthService {
       return payload.exp * 1000 > Date.now();
     } catch {
       return false;
+    }
+  }
+
+  // récupère les informations de l'utilisateur connecté (payload du token), créée pour le composant profil
+  obtenirUtilisateur(): { prenom: string; nom: string; email: string, dateNaissance: string, telephone: string } | null {
+    const token = this.obtenirToken();
+    if (!token) return null;
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
+      return null;
     }
   }
 
@@ -82,5 +95,13 @@ export class AuthService {
   seDeconnecter(): void {
     localStorage.removeItem(this.CLE_TOKEN);
     this.router.navigate(['/connexion']);
+  }
+
+  modifierProfil(donnees: Partial<DemandeInscription>): Observable<void> {
+    return this.http.put<void>(`${this.URL_BASE}/profile`, donnees);
+  }
+
+  supprimerCompte(): Observable<void> {
+    return this.http.delete<void>(`${this.URL_BASE}/profile`);
   }
 }

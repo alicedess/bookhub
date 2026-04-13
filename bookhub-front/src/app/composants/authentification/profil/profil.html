@@ -1,20 +1,27 @@
 <app-header></app-header>
-<div class="max-w-md mx-auto m-10">
 
-  @if (erreurServeur) {
-    <div class="bg-red-100 text-red-400 p-3 rounded mb-4">
-      {{ erreurServeur }}
-    </div>
-  }
 
-  <form
+<!-- affichage des informations de profil -->
+ <!-- Nom/prénom/Date de naissance/email/ -->
+<h1 class="text-green-950 font-serif text-2xl font-bold mb-6 text-center">Mon profil</h1>
+
+<p class="text-left text-sm">
+  <strong>Nom :</strong> {{ utilisateur?.nom }} <br>
+  <strong>Prénom :</strong> {{ utilisateur?.prenom }} <br>
+  <strong>Date de naissance :</strong> {{ utilisateur?.dateNaissance | date:'longDate' }} <br>
+  <strong>Email :</strong> {{ utilisateur?.email }} <br>
+</p>
+
+<!--Modification prénom/nom/téléphone +  Changement mot de passe -->
+
+<form
     class="bg-green-950 shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-4"
     [formGroup]="formulaire"
     (ngSubmit)="soumettre()"
     novalidate
   >
 
-  <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Créer un compte</h1>
+  <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Modifier mon compte</h1>
 
     <div>
       <input
@@ -60,41 +67,20 @@
 
     <div>
       <input
-        id="dateNaissance"
-        type="date"
-        formControlName="dateNaissance"
-        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        id="telephone"
+        type="text"
+        formControlName="telephone"
+        placeholder="Téléphone"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2 rounded focus:outline-none focus:ring"
         [ngClass]="{
-          'border-red-400': afficherErreur(dateNaissance),
-          'border-gray-300': !afficherErreur(dateNaissance)
+          'border-red-400': afficherErreur(telephone),
+          'border-gray-300': !afficherErreur(telephone)
         }"
       />
-
-      @if (afficherErreur(dateNaissance)) {
+      @if (afficherErreur(telephone)) {
         <p class="text-red-400 text-sm mt-1">
-          @if (dateNaissance.errors?.['required']) { La date de naissance est requise. }
-          @if (dateNaissance.errors?.['dateNaissance']) { Date invalide. }
-        </p>
-      }
-    </div>
-
-    <div>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        placeholder="Email"
-        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
-        [ngClass]="{
-          'border-red-400': afficherErreur(email),
-          'border-gray-300': !afficherErreur(email)
-        }"
-      />
-
-      @if (afficherErreur(email)) {
-        <p class="text-red-400 text-sm mt-1">
-          @if (email.errors?.['required']) { Email requis. }
-          @if (email.errors?.['email']) { Format invalide. }
+          @if (telephone.errors?.['required']) { Téléphone requis. }
+          @if (telephone.errors?.['pattern']) { Format invalide. }
         </p>
       }
     </div>
@@ -145,15 +131,14 @@
       type="submit"
       class="w-full bg-orange-300 text-green-950 py-2 px-4 rounded hover:bg-orange-200 transition cursor-pointer"
     >
-      Créer un compte
+    Sauvegarder
     </button>
-
-    <p class="text-center text-sm">
-      <a routerLink="/login" class="text-orange-50 hover:underline">
-        J'ai déjà un compte
-      </a>
-    </p>
 
   </form>
 
-</div>
+  <p class="text-red-400 bold text-center text-sm">
+    <a class="text-orange-50 hover:underline" (click)="supprimerCompte()">Supprimer mon compte</a>
+  </p>
+
+
+<!-- Suppression compte -->

@@ -28,11 +28,8 @@ export const routes: Routes = [
 //     canActivate: [authGuard],
 //     loadComponent: () => import('')
 //   },
-//   {
-//     path: 'profile',
-//     canActivate: [authGuard],
-//     loadComponent: () => import('')
-//   },
+  { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./composants/authentification/profil/profil') },
+  
 
 // rôle LIBRARIAN 
   {
