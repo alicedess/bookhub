@@ -42,7 +42,7 @@ public class AuthentificationController {
     public ResponseEntity<?> register(@RequestBody Utilisateur utilisateur) {
         try {
             Utilisateur newUser = authService.createUser(utilisateur);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur créé avec succès");
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
         } catch (OperationException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                     "success", false,
