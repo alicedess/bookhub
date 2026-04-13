@@ -5,12 +5,16 @@ import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -120,5 +124,25 @@ public class LivreController {
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
         return ResponseEntity.ok().body(livre);
+    }
+
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
+        Optional<LivreDTO> livre = livreService.getById(id);
+
+        if (livre.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        LivreDTO livreDTO = livre.get();
+
+        if (null == livreDTO.getImageCouverture()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 }
