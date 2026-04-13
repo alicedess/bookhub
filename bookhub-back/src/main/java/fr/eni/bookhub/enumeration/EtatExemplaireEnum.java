@@ -1,6 +1,6 @@
 package fr.eni.bookhub.enumeration;
 
-public enum EtatExemplaire {
+public enum EtatExemplaireEnum {
     NEUF,
     BON,
     ABIME,
