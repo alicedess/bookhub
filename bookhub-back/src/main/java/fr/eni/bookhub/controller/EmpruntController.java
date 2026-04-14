@@ -23,9 +23,9 @@ public class EmpruntController {
     @PostMapping
     public ResponseEntity<?> emprunterLivre(
             @AuthenticationPrincipal Utilisateur utilisateur,
-            @RequestParam Long exemplaireId) {
+            @RequestParam Long idLivre) {
         try {
-            EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), exemplaireId);
+            EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), idLivre);
             return ResponseEntity.ok()
                     .body(Map.of(
                             "message", "Emprunt confirmé ! Retour prévu le " +

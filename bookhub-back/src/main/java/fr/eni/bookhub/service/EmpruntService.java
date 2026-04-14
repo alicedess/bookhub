@@ -27,13 +27,14 @@ public class EmpruntService {
     private final EmpruntMapper empruntMapper;
 
 
-    protected Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
+    private Emprunt emprunterLivre(Long idUtilisateur, Long idLivre) {
         Utilisateur utilisateur = utilisateurRepository.findUtilisateurById(idUtilisateur);
         if (utilisateur == null) {
             throw new IllegalArgumentException("Utilisateur non trouvé");
         }
-        Exemplaire exemplaire = exemplaireRepository.findById(idExemplaire)
-                .orElseThrow(() -> new RuntimeException("Exemplaire non trouvé"));
+
+        Exemplaire exemplaire = exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(idLivre)
+                .orElseThrow(() -> new RuntimeException("Aucun exemplaire disponible pour ce livre."));
 
         verifierReglesEmprunt(utilisateur, exemplaire);
 
@@ -51,8 +52,8 @@ public class EmpruntService {
     }
 
     @Transactional
-    public EmpruntDTO emprunterLivreDto(Long idUtilisateur, Long idExemplaire) {
-        Emprunt emprunt = emprunterLivre(idUtilisateur, idExemplaire);
+    public EmpruntDTO emprunterLivreDto(Long idUtilisateur, Long idLivre) {
+        Emprunt emprunt = emprunterLivre(idUtilisateur, idLivre);
         return empruntMapper.convertToDto(emprunt);
     }
 
