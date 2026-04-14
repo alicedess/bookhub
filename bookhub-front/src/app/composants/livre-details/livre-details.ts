@@ -4,7 +4,7 @@ import { Header } from '../../layout/header/header';
 import { Livre } from '../../core/modeles/livre';
 import { CatalogueService } from '../../core/services/catalogue-service';
 import { AuthService } from '../../core/services/auth-service';
-import { BookRatingComponent } from '../../composants/authentification/book-rating/book-rating';
+import { BookRatingComponent } from '../authentification/book-rating/book-rating';
 
 @Component({
   selector: 'app-livre-details',
