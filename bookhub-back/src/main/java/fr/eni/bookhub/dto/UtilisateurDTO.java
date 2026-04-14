@@ -12,6 +12,7 @@ public class UtilisateurDTO {
     private String password;
     private String nom;
     private String prenom;
+    private String pseudo;
     private Integer telephone;
     private Role role;
     private Date dateNaissance;

@@ -30,7 +30,6 @@ public class AuthService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
-    private RoleRepository roleRepository;
 
     public LoginResponse login(AuthDTO loginRequest) {
         // 1. On prépare la demande d'authentification
@@ -62,6 +61,12 @@ public class AuthService {
 
         // 2. Créer l'entité Utilisateur à partir du DTO
         Utilisateur utilisateur = utilisateurMapper.convertToEntity(utilisateurDTO);
+
+        if (null == utilisateur.getPseudo()) {
+            utilisateur.setPseudo(
+                   ( utilisateurDTO.getPrenom().charAt(0) +  utilisateurDTO.getNom()).toLowerCase()
+            );
+        }
 
         // 3. Encoder le mot de passe
         utilisateur.setPassword(passwordEncoder.encode(utilisateurDTO.getPassword()));
