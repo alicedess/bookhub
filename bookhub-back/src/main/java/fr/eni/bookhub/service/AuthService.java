@@ -65,7 +65,7 @@ public class AuthService {
         utilisateur.setPassword(passwordEncoder.encode(utilisateurDTO.getPassword()));
 
         // 4. Assigner un rôle par défaut (USER/LECTEUR)
-        utilisateur.setRole(roleRepository.findByLibelle("USER")
+        utilisateur.setRole(roleRepository.findByLibelle("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Rôle par défaut non trouvé")));
 
         // 5. Sauvegarder l'utilisateur
