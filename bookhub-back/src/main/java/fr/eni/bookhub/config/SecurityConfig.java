@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
-                                .requestMatchers("/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
+                                .requestMatchers("/api/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/reservation/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books

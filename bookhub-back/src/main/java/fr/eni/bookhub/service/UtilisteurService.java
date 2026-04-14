@@ -32,7 +32,7 @@ public class UtilisteurService {
             user.setNom(profilchangement.getNom());
             user.setPrenom(profilchangement.getPrenom());
             user.setPassword(profilchangement.getPassword());
-            user.setDateNaissance(profilchangement.getDateNaissance());
+            user.setTelephone(profilchangement.getTelephone());
             utilisateurRepository.save(user);
             return userMap.convertToProfilDto(user);
         } catch (Exception e) {

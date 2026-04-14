@@ -11,5 +11,4 @@ public class ProfilDTO {
     private String prenom;
     private String password;
     private String telephone;
-    private Date dateNaissance;
 }
