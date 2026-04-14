@@ -1,1 +1,92 @@
-<p>mes-emprunts works!</p>
+<app-header></app-header>
+
+  <div class="text-center mb-6">
+    <h1 class="inline-block bg-orange-300 text-green-900 font-serif text-2xl px-6 py-2 rounded-full">
+      Mes emprunts
+    </h1>
+  </div>
+
+  @if (erreur) {
+  <div class="bg-red-500/20 text-red-300 px-4 py-3 rounded">
+    {{ erreur }}
+  </div>
+}
+
+  <!-- FILTRES -->
+  <div class="flex justify-between items-center mb-4">
+
+    <div class="flex gap-2 w-2/3">
+      <input
+        type="text"
+        placeholder="Rechercher un livre..."
+        class="flex-1 px-3 py-2 bg-[#dcd6b8] border border-green-900/30 rounded"
+      />
+
+      <select class="px-3 py-2 bg-[#b7b98a] text-green-900 rounded">
+        <option>Catégorie</option>
+      </select>
+    </div>
+
+    <button class="text-orange-500 border border-orange-300 px-3 py-1 rounded">
+      Trier ↑↓
+    </button>
+
+  </div>
+
+  <!-- ONGLETS -->
+  <div class="flex">
+    <button
+      class="px-4 py-2 border border-green-900 bg-[#9da574] text-white"
+      [class.bg-[#9da574]]="ongletActif === 'enCours'"
+      [class.opacity-50]="ongletActif !== 'enCours'"
+      (click)="chargerOnglet('enCours')"
+    >
+      En cours (emprunts actifs)
+    </button>
+
+    <button
+      class="px-4 py-2 border border-green-900 border-l-0 bg-[#9da574]"
+      [class.opacity-50]="ongletActif !== 'historique'"
+      (click)="chargerOnglet('historique')"
+    >
+      Historique
+    </button>
+  </div>
+
+  <!-- TABLEAU -->
+  <div class="border border-green-900">
+
+    <!-- HEADER -->
+    <div class="grid grid-cols-4 bg-[#9da574] text-green-900 font-semibold px-4 py-2">
+      <div>Titre</div>
+      <div>Auteur</div>
+      <div>Date de début</div>
+      <div>Date de fin</div>
+    </div>
+
+    <!-- LIGNES -->
+    @for (emprunt of (ongletActif === 'enCours' ? empruntsEnCours : empruntsHistorique); track emprunt.id) {
+
+      <div class="grid grid-cols-4 px-4 py-2 border-t border-green-900/20 text-green-900">
+
+        <!-- TODO :transformer en lien vers page détails -->
+        <div class="underline font-semibold">
+          {{ emprunt.titreLivre }}
+        </div>
+
+        <div class="uppercase text-xs tracking-wide">
+          {{ emprunt.auteur }}
+        </div>
+
+        <div>
+          {{ emprunt.dateDebut | date:'dd/MM/yyyy' }}
+        </div>
+
+        <div>
+          {{ emprunt.dateRetourPrevue | date:'dd/MM/yyyy' }}
+        </div>
+
+      </div>
+    }
+
+  </div>

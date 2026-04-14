@@ -9,6 +9,7 @@ export interface EmpruntDTO {
   exemplaireId: number;
   livreId: number;
   titreLivre: string;
+  auteur: string;
 }
 
 export interface MesEmpruntsResponse {
