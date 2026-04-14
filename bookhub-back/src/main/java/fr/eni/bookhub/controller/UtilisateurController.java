@@ -18,13 +18,21 @@ public class UtilisateurController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UtilisateurDTO> getUtilisateur(@PathVariable Long id){
-        UtilisateurDTO utilisateur = utilisteurService.getUtilisateurActif(id);
-        return ResponseEntity.ok().body(utilisateur);
+        try {
+            UtilisateurDTO utilisateur = utilisteurService.getUtilisateurActif(id);
+            return ResponseEntity.ok().body(utilisateur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProfilDTO> updateUtilisateur(@PathVariable Long id, @RequestBody ProfilDTO profilchangement) {
-        ProfilDTO updatedUtilisateur = utilisteurService.updateUtilisateur(id, profilchangement);
-        return ResponseEntity.ok().body(updatedUtilisateur);
+        try{
+            ProfilDTO updatedUtilisateur = utilisteurService.updateUtilisateur(id, profilchangement);
+            return ResponseEntity.ok().body(updatedUtilisateur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
