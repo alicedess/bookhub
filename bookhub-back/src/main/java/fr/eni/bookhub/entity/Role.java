@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 @Table(name = "ROLE")
 public class Role {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "libelle", unique = true)
-    private String libelle;
+    private RoleEnum libelle;
 }

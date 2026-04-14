@@ -37,11 +37,28 @@ public class SecurityConfig {
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                        auth
+                                // Books
+                                .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole( "LIBRARIAN")
+                                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole( "LIBRARIAN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+
+                                // Swagger
+                                .requestMatchers(HttpMethod.GET, "/api/docs").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/docs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+
+                                // Categories
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+
+                                // Auteurs
                                 .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()
+
+                                // Authentication
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
-                                .requestMatchers("/api/books/**").permitAll() // Les utilisateurs et les admins peuvent accéder à /books
+
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/reservation/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books

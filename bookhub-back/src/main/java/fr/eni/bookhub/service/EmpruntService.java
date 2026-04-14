@@ -1,9 +1,11 @@
 package fr.eni.bookhub.service;
 
+import fr.eni.bookhub.dto.EmpruntDTO;
 import fr.eni.bookhub.entity.Emprunt;
 import fr.eni.bookhub.entity.Exemplaire;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.enumeration.StatutEnum;
+import fr.eni.bookhub.mapper.EmpruntMapper;
 import fr.eni.bookhub.repository.EmpruntRepository;
 import fr.eni.bookhub.repository.ExemplaireRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
@@ -13,17 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class EmpruntService {
 
-    private EmpruntRepository empruntRepository;
-    private ExemplaireRepository exemplaireRepository;
-    private UtilisateurRepository utilisateurRepository;
+    private final EmpruntRepository empruntRepository;
+    private final ExemplaireRepository exemplaireRepository;
+    private final UtilisateurRepository utilisateurRepository;
+    private final EmpruntMapper empruntMapper;
 
-    @Transactional
-    public Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
+
+    protected Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
         Utilisateur utilisateur = utilisateurRepository.findUtilisateurById(idUtilisateur);
         if (utilisateur == null) {
             throw new IllegalArgumentException("Utilisateur non trouvé");
@@ -46,10 +50,16 @@ public class EmpruntService {
         return empruntRepository.save(emprunt);
     }
 
+    @Transactional
+    public EmpruntDTO emprunterLivreDto(Long idUtilisateur, Long idExemplaire) {
+        Emprunt emprunt = emprunterLivre(idUtilisateur, idExemplaire);
+        return empruntMapper.convertToDto(emprunt);
+    }
+
     private void verifierReglesEmprunt(Utilisateur utilisateur, Exemplaire exemplaire) {
         // Max 3 emprunts simultanés
-        List<Emprunt> empruntsEnCours = empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
-        if (empruntsEnCours.size() >= 3) {
+        long empruntsEnCours = empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
+        if (empruntsEnCours >= 3) {
             throw new RuntimeException("Vous avez déjà 3 emprunts en cours.");
         }
 
@@ -66,6 +76,30 @@ public class EmpruntService {
         }
     }
 
+    public List<EmpruntDTO> getEmpruntsEnCoursDTO(Utilisateur utilisateur) {
+        List<Emprunt> emprunts = empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
+        List<Emprunt> empruntsEnRetard = getEmpruntsEnRetard(utilisateur);
+
+        return emprunts.stream()
+                .map(emprunt -> {
+                    EmpruntDTO dto = empruntMapper.convertToDto(emprunt);
+                    dto.setEnRetard(empruntsEnRetard.contains(emprunt));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<EmpruntDTO> getEmpruntsHistoriqueDTO(Utilisateur utilisateur) {
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<Emprunt> emprunts = empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique);
+
+        return empruntMapper.convertToDto(emprunts);
+    }
+
+    public List<Emprunt> getEmpruntsEnRetard(Utilisateur utilisateur) {
+        return empruntRepository.findByUtilisateurAndStatutAndDateRetourPrevueBefore(
+                utilisateur, StatutEnum.EN_COURS, LocalDateTime.now());
+    }
 
 
 }

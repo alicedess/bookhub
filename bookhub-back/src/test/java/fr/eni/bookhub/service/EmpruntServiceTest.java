@@ -1,9 +1,11 @@
 package fr.eni.bookhub.service;
 
+import fr.eni.bookhub.dto.EmpruntDTO;
 import fr.eni.bookhub.entity.Emprunt;
 import fr.eni.bookhub.entity.Exemplaire;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.enumeration.StatutEnum;
+import fr.eni.bookhub.mapper.EmpruntMapper;
 import fr.eni.bookhub.repository.EmpruntRepository;
 import fr.eni.bookhub.repository.ExemplaireRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
@@ -17,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -41,6 +42,83 @@ class EmpruntServiceTest {
     private EmpruntRepository empruntRepository;
     @Mock
     private ExemplaireRepository exemplaireRepository;
+    @Mock
+    private EmpruntMapper empruntMapper;
+
+    @Test
+    void getEmpruntsEnCoursDTO_RetourneLaListeEnCoursAvecIndicationRetard() {
+        Utilisateur utilisateur = new Utilisateur();
+        Emprunt emprunt1 = new Emprunt();
+        Emprunt emprunt2 = new Emprunt();
+        emprunt1.setIdEmprunt(1L);
+        emprunt2.setIdEmprunt(2L);
+        List<Emprunt> empruntsEnCours = List.of(emprunt1, emprunt2);
+        List<Emprunt> empruntsEnRetard = List.of(emprunt2);
+
+        EmpruntDTO dto1 = new EmpruntDTO();
+        EmpruntDTO dto2 = new EmpruntDTO();
+
+        when(empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
+                .thenReturn(empruntsEnCours);
+        when(empruntRepository.findByUtilisateurAndStatutAndDateRetourPrevueBefore(
+                eq(utilisateur), eq(StatutEnum.EN_COURS), any()))
+                .thenReturn(empruntsEnRetard);
+        when(empruntMapper.convertToDto(emprunt1)).thenReturn(dto1);
+        when(empruntMapper.convertToDto(emprunt2)).thenReturn(dto2);
+
+        List<EmpruntDTO> resultat = empruntService.getEmpruntsEnCoursDTO(utilisateur);
+
+        assertNotNull(resultat);
+        assertEquals(2, resultat.size());
+        assertFalse(resultat.get(0).isEnRetard());
+        assertTrue(resultat.get(1).isEnRetard());
+        verify(empruntRepository).findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
+        verify(empruntRepository).findByUtilisateurAndStatutAndDateRetourPrevueBefore(
+                eq(utilisateur), eq(StatutEnum.EN_COURS), any());
+        verify(empruntMapper).convertToDto(emprunt1);
+        verify(empruntMapper).convertToDto(emprunt2);
+    }
+
+    @Test
+    void getEmpruntsHistoriqueDTO_RetourneLaListeHistorique() {
+        Utilisateur utilisateur = new Utilisateur();
+        Emprunt emprunt1 = new Emprunt();
+        Emprunt emprunt2 = new Emprunt();
+        List<Emprunt> empruntsHistorique = List.of(emprunt1, emprunt2);
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<EmpruntDTO> empruntsHistoriqueDto = List.of(new EmpruntDTO(), new EmpruntDTO());
+
+        when(empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique))
+                .thenReturn(empruntsHistorique);
+        when(empruntMapper.convertToDto(empruntsHistorique)).thenReturn(empruntsHistoriqueDto);
+
+        List<EmpruntDTO> resultat = empruntService.getEmpruntsHistoriqueDTO(utilisateur);
+
+        assertNotNull(resultat);
+        assertEquals(2, resultat.size());
+        assertEquals(empruntsHistoriqueDto, resultat);
+        verify(empruntRepository).findByUtilisateurAndStatutIn(utilisateur, statutsHistorique);
+        verify(empruntMapper).convertToDto(empruntsHistorique);
+    }
+
+    @Test
+    void getEmpruntsEnRetard_RetourneLaListeRetard() {
+        Utilisateur utilisateur = new Utilisateur();
+        Emprunt emprunt = new Emprunt();
+        List<Emprunt> empruntsRetard = List.of(emprunt);
+
+        when(empruntRepository.findByUtilisateurAndStatutAndDateRetourPrevueBefore(
+                eq(utilisateur), eq(StatutEnum.EN_COURS), any()))
+                .thenReturn(empruntsRetard);
+
+        List<Emprunt> resultat = empruntService.getEmpruntsEnRetard(utilisateur);
+
+        assertNotNull(resultat);
+        assertEquals(1, resultat.size());
+        assertEquals(empruntsRetard, resultat);
+        verify(empruntRepository).findByUtilisateurAndStatutAndDateRetourPrevueBefore(
+                eq(utilisateur), eq(StatutEnum.EN_COURS), any());
+    }
 
     @Test
     void emprunterLivre_CreerUnEmprunt() {
@@ -51,8 +129,8 @@ class EmpruntServiceTest {
 
         when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
         when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
-        when(empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
-                .thenReturn(Collections.emptyList());
+        when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
+                .thenReturn(0L);
         when(empruntRepository.existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
                 eq(utilisateur), eq(StatutEnum.EN_COURS), any()))
                 .thenReturn(false);
@@ -110,7 +188,8 @@ class EmpruntServiceTest {
 
         when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
         when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
-        when(empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS)).thenReturn(emprunts);
+        when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
+                .thenReturn((long) emprunts.size());
         if (nbEmpruntsEnCours < 3) {
             when(empruntRepository.existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
                     eq(utilisateur), eq(StatutEnum.EN_COURS), any())).thenReturn(aUnRetard);
@@ -131,3 +210,4 @@ class EmpruntServiceTest {
     }
 
 }
+

@@ -4,14 +4,16 @@ import { Header } from '../../layout/header/header';
 import { Livre } from '../../core/modeles/livre';
 import { CatalogueService } from '../../core/services/catalogue-service';
 import { AuthService } from '../../core/services/auth-service';
-import { BookRatingComponent } from '../../composants/authentification/book-rating/book-rating';
+import { BookRatingComponent } from '../book-rating/book-rating';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-livre-details',
   imports: [
     Header,
     RouterLink,
-    BookRatingComponent
+    BookRatingComponent,
+    DatePipe
   ],
   templateUrl: './livre-details.html',
   styleUrl: './livre-details.css',

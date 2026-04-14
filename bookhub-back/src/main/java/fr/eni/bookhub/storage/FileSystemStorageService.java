@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -93,7 +94,11 @@ public class FileSystemStorageService implements StorageService {
     public void delete(String filename) {
         try {
             Path file = load(filename);
-            file.toFile().delete();
+            File f = file.toFile();
+
+            if (f.exists()) {
+                f.delete();
+            }
         } catch (Exception e) {
             throw new StorageFileNotFoundException("Could not delete file: " + filename, e);
         }
