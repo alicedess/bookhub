@@ -1,15 +1,13 @@
 package fr.eni.bookhub.controller;
 
+import fr.eni.bookhub.dto.ProfilDTO;
 import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.UtilisteurService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -22,5 +20,11 @@ public class UtilisateurController {
     public ResponseEntity<UtilisateurDTO> getUtilisateur(@PathVariable Long id){
         UtilisateurDTO utilisateur = utilisteurService.getUtilisateurActif(id);
         return ResponseEntity.ok().body(utilisateur);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProfilDTO> updateUtilisateur(@PathVariable Long id, @RequestBody ProfilDTO profilchangement) {
+        ProfilDTO updatedUtilisateur = utilisteurService.updateUtilisateur(id, profilchangement);
+        return ResponseEntity.ok().body(updatedUtilisateur);
     }
 }
