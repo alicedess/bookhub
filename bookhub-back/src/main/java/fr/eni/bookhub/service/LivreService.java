@@ -9,6 +9,7 @@ import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.repository.AuteurRepository;
 import fr.eni.bookhub.repository.CategorieRepository;
 import fr.eni.bookhub.repository.LivreRepository;
+import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -17,18 +18,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class LivreService {
 
-    private LivreRepository livreRepository;
-    private AuteurRepository auteurRepository;
-    private CategorieRepository categorieRepository;
-
+    private final LivreRepository livreRepository;
+    private final AuteurRepository auteurRepository;
+    private final CategorieRepository categorieRepository;
+    private final StorageService storageService;
     private final ModelMapper modelMapper;
 
     public Page<LivreDTO> searchLivres(
@@ -43,21 +44,21 @@ public class LivreService {
         Long auteurFilter = (auteurId != null && auteurId > 0) ? auteurId : null;
         Long categorieFilter = (catId != null && catId > 0) ? catId : null;
 
-        Page<Livre> livresPage = livreRepository.findByCustomFilters(
+        return livreRepository.findByCustomFilters(
                 queryFilter,
                 auteurFilter,
                 categorieFilter,
                 pageable
         );
-
-        return livresPage.map(l -> modelMapper.map(l, LivreDTO.class));
     }
 
     /**
      * Récupère un livre par son ID.
      */
-    public Optional<Livre> getById(Long id) {
-        return livreRepository.findById(id).map(l -> modelMapper.map(l, Livre.class));
+    public Optional<LivreDTO> getById(Long id) {
+        var r = livreRepository.findByIdForDetails(id);
+        System.out.println("sfdqsdfq");
+        return r;
     }
 
     /**
@@ -121,5 +122,42 @@ public class LivreService {
     @Transactional
     public void deleteLivre(Long id) {
         livreRepository.deleteById(id);
+    }
+
+    /**
+     * Définit la couverture du livre
+     */
+    @Transactional
+    public LivreDTO updateCouvertureLivre(Long id, MultipartFile file) {
+        Livre livre = livreRepository.findById(id)
+                .orElseThrow(() -> new OperationException("Impossible de trouver le Livre"));
+
+        String originalName = file.getOriginalFilename();
+        String extension = "";
+
+        if (originalName != null && originalName.contains(".")) {
+            extension = originalName.substring(originalName.lastIndexOf("."));
+        }
+
+        List<String> extensionsAutorisees = Arrays.asList(".jpg", ".jpeg", ".png");
+
+        if (!extensionsAutorisees.contains(extension.toLowerCase())) {
+            throw new OperationException("Format de fichier non supporté : " + extension);
+        }
+
+        String filename = UUID.randomUUID() + extension;
+
+        storageService.store(file, filename);
+
+        String oldFilename = livre.getImageCouverture();
+
+        livre.setImageCouverture(filename);
+        livreRepository.save(livre);
+
+        if (oldFilename != null) {
+            storageService.delete(oldFilename);
+        }
+
+        return modelMapper.map(livre, LivreDTO.class);
     }
 }

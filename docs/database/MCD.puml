@@ -22,6 +22,7 @@ entity "LIVRE" {
   isbn
   titre
   resume
+  nb_page
   image_couverture
 }
 

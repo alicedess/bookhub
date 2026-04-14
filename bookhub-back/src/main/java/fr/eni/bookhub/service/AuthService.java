@@ -3,7 +3,10 @@ package fr.eni.bookhub.service;
 import fr.eni.bookhub.dto.AuthDTO;
 import fr.eni.bookhub.dto.LoginDTO;
 import fr.eni.bookhub.dto.LoginResponse;
+import fr.eni.bookhub.entity.Role;
 import fr.eni.bookhub.entity.Utilisateur;
+import fr.eni.bookhub.exception.OperationException;
+import fr.eni.bookhub.repository.RoleRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import fr.eni.bookhub.security.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +27,7 @@ public class AuthService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
+    private RoleRepository roleRepository;
 
     public LoginResponse login(AuthDTO loginRequest) {
         // 1. On prépare la demande d'authentification
@@ -47,7 +52,21 @@ public class AuthService {
     }
 
     public Utilisateur createUser(Utilisateur user) {
+        Optional<Utilisateur> exists = utilisateurRepository.findByEmail(user.getEmail());
+
+        if (exists.isPresent()) {
+            throw new OperationException("Username is already in use");
+        }
+
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Role role = roleRepository.findByLibelle("ROLE_USER").orElseThrow(
+                () -> new OperationException("Role not found")
+        );
+
+        user.setRole(role);
+
         return utilisateurRepository.save(user);
     }
 

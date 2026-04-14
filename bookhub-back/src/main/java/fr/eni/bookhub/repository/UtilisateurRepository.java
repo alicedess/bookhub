@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UtilisateurRepository extends JpaRepository<Utilisateur, Integer> {
+public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 
     Utilisateur findUtilisateurById(Long id);
 
@@ -18,4 +18,6 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Intege
 
     @EntityGraph(attributePaths = {"role"})
     Optional<Utilisateur> findByEmailAndDateSuppressionIsNull(String email);
+
+    Optional<Utilisateur> findByEmail(String email);
 }

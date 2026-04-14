@@ -3,11 +3,17 @@ package fr.eni.bookhub.controller;
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.service.LivreService;
+import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class LivreController {
 
     private LivreService livreService;
+    private StorageService storageService;
 
     /**
      * Récupère la liste des livres paginée par 20
@@ -23,19 +30,17 @@ public class LivreController {
     public ResponseEntity<?> searchLivres(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
-        @RequestParam(required = false) Long catId,
+        @RequestParam(required = false, name = "categorie") Long catId,
         @RequestParam(defaultValue = "0") int page
     )
     {
         try {
-            Page<LivreDTO> livres = livreService.searchLivres(
+            return ResponseEntity.ok().body(livreService.searchLivres(
                     query,
                     auteurId,
                     catId,
                     page
-            );
-
-            return ResponseEntity.ok().body(livres);
+            ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
@@ -56,6 +61,9 @@ public class LivreController {
         }
     }
 
+    /**
+     *  Création d'un nouveau livre
+     */
     @PostMapping("")
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
@@ -70,6 +78,9 @@ public class LivreController {
         }
     }
 
+    /**
+     * Modification d'une livre
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
@@ -84,6 +95,9 @@ public class LivreController {
         }
     }
 
+    /**
+     * Suppression d'un livre
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLivre(@PathVariable Long id)
     {
@@ -93,5 +107,39 @@ public class LivreController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
+    }
+
+    @PutMapping("/{id}/cover")
+    public ResponseEntity<?> handleFileUpload(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes)
+    {
+        LivreDTO livre = livreService.updateCouvertureLivre(id, file);
+
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return ResponseEntity.ok().body(livre);
+    }
+
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
+        Optional<LivreDTO> livre = livreService.getById(id);
+
+        if (livre.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        LivreDTO livreDTO = livre.get();
+
+        if (null == livreDTO.getImageCouverture()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 }

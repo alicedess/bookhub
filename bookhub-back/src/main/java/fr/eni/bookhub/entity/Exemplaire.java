@@ -1,6 +1,6 @@
 package fr.eni.bookhub.entity;
 
-import fr.eni.bookhub.enumeration.EtatExemplaire;
+import fr.eni.bookhub.enumeration.EtatExemplaireEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,14 +15,14 @@ public class Exemplaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private Long idExemplaire;
+    private Long id;
 
     @Column(name = "code_barre", nullable = false, length = 50)
     private String codeBarre;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "etat", nullable = true, length = 50)
-    private EtatExemplaire etat;
+    private EtatExemplaireEnum etat;
 
     @Column(name = "est_disponible")
     private Boolean estDisponible = true;
