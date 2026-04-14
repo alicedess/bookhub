@@ -1,7 +1,5 @@
 package fr.eni.bookhub.entity;
 
-import fr.eni.bookhub.entity.Livre;
-import fr.eni.bookhub.entity.Utilisateur;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
