@@ -13,7 +13,7 @@ public class EvaluationService {
 
     private EvaluationRepository evaluationRepository;
 
-    public EvaluationDTO updateEvaluation(Integer id, EvaluationDTO evaluationDTO) {
+    public Evaluation updateEvaluation(Integer id, EvaluationDTO evaluationDTO) {
         try{
             Evaluation evaluation = evaluationRepository.findById(id);
             if (evaluation == null) {
@@ -22,7 +22,7 @@ public class EvaluationService {
             evaluation.setNote(evaluationDTO.getNote());
             evaluation.setCommentaire(evaluationDTO.getCommentaire());
             evaluationRepository.save(evaluation);
-            return evaluationDTO;
+            return evaluation;
         } catch (OperationException e) {
             throw new RuntimeException(e);
         }
