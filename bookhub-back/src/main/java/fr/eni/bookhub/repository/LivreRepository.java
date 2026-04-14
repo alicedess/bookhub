@@ -27,6 +27,7 @@ SELECT new fr.eni.bookhub.dto.LivreDTO(
         l.resume,
         l.imageCouverture,
         l.nbPage,
+        l.dateParution,
         l.auteur.id,
         l.auteur.nom,
         l.auteur.prenom,
@@ -41,7 +42,7 @@ LEFT JOIN Exemplaire e ON e.livre = l
 LEFT JOIN Evaluation eval ON eval.livre = l
 WHERE l.id = :id      
 GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle
+         l.categorie.id, l.categorie.libelle, l.dateParution
 """)
     Optional<LivreDTO> findByIdForDetails(@Param("id") Long id);
 
@@ -57,6 +58,7 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
         l.resume,
         l.imageCouverture,
         l.nbPage,
+        l.dateParution,
         l.auteur.id,
         l.auteur.nom,
         l.auteur.prenom,
@@ -79,7 +81,7 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
           AND (:catId IS NULL OR l.categorie.id = :catId)
           
        GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle   
+         l.categorie.id, l.categorie.libelle, l.dateParution   
     """)
     Page<LivreDTO> findByCustomFilters(
             @Param("query") String queryFilter,
