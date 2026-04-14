@@ -19,12 +19,12 @@ export const routes: Routes = [
   },
   {
     path: 'books',
-    loadComponent: () => import('./features/catalogue/catalogue').then((m) => m.Catalogue),
+    loadComponent: () => import('./composants/catalogue/catalogue').then((m) => m.Catalogue),
   },
   {
     path: 'books/:id',
     loadComponent: () =>
-      import('./features/livre-details/livre-details').then((m) => m.LivreDetails),
+      import('./composants/livre-details/livre-details').then((m) => m.LivreDetails),
   },
   { path: '**', redirectTo: 'books' },
   //   { path: 'books/:id', loadComponent: () => import('') },

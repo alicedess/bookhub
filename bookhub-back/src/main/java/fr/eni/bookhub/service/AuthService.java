@@ -1,11 +1,11 @@
 package fr.eni.bookhub.service;
 
 import fr.eni.bookhub.dto.AuthDTO;
-import fr.eni.bookhub.dto.LoginDTO;
 import fr.eni.bookhub.dto.LoginResponse;
 import fr.eni.bookhub.dto.RegisterResponse;
 import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
+import fr.eni.bookhub.enumeration.RoleEnum;
 import fr.eni.bookhub.repository.RoleRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import fr.eni.bookhub.security.JwtUtil;
@@ -16,9 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -72,7 +69,7 @@ public class AuthService {
         utilisateur.setPassword(passwordEncoder.encode(utilisateurDTO.getPassword()));
 
         // 4. Assigner un rôle par défaut (USER/LECTEUR)
-        utilisateur.setRole(roleRepository.findByLibelle("ROLE_USER")
+        utilisateur.setRole(roleRepository.findByLibelle(RoleEnum.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Rôle par défaut non trouvé")));
 
         // 5. Sauvegarder l'utilisateur

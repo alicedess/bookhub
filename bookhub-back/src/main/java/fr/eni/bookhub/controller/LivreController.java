@@ -2,8 +2,10 @@ package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
+import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
 @AllArgsConstructor
+@Tag(name = "Livre", description = "Gestion et Affichage des livres")
 public class LivreController {
 
     private LivreService livreService;
@@ -73,8 +77,16 @@ public class LivreController {
             }
 
             return ResponseEntity.badRequest().build();
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de créer ce livre"
+            ));
         }
     }
 
@@ -90,8 +102,16 @@ public class LivreController {
             }
 
             return ResponseEntity.badRequest().build();
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de modifier ce livre"
+            ));
         }
     }
 
@@ -104,42 +124,80 @@ public class LivreController {
         try {
             livreService.deleteLivre(id);
             return ResponseEntity.noContent().build();
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de supprimer ce livre"
+            ));
         }
     }
 
+    /**
+     * Upload de la couverture du Livre.
+     */
     @PutMapping("/{id}/cover")
     public ResponseEntity<?> handleFileUpload(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes)
     {
-        LivreDTO livre = livreService.updateCouvertureLivre(id, file);
+        try {
+            LivreDTO livre = livreService.updateCouvertureLivre(id, file);
 
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
+            redirectAttributes.addFlashAttribute("message",
+                    "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        return ResponseEntity.ok().body(livre);
+            return ResponseEntity.ok().body(livre);
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de modifier la couverture du livre"
+            ));
+        }
     }
 
+    /**
+     * Récupération de la couverture du livre
+     */
     @GetMapping("/{id}/cover")
     public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
-        Optional<LivreDTO> livre = livreService.getById(id);
+        try {
+            Optional<LivreDTO> livre = livreService.getById(id);
 
-        if (livre.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            if (livre.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            LivreDTO livreDTO = livre.get();
+
+            if (null == livreDTO.getImageCouverture()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de récupérer la couverture du livre"
+            ));
         }
-
-        LivreDTO livreDTO = livre.get();
-
-        if (null == livreDTO.getImageCouverture()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(resource);
     }
 }

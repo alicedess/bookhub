@@ -5,6 +5,9 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
+import localeFr from '@angular/common/locales/fr';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeFr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       withInterceptors([jwtInterceptor])
-    )
+    ),
   ]
 };
+

@@ -56,9 +56,7 @@ public class LivreService {
      * Récupère un livre par son ID.
      */
     public Optional<LivreDTO> getById(Long id) {
-        var r = livreRepository.findByIdForDetails(id);
-        System.out.println("sfdqsdfq");
-        return r;
+        return livreRepository.findByIdForDetails(id);
     }
 
     /**
@@ -66,12 +64,18 @@ public class LivreService {
      */
     @Transactional
     public Boolean createLivre(CreateLivreDTO payload) {
+        Optional<Livre> exists = livreRepository.findByIsbn(payload.getIsbn());
+
+        if (exists.isPresent()) {
+            throw new OperationException("Un livre avec cet ISBN existe déjà");
+        }
+
         Livre livre = modelMapper.map(payload, Livre.class);
 
         Optional<Auteur> auteur = auteurRepository.findById(payload.getAuteurId());
 
         if (auteur.isEmpty()) {
-            throw new OperationException("Impossible de trouver le Auteur");
+            throw new OperationException("Impossible de trouver l'auteur");
         }
 
         livre.setAuteur(auteur.get());
@@ -79,7 +83,7 @@ public class LivreService {
         Optional<Categorie> categorie = categorieRepository.findById(payload.getCategorieId());
 
         if (categorie.isEmpty()) {
-            throw new OperationException("Impossible de trouver la Categorie");
+            throw new OperationException("Impossible de trouver la catégorie");
         }
 
         livre.setCategorie(categorie.get());
@@ -95,19 +99,17 @@ public class LivreService {
     @Transactional
     public Boolean updateLivre(Long id, CreateLivreDTO payload) {
         Livre livre = livreRepository.findById(id)
-                .orElseThrow(() -> new OperationException("Impossible de trouver le Livre"));
+                .orElseThrow(() -> new OperationException("Ce livre n'existe pas"));
 
         if (!Objects.equals(livre.getCategorie().getId(), payload.getCategorieId())) {
             Categorie categorie = categorieRepository.findById(payload.getCategorieId())
-                    .orElseThrow(() -> new OperationException("Impossible de trouver la Categorie"));
+                    .orElseThrow(() -> new OperationException("Impossible de trouver la catégorie"));
             livre.setCategorie(categorie);
         }
 
-        if (!Objects.equals(livre.getAuteur().getId(), payload.getAuteurId())) {
-            Auteur auteur = auteurRepository.findById(payload.getAuteurId())
-                    .orElseThrow(() -> new OperationException("Impossible de trouver l'Auteur"));
-            livre.setAuteur(auteur);
-        }
+        Auteur auteur = auteurRepository.findById(payload.getAuteurId())
+                .orElseThrow(() -> new OperationException("Impossible de trouver l'auteur"));
+        livre.setAuteur(auteur);
 
         modelMapper.map(payload, livre);
         livreRepository.save(livre);

@@ -1,5 +1,6 @@
 package fr.eni.bookhub.dto;
 
+import fr.eni.bookhub.enumeration.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,5 @@ public class LoginResponse {
 
     private String prenom;
 
-    private String role;
+    private RoleEnum role;
 }
