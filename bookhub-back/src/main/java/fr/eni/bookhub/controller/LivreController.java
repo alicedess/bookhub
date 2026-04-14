@@ -1,6 +1,7 @@
 package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.CreateLivreDTO;
+import fr.eni.bookhub.dto.EvaluationDTO;
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.service.LivreService;
@@ -197,6 +198,22 @@ public class LivreController {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "Impossible de récupérer la couverture du livre"
+            ));
+        }
+    }
+
+    /**
+     * Notation d'un livre
+     */
+    @PostMapping("/{id}/ratings")
+    public ResponseEntity<?> addRating(@RequestBody EvaluationDTO payload, @PathVariable Long id){
+        try{
+            livreService.addRating(id, payload);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de noter ce livre"
             ));
         }
     }
