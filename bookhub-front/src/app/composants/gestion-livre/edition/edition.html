@@ -1,1 +1,113 @@
-<p>edition works!</p>
+<app-header></app-header>
+
+<div class="container mx-auto">
+
+  @if (livre(); as livre) {
+    <div class="mt-8 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-xl">{{ livre.titre }}</h1>
+        <p>Modification du livre</p>
+      </div>
+    </div>
+  } @else {
+    <div class="mt-8 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-xl">Nouveau livre</h1>
+        <p>Création d'un livre</p>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="bg-red-500 px-4 py-2 font-bold text-white rounded-2xl shadow mt-4">
+      {{errorMessage()}}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="bg-green-600 px-4 py-2 font-bold text-white rounded-2xl shadow mt-4">
+      {{successMessage()}}
+    </div>
+  }
+
+  <div class="bg-white rounded-2xl shadow mt-4 flex">
+    <div class="sm:w-full md:w-1/3">
+      @if (livre()) {
+        <div class="flex justify-center p-8">
+          <img
+            src="http://localhost:8080/api/books/{{livre()?.id}}/cover"
+            loading="lazy"
+            alt="Couverture"
+            class="w-full h-auto block img--cover"
+          >
+        </div>
+
+        <div>
+          <form class="p-4">
+            <div class="mb-4">
+              <input #cover class="form-input" type="file" placeholder="Couverture">
+            </div>
+            <div class="flex items-center justify-end">
+              <button class="btn" type="button" (click)="updateCover(cover.files)">Sauvegarder</button>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+    <div class="flex-grow">
+      <form [formGroup]="form" class="p-4">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="titre">Titre</label>
+          <input formControlName="titre" class="form-input" type="text" placeholder="Titre">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="mb-4">
+            <label class="form-label" for="resume">Catégorie</label>
+            <select formControlName="categorieId" class="form-input">
+              <option value="">Sélectionner une catégorie</option>
+              @for (categorie of categories(); track categorie.id) {
+                <option value="{{categorie.id}}">{{categorie.libelle}}</option>
+              }
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="resume">Auteur</label>
+            <select formControlName="auteurId" class="form-input">
+              <option value="">Sélectionner un auteur</option>
+              @for (auteur of auteurs(); track auteur.id) {
+                <option value="{{auteur.id}}">{{auteur.nom}} {{auteur.prenom}}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="titre">ISBN</label>
+          <input formControlName="isbn" class="form-input" id="titre" type="text" placeholder="ISBN">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="dateParution">Date de parution</label>
+          <input formControlName="dateParution" class="form-input" id="dateParution" type="date" placeholder="dateParution">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="nbPage">Nombre de pages</label>
+          <input formControlName="nbPage" class="form-input" id="nbPage" type="number" placeholder="nbPage">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="resume">Résumé</label>
+          <textarea formControlName="resume" class="form-input" id="resume" type="text" placeholder="resume"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end">
+          <button class="btn" type="button" (click)="save()">Sauvegarder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

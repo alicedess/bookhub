@@ -45,8 +45,16 @@ public class LivreController {
                     catId,
                     page
             ));
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de récupérer les livres"
+            ));
         }
     }
 
@@ -60,8 +68,16 @@ public class LivreController {
             return livreService.getById(id)
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
+        } catch (OperationException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de récupérer ce livre"
+            ));
         }
     }
 
@@ -123,6 +139,7 @@ public class LivreController {
     {
         try {
             livreService.deleteLivre(id);
+
             return ResponseEntity.noContent().build();
         } catch (OperationException e) {
             return ResponseEntity.badRequest().body(Map.of(

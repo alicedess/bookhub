@@ -5,3 +5,49 @@
 body {
     @apply bg-amber-50;
 }
+
+:root {
+  --btn-bg: #2D3A18;
+  --btn-color: #FDF8E1;
+  --btn-bg-hover: #3d4d22;
+
+  --input-bg: #FFF;
+  --input-color: #8B5E3C;
+  --input-border-color: #D9A066;
+}
+
+/**
+ * Buttons
+ */
+.btn {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  @apply items-center gap-2 px-4 py-2 rounded-md font-bold transition-all;
+}
+
+.btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+/**
+ * Forms
+ */
+.form-input {
+  @apply w-full px-2 py-2 rounded-xl shadow-inner focus:ring-0 outline-none transition-all border-2;
+
+  background: var(--input-bg);
+  color: var(--input-color);
+  border-color: var(--input-border-color);
+}
+
+.form-input::placeholder {
+  color: var(--input-border-color);
+}
+
+.form-input:focus {
+  border-color: var(--input-border-color);
+}
+
+.form-label {
+  @apply block text-gray-700 text-sm font-bold mb-2;
+}

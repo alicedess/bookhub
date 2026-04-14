@@ -1,10 +1,14 @@
 package fr.eni.bookhub.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +21,12 @@ public class CreateLivreDTO {
     @NotBlank
     @Size(min = 3, max = 50)
     private String titre;
+
+    @PositiveOrZero
+    private Integer nbPage;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date dateParution;
 
     @NotBlank
     @Size(min = 3, max = 100)

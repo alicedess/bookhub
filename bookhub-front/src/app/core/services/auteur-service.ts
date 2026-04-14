@@ -14,7 +14,7 @@ export class AuteurService {
     private _authors = signal<Auteur[]>([]);
     authors = this._authors.asReadonly();
 
-    public getAll() {
+    public refresh() {
       this.httpClient.get<Auteur[]>(this.URL_BASE).subscribe({
         next: (payload) => {
           this._authors.set(payload);
