@@ -28,7 +28,7 @@ public class EmpruntMapper {
         }
 
         if (emprunt.getExemplaire() != null) {
-            dto.setExemplaireId(emprunt.getExemplaire().getIdExemplaire());
+            dto.setExemplaireId(emprunt.getExemplaire().getId());
             if (emprunt.getExemplaire().getLivre() != null) {
                 dto.setLivreId(emprunt.getExemplaire().getLivre().getId());
                 dto.setTitreLivre(emprunt.getExemplaire().getLivre().getTitre());
