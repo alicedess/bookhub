@@ -5,6 +5,7 @@ import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/books")
 @AllArgsConstructor
+@Tag(name = "Livre", description = "Gestion et Affichage des livres")
 public class LivreController {
 
     private LivreService livreService;

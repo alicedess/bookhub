@@ -42,6 +42,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole("ADMIN", "LIBRARIAN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("ADMIN", "LIBRARIAN")
                                 .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/docs").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/docs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
 
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()

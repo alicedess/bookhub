@@ -1,22 +1,14 @@
 package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.AuthDTO;
-import fr.eni.bookhub.dto.LoginDTO;
 import fr.eni.bookhub.dto.RegisterResponse;
 import fr.eni.bookhub.dto.UtilisateurDTO;
-import fr.eni.bookhub.entity.Utilisateur;
-import fr.eni.bookhub.exception.OperationException;
-import fr.eni.bookhub.security.JwtUtil;
 import fr.eni.bookhub.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
