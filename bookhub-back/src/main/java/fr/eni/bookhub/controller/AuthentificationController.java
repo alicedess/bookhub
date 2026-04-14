@@ -46,10 +46,10 @@ public class AuthentificationController {
             RegisterResponse response = authService.createUser(utilisateur);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Création de compte impossible");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Erreur lors de l'inscription"));
+                    .body("Erreur lors de l'inscription");
         }
     }
 }
