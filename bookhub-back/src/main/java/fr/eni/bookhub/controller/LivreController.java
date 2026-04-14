@@ -217,4 +217,22 @@ public class LivreController {
             ));
         }
     }
+
+    /**
+     * Les évaluations d'un livre
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}/ratings")
+    public ResponseEntity<?> lesEvaluationsParLivre(@PathVariable Integer id){
+        try{
+            livreService.evaluationsParLivre(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Impossible de récupérer les évaluations de ce livre"
+            ));
+        }
+    }
 }

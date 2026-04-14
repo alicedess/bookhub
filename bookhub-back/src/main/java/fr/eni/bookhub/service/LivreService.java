@@ -176,4 +176,12 @@ public class LivreService {
         evaluationRepository.save(evaluation);
         return ratingRequest;
     }
+
+    public List<Evaluation> evaluationsParLivre(Integer id){
+        Optional<Livre> livre = livreRepository.findById(id.longValue());
+        if (livre.isEmpty()) {
+            throw new OperationException("Impossible de trouver le Livre");
+        }
+        return evaluationRepository.findByLivre(livre.get());
+    }
 }
