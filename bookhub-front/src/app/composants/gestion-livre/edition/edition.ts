@@ -79,8 +79,8 @@ export class Edition implements OnInit {
 
     if (!livre) {
       this.catalogueService.create(data).subscribe({
-        next: () => {
-          this.router.navigate(['/librarian', 'books']);
+        next: (livre) => {
+          this.router.navigate(['/librarian', 'books', livre.id, 'edit']);
         },
         error: () => {
           this.showError('Erreur lors de la création du livre');
@@ -141,6 +141,7 @@ export class Edition implements OnInit {
     this.catalogueService.updateCover(livre, files[0]).subscribe({
       next: () => {
         this.refreshLivreDate(livre);
+        this.showSuccess("Le livre a bien été mis à jour")
       },
       error: () => {
         this.showError('Erreur lors de la modification de la couverture livre');

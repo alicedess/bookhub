@@ -34,7 +34,7 @@ export class CatalogueService {
   }
 
   create(data: Partial<Livre>) {
-    return this.httpClient.post(`${this.URL_BASE}`, data);
+    return this.httpClient.post<Livre>(`${this.URL_BASE}`, data);
   }
 
   update(livre: Livre, data: Partial<Livre>) {

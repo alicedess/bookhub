@@ -88,8 +88,10 @@ public class LivreController {
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
         try {
-            if (livreService.createLivre(payload)) {
-                return ResponseEntity.status(HttpStatus.CREATED).build();
+            LivreDTO createdLivre = livreService.createLivre(payload);
+
+            if (null != createdLivre) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdLivre);
             }
 
             return ResponseEntity.badRequest().build();
@@ -113,8 +115,10 @@ public class LivreController {
     public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
         try {
-            if (livreService.updateLivre(id, payload)) {
-                return ResponseEntity.status(HttpStatus.CREATED).build();
+            LivreDTO updatedLivre = livreService.updateLivre(id, payload);
+
+            if (null != updatedLivre) {
+                return ResponseEntity.status(HttpStatus.OK).body(updatedLivre);
             }
 
             return ResponseEntity.badRequest().build();
