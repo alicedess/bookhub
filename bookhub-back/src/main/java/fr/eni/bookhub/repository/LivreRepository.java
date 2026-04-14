@@ -34,7 +34,7 @@ SELECT new fr.eni.bookhub.dto.LivreDTO(
         l.categorie.id,
         l.categorie.libelle,
         COUNT(DISTINCT e.id),
-        SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END),
+        SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END) OVER(PARTITION BY l.id),
         AVG(eval.note)
 )
 FROM Livre l 
@@ -42,7 +42,7 @@ LEFT JOIN Exemplaire e ON e.livre = l
 LEFT JOIN Evaluation eval ON eval.livre = l
 WHERE l.id = :id      
 GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle, l.dateParution
+         l.categorie.id, l.categorie.libelle, l.dateParution, e.estDisponible
 """)
     Optional<LivreDTO> findByIdForDetails(@Param("id") Long id);
 
@@ -52,22 +52,22 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
     @EntityGraph(attributePaths = {"auteur", "categorie"}) // On force le left join
     @Query("""
         SELECT new fr.eni.bookhub.dto.LivreDTO(
-        l.id,
-        l.isbn,
-        l.titre,
-        l.resume,
-        l.imageCouverture,
-        l.nbPage,
-        l.dateParution,
-        l.auteur.id,
-        l.auteur.nom,
-        l.auteur.prenom,
-        l.categorie.id,
-        l.categorie.libelle,
-        COUNT(DISTINCT e.id),
-        SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END),
-        AVG(eval.note)
-)
+            l.id,
+            l.isbn,
+            l.titre,
+            l.resume,
+            l.imageCouverture,
+            l.nbPage,
+            l.dateParution,
+            l.auteur.id,
+            l.auteur.nom,
+            l.auteur.prenom,
+            l.categorie.id,
+            l.categorie.libelle,
+            COUNT(DISTINCT e.id),
+            SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END) OVER(PARTITION BY l.id),
+            AVG(eval.note) 
+        )
         FROM Livre l
         LEFT JOIN Exemplaire e ON e.livre = l
         LEFT JOIN Evaluation eval ON eval.livre = l
@@ -79,9 +79,8 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
               )
           AND (:auteurId IS NULL OR l.auteur.id = :auteurId)
           AND (:catId IS NULL OR l.categorie.id = :catId)
-          
        GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle, l.dateParution   
+         l.categorie.id, l.categorie.libelle, l.dateParution, e.estDisponible   
     """)
     Page<LivreDTO> findByCustomFilters(
             @Param("query") String queryFilter,

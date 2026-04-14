@@ -1,7 +1,7 @@
 package fr.eni.bookhub.enumeration;
 
 public enum RoleEnum {
-    USER,
-    ADMIN,
-    LIBRAIRIAN
+    ROLE_USER,
+    ROLE_ADMIN,
+    ROLE_LIBRARIAN;
 }

@@ -48,7 +48,7 @@
          <div class="flex justify-between items-start">
            <div class="space-y-4">
              <p><span class="font-bold text-[#D9A066]">ISBN :</span> {{ livre.isbn }}</p>
-             <p><span class="font-bold text-[#D9A066]">Date de parution :</span> Octobre 1995 (TODO)</p>
+             <p><span class="font-bold text-[#D9A066]">Date de parution :</span> {{livre.dateParution|date:"MMMM y":"":"fr-FR"}} </p>
              <p><span class="font-bold text-[#D9A066]">Catégorie :</span> {{ livre.categorieLibelle }}</p>
              <div class="flex items-center gap-2">
                <span class="font-bold text-[#D9A066]">Note moyenne</span>

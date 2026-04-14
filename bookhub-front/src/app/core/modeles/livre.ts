@@ -16,4 +16,5 @@ export type Livre = {
   nbExemplaire: number,
   nbExemplaireDispo: number,
   note: number,
+  dateParution: string,
 }
