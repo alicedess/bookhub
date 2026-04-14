@@ -1,6 +1,7 @@
 package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.ProfilDTO;
+import fr.eni.bookhub.dto.UpdateProfilDTO;
 import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.UtilisteurService;
@@ -27,11 +28,12 @@ public class UtilisateurController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProfilDTO> updateUtilisateur(@PathVariable Long id, @RequestBody ProfilDTO profilchangement) {
+    public ResponseEntity<ProfilDTO> updateUtilisateur(@PathVariable Long id, @RequestBody UpdateProfilDTO request) {
         try{
-            ProfilDTO updatedUtilisateur = utilisteurService.updateUtilisateur(id, profilchangement);
+            ProfilDTO updatedUtilisateur = utilisteurService.updateUtilisateur(id, request);
             return ResponseEntity.ok().body(updatedUtilisateur);
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

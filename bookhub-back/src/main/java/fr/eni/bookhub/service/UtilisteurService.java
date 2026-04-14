@@ -1,6 +1,7 @@
 package fr.eni.bookhub.service;
 
 import fr.eni.bookhub.dto.ProfilDTO;
+import fr.eni.bookhub.dto.UpdateProfilDTO;
 import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.mapper.UtilisateurMapper;
@@ -26,25 +27,37 @@ public class UtilisteurService {
         }
     }
 
-    public ProfilDTO updateUtilisateur(Long id, ProfilDTO profilchangement){
+    public ProfilDTO updateUtilisateur(Long id, UpdateProfilDTO profilchangement){
         try {
             Utilisateur user = utilisateurRepository.findUtilisateurByIdWhereDateSuppressionIsNull(id);
             if (user != null && profilchangement != null) {
-                // Only update if the field is not null and not blank
-                if (profilchangement.getPseudo() != null && !profilchangement.getPseudo().trim().isEmpty()) {
-                    user.setPseudo(profilchangement.getPseudo());
+
+                if (profilchangement.getProfil().getPseudo() != null && !profilchangement.getProfil().getPseudo().trim().isEmpty()) {
+                    user.setPseudo(profilchangement.getProfil().getPseudo());
                 }
-                if (profilchangement.getNom() != null && !profilchangement.getNom().trim().isEmpty()) {
-                    user.setNom(profilchangement.getNom());
+                if (profilchangement.getProfil().getNom() != null && !profilchangement.getProfil().getNom().trim().isEmpty()) {
+                    user.setNom(profilchangement.getProfil().getNom());
                 }
-                if (profilchangement.getPrenom() != null && !profilchangement.getPrenom().trim().isEmpty()) {
-                    user.setPrenom(profilchangement.getPrenom());
+                if (profilchangement.getProfil().getPrenom() != null && !profilchangement.getProfil().getPrenom().trim().isEmpty()) {
+                    user.setPrenom(profilchangement.getProfil().getPrenom());
                 }
-                if (profilchangement.getPassword() != null && !profilchangement.getPassword().trim().isEmpty()) {
-                    user.setPassword(passwordEncoder.encode(profilchangement.getPassword()));
+                if (profilchangement.getProfil().getPassword() != null && !profilchangement.getProfil().getPassword().trim().isEmpty()) {
+                    if (profilchangement.getOldPassword() == null || profilchangement.getOldPassword().trim().isEmpty()) {
+                        throw new RuntimeException("L'ancien mot de passe est requis pour changer le mot de passe");
+                    }
+
+                    if (user.getPassword() == null) {
+                        throw new RuntimeException("Mot de passe non défini en base de données. Contactez l'administrateur.");
+                    }
+
+                    if (!passwordEncoder.matches(profilchangement.getOldPassword(), user.getPassword())) {
+                        throw new RuntimeException("L'ancien mot de passe est incorrect");
+                    }
+
+                    user.setPassword(passwordEncoder.encode(profilchangement.getProfil().getPassword()));
                 }
-                if (profilchangement.getTelephone() != null && !profilchangement.getTelephone().trim().isEmpty()) {
-                    user.setTelephone(profilchangement.getTelephone());
+                if (profilchangement.getProfil().getTelephone() != null && !profilchangement.getProfil().getTelephone().trim().isEmpty()) {
+                    user.setTelephone(profilchangement.getProfil().getTelephone());
                 }
                 utilisateurRepository.save(user);
                 return userMap.convertToProfilDto(user);

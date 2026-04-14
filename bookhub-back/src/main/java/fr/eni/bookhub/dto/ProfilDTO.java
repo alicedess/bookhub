@@ -10,15 +10,11 @@ public class ProfilDTO {
 
     private String pseudo;
 
-    @NotBlank
     private String nom;
 
-    @NotBlank
     private String prenom;
 
-    @NotBlank
     private String password;
 
-    @NotBlank
     private String telephone;
 }
