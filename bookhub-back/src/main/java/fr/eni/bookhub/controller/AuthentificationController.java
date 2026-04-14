@@ -2,6 +2,8 @@ package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.AuthDTO;
 import fr.eni.bookhub.dto.LoginDTO;
+import fr.eni.bookhub.dto.RegisterResponse;
+import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.security.JwtUtil;
@@ -39,18 +41,15 @@ public class AuthentificationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<?> register(@RequestBody UtilisateurDTO utilisateur) {
         try {
-            Utilisateur newUser = authService.createUser(utilisateur);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur créé avec succès");
-        } catch (OperationException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                    "success", false,
-                "message", ex.getMessage()
-            ));
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            RegisterResponse response = authService.createUser(utilisateur);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Création de compte impossible");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de l'inscription");
         }
     }
 }

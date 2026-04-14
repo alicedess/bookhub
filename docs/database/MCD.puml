@@ -24,6 +24,7 @@ entity "LIVRE" {
   resume
   nb_page
   image_couverture
+  date_parution
 }
 
 entity "AUTEUR" {
