@@ -167,6 +167,12 @@ public class LivreService {
         return modelMapper.map(livre, LivreDTO.class);
     }
 
+    /**
+     * Ajout d'un commentaire sur le livre
+     * @param id
+     * @param ratingRequest
+     * @return
+     */
     public EvaluationDTO addRating(Long id, EvaluationDTO ratingRequest){
         Optional<Livre> livre = livreRepository.findById(id);
         Evaluation evaluation = new Evaluation();
@@ -177,6 +183,11 @@ public class LivreService {
         return ratingRequest;
     }
 
+    /**
+     * Affiche les évaluations d'un livre
+     * @param id
+     * @return
+     */
     public List<Evaluation> evaluationsParLivre(Integer id){
         Optional<Livre> livre = livreRepository.findById(id.longValue());
         if (livre.isEmpty()) {
