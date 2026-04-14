@@ -2,6 +2,8 @@ package fr.eni.bookhub.repository;
 
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.entity.Livre;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -88,4 +90,6 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
             @Param("catId") Long categorieFilter,
             Pageable pageable
     );
+
+    Optional<Livre> findByIsbn(@NotBlank @Size(min = 3, max = 13) String isbn);
 }
