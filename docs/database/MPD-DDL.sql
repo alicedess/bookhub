@@ -98,3 +98,4 @@ ALTER TABLE
 
 
 ALTER TABLE livre ADD nb_page INT;
+ALTER TABLE livre ADD date_parution DATE;

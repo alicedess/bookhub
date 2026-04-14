@@ -44,21 +44,21 @@ public class LivreService {
         Long auteurFilter = (auteurId != null && auteurId > 0) ? auteurId : null;
         Long categorieFilter = (catId != null && catId > 0) ? catId : null;
 
-        Page<Livre> livresPage = livreRepository.findByCustomFilters(
+        return livreRepository.findByCustomFilters(
                 queryFilter,
                 auteurFilter,
                 categorieFilter,
                 pageable
         );
-
-        return livresPage.map(l -> modelMapper.map(l, LivreDTO.class));
     }
 
     /**
      * Récupère un livre par son ID.
      */
-    public Optional<Livre> getById(Long id) {
-        return livreRepository.findById(id).map(l -> modelMapper.map(l, Livre.class));
+    public Optional<LivreDTO> getById(Long id) {
+        var r = livreRepository.findByIdForDetails(id);
+        System.out.println("sfdqsdfq");
+        return r;
     }
 
     /**

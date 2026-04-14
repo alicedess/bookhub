@@ -15,7 +15,7 @@ public class Exemplaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private Long idExemplaire;
+    private Long id;
 
     @Column(name = "code_barre", nullable = false, length = 50)
     private String codeBarre;

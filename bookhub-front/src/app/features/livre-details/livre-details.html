@@ -1,0 +1,102 @@
+<app-header></app-header>
+
+<div class="container mx-auto">
+
+   @if (livre(); as livre) {
+
+     <div class="mt-8">
+
+       <div>
+         <a [routerLink]="['/books']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Retour</a>
+       </div>
+
+       <h1 class="text-[#4A5D3B] font-semibold text-xl my-8">{{ livre.titre }}</h1>
+
+       <div class="flex justify-between items-center">
+         <div class="text-[#8B4513] font-semibold">
+           {{ livre.auteurNom }} {{ livre.auteurPrenom }}
+         </div>
+         <div class="flex items-center gap-2 text-[#4A5D3B] font-semibold">
+            <span class="bg-[#4A5D3B] text-white rounded-full p-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+
+           <span>
+             @if(livre.nbExemplaireDispo <= 0) {
+               Indisponible
+             } @else {
+               Disponible
+             }
+           </span>
+         </div>
+         <div class="text-[#4A5D3B] font-semibold">{{ livre.nbPage }} pages</div>
+       </div>
+     </div>
+
+     <div class="mt-8 flex flex-col md:flex-row gap-12">
+
+       <div class="w-full md:w-64 flex-shrink-0">
+         <img [src]="bookCoverUrl(livre)"
+              alt="Couverture"
+              class="w-full rounded-sm shadow-2xl border-4 border-white/20 img--cover--medium">
+       </div>
+
+       <div class="flex-grow space-y-4">
+         <div class="flex justify-between items-start">
+           <div class="space-y-4">
+             <p><span class="font-bold text-[#D9A066]">ISBN :</span> {{ livre.isbn }}</p>
+             <p><span class="font-bold text-[#D9A066]">Date de parution :</span> Octobre 1995 (TODO)</p>
+             <p><span class="font-bold text-[#D9A066]">Catégorie :</span> {{ livre.categorieLibelle }}</p>
+             <div class="flex items-center gap-2">
+               <span class="font-bold text-[#D9A066]">Note moyenne</span>
+               <div class="flex text-[#D9A066]">
+                 <app-book-rating [rating]="livre.note"/>
+               </div>
+             </div>
+           </div>
+
+           <div class="relative">
+             @if(livre.nbExemplaireDispo <= 0) {
+               <button
+                 (click)="onClickReserver()"
+                 class="bg-[#D9A066] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
+                 Réserver
+               </button>
+             } @else {
+               <button
+                 (click)="onClickEmprunter()"
+                 class="bg-[#2D3A18] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
+                 Emprunter
+               </button>
+             }
+
+           </div>
+         </div>
+
+         @if (canComment()) {
+
+           <div class="mt-12">
+             <h3 class="text-xl font-bold text-[#D9A066] mb-4">Commentaires</h3>
+             <div class="relative">
+              <textarea
+                class="w-full h-32 p-4 rounded-xl border-none shadow-inner focus:ring-2 focus:ring-[#D9A066] bg-white/70 placeholder-[#D9A066]/50"
+                placeholder="Votre commentaire"></textarea>
+               <div class="flex justify-end mt-2">
+                 <button class="bg-[#D9A066] text-white px-6 py-2 rounded shadow-md hover:bg-[#c68b50] transition-colors">
+                   Envoyer
+                 </button>
+               </div>
+             </div>
+           </div>
+
+         }
+       </div>
+     </div>
+   } @else {
+     <p>Chargement en cours...</p>
+   }
+
+</div>

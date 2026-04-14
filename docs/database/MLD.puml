@@ -44,6 +44,7 @@ entity "livres" {
   resume : NVARCHAR(255)
   nb_page : INT
   image_couverture : NVARCHAR(255)
+  date_parution: DATE
   * id_categorie : INT <<FK>>
 }
 

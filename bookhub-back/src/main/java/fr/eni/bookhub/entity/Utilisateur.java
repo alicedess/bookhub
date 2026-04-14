@@ -2,13 +2,10 @@ package fr.eni.bookhub.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.List;
 public class Utilisateur implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -28,6 +25,9 @@ public class Utilisateur implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "pseudo")
+    private String pseudo;
 
     @Column(name = "nom")
     private String nom;
