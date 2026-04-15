@@ -32,7 +32,7 @@ export class InscriptionComponent {
         nom:    ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         dateNaissance: ['', [Validators.required, Validators.pattern(this.REGEX_DATE)]],
         email:  ['', [Validators.required, Validators.email]],
-        motDePasse:  ['', [Validators.required, Validators.pattern(this.REGEX_MDP)]],
+        password:  ['', [Validators.required, Validators.pattern(this.REGEX_MDP)]],
         confirmation: ['', Validators.required],
       },
       { validators: this.motsDePasseIdentiques }
@@ -44,12 +44,12 @@ export class InscriptionComponent {
   get nom()          { return this.formulaire.get('nom')!; }
   get dateNaissance() {return this.formulaire.get('dateNaissance')!;}
   get email()        { return this.formulaire.get('email')!; }
-  get motDePasse()   { return this.formulaire.get('motDePasse')!; }
+  get password()   { return this.formulaire.get('password')!; }
   get confirmation() { return this.formulaire.get('confirmation')!; }
 
   // les deux mdp doivent correspondre
 motsDePasseIdentiques(groupe: AbstractControl) {
-  const mdp = groupe.get('motDePasse')?.value;
+  const mdp = groupe.get('password')?.value;
   const confirmation = groupe.get('confirmation')?.value;
   return mdp === confirmation ? null : { nonIdentiques: true };
 }
@@ -68,9 +68,9 @@ motsDePasseIdentiques(groupe: AbstractControl) {
     this.chargement = true;
     this.erreurServeur = null;
 
-    const { prenom, nom, dateNaissance, email, motDePasse } = this.formulaire.value;
+    const { prenom, nom, dateNaissance, email, password, telephone } = this.formulaire.value;
 
-    this.authService.sinscrire({ prenom, nom, dateNaissance, email, motDePasse }).subscribe({
+    this.authService.sinscrire({ prenom, nom, dateNaissance, email, password, telephone }).subscribe({
       next: () => {
         this.router.navigate(['/auth/login'], {
           queryParams: { inscriptionReussie: true }

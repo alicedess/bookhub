@@ -101,18 +101,18 @@
 
     <div>
       <input
-        id="motDePasse"
+        id="password"
         type="password"
-        formControlName="motDePasse"
+        formControlName="password"
         placeholder="Mot de passe"
         class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
         [ngClass]="{
-          'border-red-400': afficherErreur(motDePasse),
-          'border-gray-300': !afficherErreur(motDePasse)
+          'border-red-400': afficherErreur(password),
+          'border-gray-300': !afficherErreur(password)
         }"
       />
 
-      @if (afficherErreur(motDePasse)) {
+      @if (afficherErreur(password)) {
         <p class="text-red-400 text-sm mt-1">
           Mot de passe invalide
         </p>
@@ -149,7 +149,7 @@
     </button>
 
     <p class="text-center text-sm">
-      <a routerLink="/auth/login" class="text-orange-50 hover:underline">
+      <a routerLink="/login" class="text-orange-50 hover:underline">
         J'ai déjà un compte
       </a>
     </p>

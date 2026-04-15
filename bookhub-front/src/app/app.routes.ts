@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
+import { Gestion } from './layout/gestion/gestion';
 
 export const routes: Routes = [
   // CF docs/Navigation.md
@@ -26,42 +27,54 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./composants/livre-details/livre-details').then((m) => m.LivreDetails),
   },
-  { path: '**', redirectTo: 'books' },
   //   { path: 'books/:id', loadComponent: () => import('') },
 
-  // rôle USER
-  //   {
-  //     path: 'dashboard',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
+
+// rôle USER
+//   {
+//     path: 'dashboard',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
+//   {
+//     path: 'loans/my',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
+//   {
+//     path: 'reservations/my',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
   {
-    path: 'loans/my',
+    path: 'profile',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./composants/mes-emprunts/mes-emprunts').then((m) => m.MesEmprunts),
-  },
-  //   {
-  //     path: 'reservations/my',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
-  //   {
-  //     path: 'profile',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
+    data: { role: 'USER' },
+    loadComponent: () => import('./composants/authentification/profil/profil').then((m) => m.Profil)  },
 
   // rôle LIBRARIAN
   {
     path: 'librarian',
     canActivate: [authGuard, roleGuard],
     data: { role: 'LIBRARIAN' },
+    component: Gestion,
     children: [
-      //   { path: '', loadComponent: () => import('') },
-      //   { path: 'books', loadComponent: () => import('') },
-      //   { path: 'books/new', loadComponent: () => import('') },
-      //   { path: 'books/:id/edit', loadComponent: () => import('') },
+        {
+          path: '',
+          loadComponent: () => import('./composants/dashboard/librarian/dashboard').then(m => m.Dashboard)
+        },
+        {
+          path: 'books',
+          loadComponent: () => import('./composants/gestion-livre/liste/liste').then(m => m.Liste)
+        },
+        {
+          path: 'books/new',
+          loadComponent: () => import('./composants/gestion-livre/edition/edition').then(m => m.Edition)
+        },
+        {
+          path: 'books/:id/edit',
+          loadComponent: () => import('./composants/gestion-livre/edition/edition').then(m => m.Edition)
+        },
       //   { path: 'loans', loadComponent: () => import('') },
       //   { path: 'reviews', loadComponent: () => import('') },
     ],
@@ -77,4 +90,7 @@ export const routes: Routes = [
       //   { path: 'users', loadComponent: () => import('') },
     ],
   },
+
+  // Wildcard en dernier pour éviter les soucis de redirection
+  { path: '**', redirectTo: 'books' },
 ];

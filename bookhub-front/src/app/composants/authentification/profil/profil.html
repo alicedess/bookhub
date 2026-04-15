@@ -1,0 +1,199 @@
+<app-header></app-header>
+
+
+<h1 class="text-green-950 font-serif text-2xl font-bold my-12 mb-10 text-center">Mon profil</h1>
+
+<div class="max-w-md mx-auto m-10">  
+
+<form
+  class="bg-green-950 shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-4" 
+  [formGroup]="formulaire"
+  (ngSubmit)="soumettre()"
+  novalidate
+  >
+
+  <h1 class="text-orange-50 font-serif text-2xl font-bold my-6 mb-10 text-center">Modifier mon compte</h1>
+
+    <div>
+      <input
+        id="nom"
+        type="text"
+        formControlName="nom"
+        placeholder="Nom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(nom),
+          'border-gray-300': !afficherErreur(nom)
+        }"
+      />
+
+      @if (afficherErreur(nom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (nom.errors?.['required'])  { Votre nom est requis. }
+          @if (nom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="prenom"
+        type="text"
+        formControlName="prenom"
+        placeholder="Prénom"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(prenom),
+          'border-gray-300': !afficherErreur(prenom)
+        }"
+      />
+
+      @if (afficherErreur(prenom)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (prenom.errors?.['required']) { Votre prénom est requis. }
+          @if (prenom.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+    </div>
+
+    <!-- ajout d'un pseudo, modifiable -->
+     <div>
+      <input
+        id="pseudo"
+        type="text"
+        formControlName="pseudo"
+        placeholder="Pseudo"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(pseudo),
+          'border-gray-300': !afficherErreur(pseudo)
+        }"
+      />
+
+      @if (afficherErreur(pseudo)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (pseudo.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+     </div>
+
+    <div>
+      <input
+        id="telephone"
+        type="text"
+        formControlName="telephone"
+        placeholder="Téléphone"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2 rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(telephone),
+          'border-gray-300': !afficherErreur(telephone)
+        }"
+      />
+      @if (afficherErreur(telephone)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (telephone.errors?.['required']) { Téléphone requis. }
+          @if (telephone.errors?.['pattern']) { Format invalide. }
+        </p>
+      }
+    </div>
+
+      <!-- Non modifiable (readonly) -->
+      <div>
+        <input
+          id="dateNaissance"
+          type="text"
+          [value]="utilisateur?.dateNaissance | date:'longDate'"
+          readonly
+          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none cursor-not-allowed"
+        />
+      </div>
+
+      <!-- Non modifiable (readonly) -->
+      <div>
+        <input
+          id="email"
+          type="email"
+          [value]="utilisateur?.email"
+          readonly
+          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none cursor-not-allowed"
+        />
+      </div>
+
+    <!-- oldPassword obligatoire pour modifier le password actuel -->
+     <div>
+      <input
+        id="oldPassword"
+        type="password"
+        formControlName="oldPassword"
+        placeholder="Mot de passe actuel"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(oldPassword),
+          'border-gray-300': !afficherErreur(oldPassword)
+        }"
+      />
+
+      @if (afficherErreur(oldPassword)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (oldPassword.errors?.['required']) { Le mot de passe actuel est requis. }
+        </p>
+      }
+     </div>
+
+    <div>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Nouveau mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(password),
+          'border-gray-300': !afficherErreur(password)
+        }"
+      />
+
+      @if (afficherErreur(password)) {
+        <p class="text-red-400 text-sm mt-1">
+          Mot de passe invalide
+        </p>
+      }
+    </div>
+
+    <div>
+      <input
+        id="confirmation"
+        type="password"
+        formControlName="confirmation"
+        placeholder="Confirmer le nouveau mot de passe"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-500':
+            afficherErreur(confirmation) ||
+            (formulaire.errors?.['nonIdentiques'] && confirmation.touched),
+          'border-gray-300': !afficherErreur(confirmation)
+        }"
+      />
+
+      @if (formulaire.errors?.['nonIdentiques'] && confirmation.touched) {
+        <p class="text-red-400 text-sm mt-1">
+          Les mots de passe ne correspondent pas.
+        </p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-orange-300 text-green-950 py-2 my-6 rounded hover:bg-orange-200 transition cursor-pointer"
+    >
+    Sauvegarder
+    </button>
+
+    <p class="text-center text-sm">
+      <a class="text-red-400 bold hover:underline cursor-pointer" (click)="supprimerCompte()">Supprimer mon compte</a>
+    </p>
+
+  </form>
+  
+  </div>
+
