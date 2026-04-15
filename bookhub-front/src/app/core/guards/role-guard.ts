@@ -18,13 +18,13 @@ import { inject } from '@angular/core';
     const roleRequis: string = route.data['role'];
     const roleUtilisateur = authService.obtenirRole();
   
-    if (!roleUtilisateur) {
+    if (!roleUtilisateur || !roleRequis) {
       return router.createUrlTree(['/login']);
     }
   
     // rôle de niveau 99 = inconnu, donc pas accès
-    const niveauRequis = HIERARCHIE_ROLES[roleRequis] ?? 99;
-    const niveauUtilisateur = HIERARCHIE_ROLES[roleUtilisateur] ?? 0;
+    const niveauRequis = HIERARCHIE_ROLES[roleRequis] ?? 99; // rôle inconnu
+    const niveauUtilisateur = HIERARCHIE_ROLES[roleUtilisateur] ?? 0; // pas de rôle
   
     if (niveauUtilisateur >= niveauRequis) {
       return true;

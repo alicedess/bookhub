@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class UtilisteurService {
@@ -67,5 +69,11 @@ public class UtilisteurService {
         } catch (Exception e) {
             throw new RuntimeException("Utilisateur non trouvé ou supprimé");
         }
+    }
+
+    public UtilisateurDTO getUtilisateurParEmail(String email) {
+        Utilisateur user = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return userMap.convertToDto(user);
     }
 }

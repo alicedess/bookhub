@@ -64,7 +64,7 @@ export class AuthService {
   }
 
   // récupère les informations de l'utilisateur connecté (payload du token), créée pour le composant profil
-  obtenirUtilisateur(): { prenom: string; nom: string; email: string, dateNaissance: string, telephone: string } | null {
+  obtenirUtilisateur(): { sub: string; role: string } | null {
     const token = this.obtenirToken();
     if (!token) return null;
     try {
@@ -72,6 +72,10 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  obtenirProfilUtilisateur(): Observable<any> {
+    return this.http.get(`http://localhost:8080/api/user/me`);
   }
 
   // on récupère le rôle contenu dans le payload du back

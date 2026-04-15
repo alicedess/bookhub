@@ -40,7 +40,7 @@ export class Profil  {
 
   }
 
-  ngonInit() {
+  ngOnInit() {
     this.chargerInformationsUtilisateur();
   }
 
@@ -53,19 +53,21 @@ export class Profil  {
     get confirmation() { return this.formulaire.get('confirmation')!; }
     get telephone()     { return this.formulaire.get('telephone')!; }
 
-  chargerInformationsUtilisateur() {
-    const utilisateur = this.authService.obtenirUtilisateur();
-    if (utilisateur) {
-      this.utilisateur = utilisateur;
-      this.formulaire.patchValue({
-        prenom: utilisateur.prenom,
-        nom: utilisateur.nom,
-        email: utilisateur.email,
-        dateNaissance : utilisateur.dateNaissance,
-        telephone: utilisateur.telephone,
+    chargerInformationsUtilisateur() {
+      this.authService.obtenirProfilUtilisateur().subscribe({
+        next: (utilisateur) => {
+          this.utilisateur = utilisateur;
+          this.formulaire.patchValue({
+            prenom: utilisateur.prenom,
+            nom: utilisateur.nom,
+            telephone: utilisateur.telephone,
+          });
+        },
+        error: () => {
+          this.erreurServeur = 'Impossible de charger le profil.';
+        }
       });
     }
-  }
 
   // les deux mdp doivent correspondre
 motsDePasseIdentiques(groupe: AbstractControl) {

@@ -26,7 +26,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./composants/livre-details/livre-details').then((m) => m.LivreDetails),
   },
-  { path: '**', redirectTo: 'books' },
   //   { path: 'books/:id', loadComponent: () => import('') },
 
 
@@ -46,11 +45,11 @@ export const routes: Routes = [
 //     canActivate: [authGuard],
 //     loadComponent: () => import('')
 //   },
-//   {
-//     path: 'profile',
-//     canActivate: [authGuard],
-//     loadComponent: () => import('')
-//   },
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    data: { role: 'USER' },
+    loadComponent: () => import('./composants/authentification/profil/profil').then((m) => m.Profil)  },
 
   // rôle LIBRARIAN
   {
@@ -77,4 +76,7 @@ export const routes: Routes = [
       //   { path: 'users', loadComponent: () => import('') },
     ],
   },
+
+  // Wildcard en dernier pour éviter les soucis de redirection
+  { path: '**', redirectTo: 'books' },
 ];
