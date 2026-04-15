@@ -47,7 +47,7 @@ export class Catalogue implements OnInit {
     clearTimeout(this._t as number);
 
     this._t = setTimeout(() => {
-      this.searchQuery.set(sq);
+      this.searchQuery.set(sq.trim());
     }, 500) as unknown as number;
   }
 

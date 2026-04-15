@@ -11,9 +11,9 @@ import fr.eni.bookhub.repository.ExemplaireRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class EmpruntServiceTest {
 
     private static final Long ID_UTILISATEUR = 1L;
-    private static final Long ID_EXEMPLAIRE = 2L;
+    private static final Long ID_LIVRE = 2L;
 
     @InjectMocks
     private EmpruntService empruntService;
@@ -124,24 +124,36 @@ class EmpruntServiceTest {
     void emprunterLivre_CreerUnEmprunt() {
 
         Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setId(ID_UTILISATEUR);
         Exemplaire exemplaire = new Exemplaire();
+        exemplaire.setId(10L);
         exemplaire.setEstDisponible(true);
 
         when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
-        when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
+        when(exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(ID_LIVRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn(0L);
         when(empruntRepository.existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
                 eq(utilisateur), eq(StatutEnum.EN_COURS), any()))
                 .thenReturn(false);
         when(empruntRepository.save(any(Emprunt.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(empruntMapper.convertToDto(any(Emprunt.class))).thenAnswer(invocation -> {
+            Emprunt emprunt = invocation.getArgument(0);
+            EmpruntDTO dto = new EmpruntDTO();
+            dto.setStatut(emprunt.getStatut());
+            dto.setDateDebut(emprunt.getDateDebut());
+            dto.setDateRetourPrevue(emprunt.getDateRetourPrevue());
+            dto.setUtilisateurId(emprunt.getUtilisateur().getId());
+            dto.setExemplaireId(emprunt.getExemplaire().getId());
+            return dto;
+        });
 
-        Emprunt resultat = empruntService.emprunterLivre(ID_UTILISATEUR, ID_EXEMPLAIRE);
+        EmpruntDTO resultat = empruntService.emprunterLivreDto(ID_UTILISATEUR, ID_LIVRE);
 
         assertNotNull(resultat);
         assertEquals(StatutEnum.EN_COURS, resultat.getStatut());
-        assertEquals(utilisateur, resultat.getUtilisateur());
-        assertEquals(exemplaire, resultat.getExemplaire());
+        assertEquals(ID_UTILISATEUR, resultat.getUtilisateurId());
+        assertEquals(10L, resultat.getExemplaireId());
         assertFalse(exemplaire.getEstDisponible());
         assertNotNull(resultat.getDateDebut());
         assertNotNull(resultat.getDateRetourPrevue());
@@ -156,7 +168,7 @@ class EmpruntServiceTest {
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> empruntService.emprunterLivre(ID_UTILISATEUR, ID_EXEMPLAIRE)
+                () -> empruntService.emprunterLivreDto(ID_UTILISATEUR, ID_LIVRE)
         );
 
         assertEquals("Utilisateur non trouvé", exception.getMessage());
@@ -187,7 +199,7 @@ class EmpruntServiceTest {
         }
 
         when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
-        when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
+        when(exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(ID_LIVRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn((long) emprunts.size());
         if (nbEmpruntsEnCours < 3) {
@@ -197,7 +209,7 @@ class EmpruntServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> empruntService.emprunterLivre(ID_UTILISATEUR, ID_EXEMPLAIRE)
+                () -> empruntService.emprunterLivreDto(ID_UTILISATEUR, ID_LIVRE)
         );
 
         assertEquals(messageAttendu, exception.getMessage());
