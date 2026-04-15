@@ -32,6 +32,8 @@ public class EmpruntMapper {
             if (emprunt.getExemplaire().getLivre() != null) {
                 dto.setLivreId(emprunt.getExemplaire().getLivre().getId());
                 dto.setTitreLivre(emprunt.getExemplaire().getLivre().getTitre());
+                dto.setAuteurNom(emprunt.getExemplaire().getLivre().getAuteur().getNom());
+                dto.setAuteurPrenom(emprunt.getExemplaire().getLivre().getAuteur().getPrenom());
             }
         }
 
