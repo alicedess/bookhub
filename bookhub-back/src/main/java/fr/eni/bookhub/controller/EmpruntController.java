@@ -27,9 +27,8 @@ public class EmpruntController {
             @AuthenticationPrincipal Utilisateur utilisateur,
             @RequestParam Long idLivre) {
         try {
-            EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), exemplaireId);
+            EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), idLivre);
             return ResponseEntity.status(201)
-
                     .body(Map.of(
                             "message", "Emprunt confirmé ! Retour prévu le " +
                                     emprunt.getDateRetourPrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),

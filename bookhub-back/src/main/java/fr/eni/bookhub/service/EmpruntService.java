@@ -39,11 +39,12 @@ public class EmpruntService {
                 .map(empruntMapper::convertToDto);
     }
 
-    protected Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
+    private Emprunt emprunterLivre(Long idUtilisateur, Long idLivre) {
         Utilisateur utilisateur = utilisateurRepository.findById(idUtilisateur)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        Exemplaire exemplaire = exemplaireRepository.findById(idExemplaire)
-                .orElseThrow(() -> new RuntimeException("Exemplaire non trouvé"));
+
+        Exemplaire exemplaire = exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(idLivre)
+                .orElseThrow(() -> new RuntimeException("Aucun exemplaire disponible pour ce livre."));
 
         verifierReglesEmprunt(utilisateur, exemplaire);
 

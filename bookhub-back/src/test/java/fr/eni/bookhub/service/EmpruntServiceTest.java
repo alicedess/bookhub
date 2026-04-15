@@ -129,8 +129,7 @@ class EmpruntServiceTest {
         exemplaire.setEstDisponible(true);
 
         when(utilisateurRepository.findById(ID_UTILISATEUR)).thenReturn(Optional.of(utilisateur));
-        when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
-
+        when(exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(ID_LIVRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn(0L);
         when(empruntRepository.existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
@@ -168,7 +167,7 @@ class EmpruntServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> empruntService.emprunterLivre(ID_UTILISATEUR, ID_EXEMPLAIRE)
+                () -> empruntService.emprunterLivreDto(ID_UTILISATEUR, ID_LIVRE)
         );
 
         assertEquals("Utilisateur non trouvé", exception.getMessage());
@@ -199,8 +198,7 @@ class EmpruntServiceTest {
         }
 
         when(utilisateurRepository.findById(ID_UTILISATEUR)).thenReturn(Optional.of(utilisateur));
-        when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
-
+        when(exemplaireRepository.findFirstByLivreIdAndEstDisponibleTrue(ID_LIVRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn((long) emprunts.size());
         if (nbEmpruntsEnCours < 3) {
