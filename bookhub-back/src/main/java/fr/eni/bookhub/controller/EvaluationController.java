@@ -13,6 +13,12 @@ public class EvaluationController {
 
     private EvaluationService evaluationService;
 
+    /**
+     * Modifier une evaluation
+     * @param id id eval
+     * @param evaluationDTO la note & le commentaire
+     * @return ok si 200, sinon erreur
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvaluation(@PathVariable Integer id, @RequestBody EvaluationDTO evaluationDTO) {
         try{
@@ -23,10 +29,15 @@ public class EvaluationController {
         }
     }
 
+    /**
+     * Supprimer une evaluation
+     * @param id id eval
+     * @return rien
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEvaluation(@PathVariable Integer id){
         try {
-            evaluationService.deleteEvaluation(id);
+            evaluationService.modererEvaluation(id);
             return ResponseEntity.ok().body("Evaluation supprimé");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erreur lors de la suppression de l'évaluation");

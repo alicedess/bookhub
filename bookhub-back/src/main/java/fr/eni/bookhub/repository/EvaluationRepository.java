@@ -1,5 +1,6 @@
 package fr.eni.bookhub.repository;
 
+import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.entity.Evaluation;
 import fr.eni.bookhub.entity.Livre;
 import org.springframework.data.jpa.repository.EntityGraph;

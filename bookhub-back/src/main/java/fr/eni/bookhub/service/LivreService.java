@@ -166,33 +166,4 @@ public class LivreService {
 
         return modelMapper.map(livre, LivreDTO.class);
     }
-
-    /**
-     * Ajout d'un commentaire sur le livre
-     * @param id
-     * @param ratingRequest
-     * @return
-     */
-    public EvaluationDTO addRating(Long id, EvaluationDTO ratingRequest){
-        Optional<Livre> livre = livreRepository.findById(id);
-        Evaluation evaluation = new Evaluation();
-        evaluation.setNote(ratingRequest.getNote());
-        evaluation.setCommentaire(ratingRequest.getCommentaire());
-        modelMapper.map(livre, EvaluationDTO.class);
-        evaluationRepository.save(evaluation);
-        return ratingRequest;
-    }
-
-    /**
-     * Affiche les évaluations d'un livre
-     * @param id
-     * @return
-     */
-    public List<Evaluation> evaluationsParLivre(Integer id){
-        Optional<Livre> livre = livreRepository.findById(id.longValue());
-        if (livre.isEmpty()) {
-            throw new OperationException("Impossible de trouver le Livre");
-        }
-        return evaluationRepository.findByLivre(livre.get());
-    }
 }

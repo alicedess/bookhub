@@ -1,6 +1,7 @@
 package fr.eni.bookhub.mapper;
 
 import fr.eni.bookhub.dto.EvaluationDTO;
+import fr.eni.bookhub.entity.Evaluation;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -11,24 +12,11 @@ public class EvaluationMapper {
 
     private ModelMapper modelMapper;
 
-    /**
-     * Fonction générique pour les mappers
-     * @param entity
-     * @param outClass
-     * @return
-     * @param <D>
-     * @param <T>
-     */
-
-    public <D, T> D map(T entity, Class<D> outClass) {
-        return modelMapper.map(entity, outClass);
+    public EvaluationDTO toEvaluationDTO(Evaluation eval) {
+        return modelMapper.map(eval, EvaluationDTO.class);
     }
 
-    public EvaluationDTO toEvaluationDTO(Object entity) {
-        return map(entity, EvaluationDTO.class);
-    }
-
-    public Object toEntity(EvaluationDTO dto, Class<?> entityClass) {
-        return map(dto, entityClass);
+    public Evaluation toEntity(EvaluationDTO dto) {
+        return modelMapper.map(dto, Evaluation.class);
     }
 }
