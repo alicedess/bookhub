@@ -20,7 +20,7 @@ public class EvaluationController {
      * @return ok si 200, sinon erreur
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateEvaluation(@PathVariable Integer id, @RequestBody EvaluationDTO evaluationDTO) {
+    public ResponseEntity<?> updateEvaluation(@PathVariable Long id, @RequestBody EvaluationDTO evaluationDTO) {
         try{
             evaluationService.updateEvaluation(id, evaluationDTO);
             return ResponseEntity.ok().body("Evaluation mise à jour");
@@ -35,7 +35,7 @@ public class EvaluationController {
      * @return rien
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEvaluation(@PathVariable Integer id){
+    public ResponseEntity<?> deleteEvaluation(@PathVariable Long id){
         try {
             evaluationService.modererEvaluation(id);
             return ResponseEntity.ok().body("Evaluation supprimé");

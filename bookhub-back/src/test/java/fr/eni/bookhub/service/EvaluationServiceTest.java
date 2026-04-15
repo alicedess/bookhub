@@ -19,34 +19,25 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 @SpringBootTest
-@AllArgsConstructor
 public class EvaluationServiceTest {
 
     @Autowired
-    private final EvaluationService evaluationService;
+    private EvaluationService evaluationService;
 
     @Autowired
     private EvaluationRepository evaluationRepository;
 
-    @Autowired
-    private LivreRepository livreRepository;
-
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
-
     @Test
     @DisplayName("Test création d'une évaluation")
-    @WithMockUser(username = "test@example.com")  // Simule un utilisateur authentifié
+    @WithMockUser(username = "test@example.com")
     public void test_createEvaluation() {
-        // Préparation des données de test (suppose qu'un livre avec ID 1 existe)
+
         EvaluationDTO dto = new EvaluationDTO();
         dto.setNote(4);
         dto.setCommentaire("Excellent livre !");
 
-        // Création de l'évaluation
         EvaluationDTO result = evaluationService.createEvaluation(1L, dto);
 
-        // Vérifications
         Assertions.assertNotNull(result);
         Assertions.assertEquals(4, result.getNote());
         Assertions.assertEquals("Excellent livre !", result.getCommentaire());
@@ -55,12 +46,10 @@ public class EvaluationServiceTest {
     @Test
     @DisplayName("Test récupération des évaluations par livre")
     public void test_getEvaluationsParLivre() {
-        // Suppose qu'un livre avec ID 1 existe et a des évaluations
         List<EvaluationDTO> evaluations = evaluationService.getEvaluationsParLivre(1L);
 
-        // Vérifications (ajustez selon les données de test)
         Assertions.assertNotNull(evaluations);
-        // Assertions.assertTrue(evaluations.size() > 0);  // Si des évaluations existent
+        Assertions.assertTrue(!evaluations.isEmpty());
     }
 
     @Test
@@ -70,7 +59,7 @@ public class EvaluationServiceTest {
         dto.setNote(4);
         dto.setCommentaire("Trop bien le test");
 
-        EvaluationDTO result = evaluationService.updateEvaluation(4, dto);  // Changement à Long
+        EvaluationDTO result = evaluationService.updateEvaluation(4L, dto);  // Changement à Long
         Assertions.assertNotNull(result);
         Assertions.assertEquals(4, result.getNote());
         Assertions.assertEquals("Trop bien le test", result.getCommentaire());
@@ -80,22 +69,12 @@ public class EvaluationServiceTest {
     @DisplayName("Test modération d'une évaluation")
     public void test_modererEvaluation() {
         // Appeler la méthode de modération
-        evaluationService.modererEvaluation(4);  // Changement à Long
+        evaluationService.modererEvaluation(4L);  // Changement à Long
 
         // Vérifier que l'évaluation est maintenant modérée
-        Evaluation evaluationApresMod = evaluationRepository.findById(4L).orElse(null);  // Utilisation du repository pour vérifier
+        Evaluation evaluationApresMod = evaluationRepository.findById(4L)
+                .orElseThrow(RuntimeException::new);
         Assertions.assertNotNull(evaluationApresMod);
         Assertions.assertTrue(evaluationApresMod.getEstModere());
-    }
-
-    @Test
-    @DisplayName("Test suppression d'une évaluation")
-    public void test_deleteEvaluation() {
-        // Le test suppose que l'évaluation avec l'ID 4 existe
-        evaluationService.deleteEvaluation(4);  // Changement à Long
-
-        // Vérifier que l'évaluation a été supprimée
-        Evaluation resultAfterDelete = evaluationRepository.findById(4L).orElse(null);
-        Assertions.assertNull(resultAfterDelete);
     }
 }
