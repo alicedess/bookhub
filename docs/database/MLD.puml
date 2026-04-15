@@ -42,7 +42,9 @@ entity "livres" {
   * titre : NVARCHAR(255)
   * id_auteur : INT <<FK>>
   resume : NVARCHAR(255)
+  nb_page : INT
   image_couverture : NVARCHAR(255)
+  date_parution: DATE
   * id_categorie : INT <<FK>>
 }
 

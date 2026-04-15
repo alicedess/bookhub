@@ -1,6 +1,6 @@
 package fr.eni.bookhub.entity;
 
-import fr.eni.bookhub.enumeration.Statut;
+import fr.eni.bookhub.enumeration.StatutEnum;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class Emprunt {
 
     @Column(name = "statut", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private Statut statut;
+    private StatutEnum statut;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_utilisateur", nullable = false)
@@ -42,5 +42,8 @@ public class Emprunt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_exemplaire", nullable = false)
     private Exemplaire exemplaire;
+
+    @Transient
+    private boolean enRetard;
 
 }

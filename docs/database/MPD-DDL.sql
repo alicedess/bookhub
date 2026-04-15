@@ -94,3 +94,6 @@ ALTER TABLE
     "livre" ADD CONSTRAINT "livre_id_categorie_foreign" FOREIGN KEY("id_categorie") REFERENCES "categorie"("id");
 ALTER TABLE
     "exemplaire" ADD CONSTRAINT "exemplaire_id_livre_foreign" FOREIGN KEY("id_livre") REFERENCES "livre"("id");
+
+ALTER TABLE livre ADD nb_page INT;
+ALTER TABLE livre ADD date_parution DATE;

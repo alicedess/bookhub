@@ -3,6 +3,9 @@ package fr.eni.bookhub.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "LIVRE")
@@ -13,7 +16,7 @@ public class Livre {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(length = 13, nullable = false)
+    @Column(length = 13, nullable = false, unique = true)
     private String isbn;
 
     @Column(nullable = false)
@@ -22,6 +25,12 @@ public class Livre {
     private String resume;
 
     private String imageCouverture;
+
+    private Integer nbPage;
+
+    @DateTimeFormat
+    @Column(name = "date_parution")
+    private Date dateParution;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

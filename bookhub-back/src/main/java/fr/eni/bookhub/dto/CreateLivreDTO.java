@@ -24,7 +24,9 @@ public class CreateLivreDTO {
 
     private String imageCouverture;
 
+    @NotBlank
     private Integer auteurId;
 
+    @NotBlank
     private Long categorieId;
 }

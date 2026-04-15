@@ -1,7 +1,5 @@
 package fr.eni.bookhub.entity;
 
-import fr.eni.bookhub.entity.Livre;
-import fr.eni.bookhub.entity.Utilisateur;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,10 +36,10 @@ public class Evaluation {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_utilisateur", nullable = false)
-    private Utilisateur idUtilisateur;
+    private Utilisateur utilisateur;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_livre", nullable = false)
-    private Livre idLivre;
+    private Livre livre;
 }

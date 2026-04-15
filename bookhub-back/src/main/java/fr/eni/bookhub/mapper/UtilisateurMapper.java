@@ -1,5 +1,6 @@
 package fr.eni.bookhub.mapper;
 
+import fr.eni.bookhub.dto.ProfilDTO;
 import fr.eni.bookhub.dto.UtilisateurDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,13 @@ public class UtilisateurMapper {
 
     public Utilisateur convertToEntity(UtilisateurDTO utilisateurDTO){
         return modelMapper.map(utilisateurDTO, Utilisateur.class);
+    }
+
+    public ProfilDTO convertToProfilDto(Utilisateur utilisateur){
+        return modelMapper.map(utilisateur, ProfilDTO.class);
+    }
+
+    public Utilisateur convertToEntityFromProfilDto(ProfilDTO profilDTO){
+        return modelMapper.map(profilDTO, Utilisateur.class);
     }
 }
