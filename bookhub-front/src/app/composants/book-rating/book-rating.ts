@@ -1,6 +1,9 @@
 import {Component, input, InputSignal} from "@angular/core";
 import {NgClass} from '@angular/common';
 
+/**
+ * Composant partagé qui permet d'afficher la notation d'un livre
+ */
 @Component({
   selector: "app-book-rating",
   imports: [

@@ -1,5 +1,4 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
-import { Header } from '../../../layout/header/header';
 import { CatalogueService } from '../../../core/services/catalogue-service';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -7,7 +6,6 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-liste',
   imports: [
-    Header,
     RouterLink,
     DatePipe
   ],

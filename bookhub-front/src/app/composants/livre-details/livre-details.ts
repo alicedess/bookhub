@@ -7,6 +7,8 @@ import { AuthService } from '../../core/services/auth-service';
 import { EmpruntService } from '../../core/services/emprunt-service';
 import { BookRatingComponent } from '../book-rating/book-rating';
 import { DatePipe } from '@angular/common';
+import { Evaluation } from '../../core/modeles/evaluation';
+import { EvaluationService } from '../../core/services/evaluation-service';
 
 @Component({
   selector: 'app-livre-details',
@@ -25,8 +27,11 @@ export class LivreDetails implements OnInit {
   private authService: AuthService = inject(AuthService);
   private empruntService: EmpruntService = inject(EmpruntService);
   private router: Router = inject(Router);
+  private evaluationService: EvaluationService = inject(EvaluationService);
 
   id = 0;
+
+  evaluations = signal<Evaluation[]>([])
 
   livre = signal<Livre|null>(null)
 
@@ -34,8 +39,16 @@ export class LivreDetails implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
 
-      this.catalogueService.getLivre(this.id).subscribe(livre => {
-        this.livre.set(livre);
+      this.catalogueService.getLivre(this.id).subscribe({
+        next: (livre: Livre) => {
+          this.livre.set(livre);
+
+          this.evaluationService.getEvaluations(livre).subscribe({
+            next: (evaluations: Evaluation[]) => {
+              this.evaluations.set(evaluations)
+            }
+          })
+        }
       });
     });
   }
