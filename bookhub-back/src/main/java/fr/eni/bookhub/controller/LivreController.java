@@ -212,10 +212,10 @@ public class LivreController {
      * @return ok si l'évaluation a été ajoutée, sinon une erreur
      */
     @PostMapping("/{id}/ratings")
-    public ResponseEntity<?> addRating(@PathVariable Integer id, @RequestBody EvaluationDTO payload){
+    public ResponseEntity<?> addRating(@PathVariable Long id, @RequestBody EvaluationDTO payload){
         try{
-            evaluationService.createEvaluation(id, payload);
-            return ResponseEntity.ok().build();
+            EvaluationDTO ajoutEval = evaluationService.createEvaluation(id, payload);
+            return ResponseEntity.ok(ajoutEval);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
