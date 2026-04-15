@@ -1,10 +1,16 @@
 package fr.eni.bookhub.controller;
 
+import fr.eni.bookhub.dto.AuteurDTO;
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -30,6 +36,15 @@ public class LivreController {
     /**
      * Récupère la liste des livres paginée par 20
      */
+    @Operation(
+            summary = "Rechercher des livres",
+            description = "Filtre les livres par mot-clé, auteur ou catégorie avec pagination."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Recherche effectuée avec succès"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @GetMapping({"", "/search"})
     public ResponseEntity<?> searchLivres(
         @RequestParam(required = false) String query,

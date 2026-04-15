@@ -29,6 +29,16 @@ body {
   background: var(--btn-bg-hover);
 }
 
+.btn-back {
+  background: transparent;
+  color: var(--input-color);
+}
+
+.btn-back:hover {
+  background: var(--input-color);
+  color: white;
+}
+
 /**
  * Forms
  */

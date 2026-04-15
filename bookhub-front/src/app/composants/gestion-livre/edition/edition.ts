@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CatalogueService } from '../../../core/services/catalogue-service';
 import { Livre } from '../../../core/modeles/livre';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Header } from '../../../layout/header/header';
 import { CategorieService } from '../../../core/services/categorie-service';
 import { AuteurService } from '../../../core/services/auteur-service';
+import { Location } from '@angular/common';
 
 /**
  * Composant en charge de la création et de l'édition d'un livre.
@@ -14,7 +15,7 @@ import { AuteurService } from '../../../core/services/auteur-service';
   selector: 'app-edition',
   imports: [
     Header,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './edition.html',
   styleUrl: './edition.css'
@@ -27,6 +28,7 @@ export class Edition implements OnInit {
 
   private route = inject(ActivatedRoute);
   private router: Router = inject(Router);
+  private location: Location = inject(Location);
 
   categories = this.categorieService.categories;
   auteurs = this.auteurService.authors;
@@ -37,18 +39,20 @@ export class Edition implements OnInit {
   successMessage = signal('');
 
   form = new FormGroup({
-    titre: new FormControl(),
-    isbn: new FormControl(),
-    resume: new FormControl(),
-    nbPage: new FormControl(),
-    dateParution: new FormControl(),
-    categorieId: new FormControl(),
-    auteurId: new FormControl(),
+    titre: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(3), Validators.maxLength(150)],
+      nonNullable: true
+    }),
+    isbn: new FormControl('', {
+      validators: [Validators.required, Validators.pattern(/^(97(8|9))?\d{9}(\d|X)$/)], // Format ISBN 10/13
+      nonNullable: true
+    }),
+    resume: new FormControl('', [Validators.maxLength(2000)]),
+    nbPage: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+    dateParution: new FormControl('', [Validators.required]),
+    categorieId: new FormControl<number | null>(null, [Validators.required]),
+    auteurId: new FormControl<number | null>(null, [Validators.required]),
   });
-
-  formCover = new FormGroup({
-    file: new FormControl(),
-  })
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -56,12 +60,7 @@ export class Edition implements OnInit {
         return;
       }
 
-      const id = +params['id'];
-
-      this.catalogueService.getLivre(id).subscribe(livre => {
-        this.livre.set(livre);
-        this.form.patchValue(livre);
-      });
+      this.refreshLivreData({ id: +params['id'] } as Livre);
     });
 
     this.auteurService.refresh();
@@ -73,8 +72,14 @@ export class Edition implements OnInit {
    */
   save() {
     this.errorMessage.set('');
+    this.form.markAllAsTouched();
 
-    const data: Partial<Livre> = this.form.value;
+    if (!this.form.valid) {
+      this.showError("Le formulaire contient des erreurs");
+      return;
+    }
+
+    const data: Partial<Livre> = this.form.value as Partial<Livre>;
     const livre = this.livre();
 
     if (!livre) {
@@ -92,7 +97,7 @@ export class Edition implements OnInit {
 
     this.catalogueService.update(livre, data).subscribe({
       next: () => {
-        this.refreshLivreDate(livre);
+        this.refreshLivreData(livre);
         this.showSuccess("Le livre a bien été mis à jour")
       },
       error: () => {
@@ -140,7 +145,7 @@ export class Edition implements OnInit {
 
     this.catalogueService.updateCover(livre, files[0]).subscribe({
       next: () => {
-        this.refreshLivreDate(livre);
+        this.refreshLivreData(livre);
         this.showSuccess("Le livre a bien été mis à jour")
       },
       error: () => {
@@ -149,10 +154,19 @@ export class Edition implements OnInit {
     })
   }
 
-  protected refreshLivreDate(livre: Livre) {
-    this.catalogueService.getLivre(livre.id).subscribe(livre => {
-      this.livre.set(livre);
-      this.form.patchValue(livre);
+  protected refreshLivreData(livre: Livre) {
+    this.catalogueService.getLivre(livre.id).subscribe({
+      next: (livre) => {
+          this.livre.update(() => livre);
+          this.form.patchValue(livre);
+      },
+      error: () => {
+        this.showError('Erreur lors de la récupération des informations livre');
+      }
     });
+  }
+
+  protected goBack() {
+    this.location.back();
   }
 }
