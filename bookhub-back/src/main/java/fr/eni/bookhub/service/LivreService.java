@@ -3,6 +3,7 @@ package fr.eni.bookhub.service;
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.EvaluationDTO;
 import fr.eni.bookhub.dto.LivreDTO;
+import fr.eni.bookhub.dto.LivreProjection;
 import fr.eni.bookhub.entity.Auteur;
 import fr.eni.bookhub.entity.Categorie;
 import fr.eni.bookhub.entity.Evaluation;
@@ -36,6 +37,9 @@ public class LivreService {
     private final StorageService storageService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Recherche les livres
+     */
     public Page<LivreDTO> searchLivres(
             String query,
             Long auteurId,
@@ -48,19 +52,61 @@ public class LivreService {
         Long auteurFilter = (auteurId != null && auteurId > 0) ? auteurId : null;
         Long categorieFilter = (catId != null && catId > 0) ? catId : null;
 
-        return livreRepository.findByCustomFilters(
+        Page<LivreProjection> projections = livreRepository.findByCustomFilters(
                 queryFilter,
                 auteurFilter,
                 categorieFilter,
                 pageable
         );
+
+        return projections.map(p -> new LivreDTO(
+                p.getId(),
+                p.getIsbn(),
+                p.getTitre(),
+                p.getResume(),
+                p.getImageCouverture(),
+                p.getNbPage(),
+                p.getDateParution(),
+                p.getAuteurId(),
+                p.getAuteurNom(),
+                p.getAuteurPrenom(),
+                p.getCategorieId(),
+                p.getCategorieLibelle(),
+                p.getNbExemplaires(),
+                p.getNbExemplairesDisponibles(),
+                p.getMoyenneEvaluations()
+        ));
     }
 
     /**
      * Récupère un livre par son ID.
      */
     public Optional<LivreDTO> getById(Long id) {
-        return livreRepository.findByIdForDetails(id);
+        Optional<LivreProjection> projectionOptional = livreRepository.findByIdForDetails(id);
+
+        if (projectionOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        LivreProjection projection = projectionOptional.get();
+
+        return Optional.of(new LivreDTO(
+                projection.getId(),
+                projection.getIsbn(),
+                projection.getTitre(),
+                projection.getResume(),
+                projection.getImageCouverture(),
+                projection.getNbPage(),
+                projection.getDateParution(),
+                projection.getAuteurId(),
+                projection.getAuteurNom(),
+                projection.getAuteurPrenom(),
+                projection.getCategorieId(),
+                projection.getCategorieLibelle(),
+                projection.getNbExemplaires(),
+                projection.getNbExemplairesDisponibles(),
+                projection.getMoyenneEvaluations()
+        ));
     }
 
     /**
@@ -152,7 +198,6 @@ public class LivreService {
     @Transactional
     public void deleteLivre(Long id)
     {
-
         livreRepository.deleteById(id);
     }
 

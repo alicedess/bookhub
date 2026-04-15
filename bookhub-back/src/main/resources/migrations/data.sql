@@ -85,24 +85,24 @@ VALUES
     ('CB-97802-1', 'NEUF', 1, 2),
     ('CB-97802-2', 'ABIME', 1, 2),
     -- Exemplaires pour Livre 3
-    ('CB-97803-1', 'BON_ETAT', 1, 3),
+    ('CB-97803-1', 'BON', 1, 3),
     -- Exemplaires pour Livre 4
     ('CB-97804-1', 'NEUF', 0, 4),
     ('CB-97804-2', 'NEUF', 1, 4),
     -- Exemplaires pour Livre 5 (1984)
-    ('CB-97805-1', 'BON_ETAT', 1, 5),
-    ('CB-97805-2', 'BON_ETAT', 1, 5),
+    ('CB-97805-1', 'BON', 1, 5),
+    ('CB-97805-2', 'BON', 1, 5),
     ('CB-97805-3', 'ABIME', 0, 5),
     -- ... On continue pour quelques autres livres significatifs
     ('CB-97807-1', 'NEUF', 1, 7),
-    ('CB-97808-1', 'BON_ETAT', 1, 8),
+    ('CB-97808-1', 'BON', 1, 8),
     ('CB-97809-1', 'NEUF', 1, 9),
     ('CB-97810-1', 'ABIME', 1, 10),
     ('CB-97811-1', 'NEUF', 1, 11),
     ('CB-97811-2', 'NEUF', 0, 11),
-    ('CB-97812-1', 'BON_ETAT', 1, 12),
+    ('CB-97812-1', 'BON', 1, 12),
     ('CB-97824-1', 'NEUF', 1, 24),
-    ('CB-97830-1', 'BON_ETAT', 1, 30);
+    ('CB-97830-1', 'BON', 1, 30);
 
 -- 5. GÉNÉRATION DES ÉVALUATIONS (Commentaires et notes)
 -- Utilisateurs IDs 1 à 10, Livres IDs 1 à 30
