@@ -1,9 +1,78 @@
-    <header class="bg-lime-900 shadow p-4 flex justify-between items-center">
-  
-      <img src="assets/logo.png" />
-  
-      <button class="p-2">
-        ☰
-      </button>
-  
+    <header class="bg-lime-900 shadow sticky top-0 z-50">
+      <nav class=" mx-auto px-4 py-4 flex justify-between items-center">
+
+        <!-- Logo -->
+        <a routerLink="/books" class="flex items-center space-x-2">
+          <img src="assets/logo.png" alt="BookHub Logo" width="200" height="auto"/>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a routerLink="/books" routerLinkActive="text-yellow-400"
+             [routerLinkActiveOptions]="{ exact: true }"
+             class="text-white hover:text-orange-300 transition duration-200 font-medium">
+            Catalogue
+          </a>
+          <a routerLink="/loans/my" routerLinkActive="text-yellow-400"
+             class="text-white hover:text-orange-300 transition duration-200 font-medium">
+            Mes Emprunts
+          </a>
+          <a routerLink="/librarian/books" routerLinkActive="text-yellow-400"
+             class="text-white hover:text-orange-300 transition duration-200 font-medium">
+            Gestion
+          </a>
+        </div>
+
+        <!-- Desktop Auth Buttons -->
+        <div class="hidden md:flex items-center space-x-4">
+          <a routerLink="/login"
+             class="text-white hover:text-orange-100 transition duration-200 font-medium">
+            Connexion
+          </a>
+          <a routerLink="/register"
+             class="bg-orange-300 text-lime-900 px-4 py-2 rounded-lg hover:bg-orange-400 transition duration-200 font-bold">
+            Inscription
+          </a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button (click)="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-white hover:bg-lime-800 transition duration-200">
+          <svg *ngIf="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg *ngIf="isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+      </nav>
+
+      <!-- Mobile Navigation -->
+      <div *ngIf="isMobileMenuOpen" class="md:hidden bg-lime-800 border-t border-lime-700 animate-in fade-in">
+        <div class="px-4 py-3 space-y-2">
+          <a routerLink="/books" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+             class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+            Catalogue
+          </a>
+          <a routerLink="/loans/my" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+             class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+            Mes Emprunts
+          </a>
+          <a routerLink="/librarian/books" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+             class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+            Gestion
+          </a>
+          <div class="border-t border-lime-700 pt-2 mt-2 space-y-2">
+            <a routerLink="/login" (click)="isMobileMenuOpen = false"
+               class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+              Connexion
+            </a>
+            <a routerLink="/register" (click)="isMobileMenuOpen = false"
+               class="block px-3 py-2 rounded-lg bg-orange-200 text-lime-900 hover:bg-orange-300 transition duration-200 font-bold">
+              Inscription
+            </a>
+          </div>
+        </div>
+      </div>
+
     </header>
