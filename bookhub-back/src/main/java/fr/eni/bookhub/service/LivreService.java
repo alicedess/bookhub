@@ -1,13 +1,17 @@
 package fr.eni.bookhub.service;
 
 import fr.eni.bookhub.dto.CreateLivreDTO;
+import fr.eni.bookhub.dto.EvaluationDTO;
 import fr.eni.bookhub.dto.LivreDTO;
+import fr.eni.bookhub.dto.LivreProjection;
 import fr.eni.bookhub.entity.Auteur;
 import fr.eni.bookhub.entity.Categorie;
+import fr.eni.bookhub.entity.Evaluation;
 import fr.eni.bookhub.entity.Livre;
 import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.repository.AuteurRepository;
 import fr.eni.bookhub.repository.CategorieRepository;
+import fr.eni.bookhub.repository.EvaluationRepository;
 import fr.eni.bookhub.repository.LivreRepository;
 import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
@@ -29,9 +33,13 @@ public class LivreService {
     private final LivreRepository livreRepository;
     private final AuteurRepository auteurRepository;
     private final CategorieRepository categorieRepository;
+    private final EvaluationRepository evaluationRepository;
     private final StorageService storageService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Recherche les livres
+     */
     public Page<LivreDTO> searchLivres(
             String query,
             Long auteurId,
@@ -44,26 +52,68 @@ public class LivreService {
         Long auteurFilter = (auteurId != null && auteurId > 0) ? auteurId : null;
         Long categorieFilter = (catId != null && catId > 0) ? catId : null;
 
-        return livreRepository.findByCustomFilters(
+        Page<LivreProjection> projections = livreRepository.findByCustomFilters(
                 queryFilter,
                 auteurFilter,
                 categorieFilter,
                 pageable
         );
+
+        return projections.map(p -> new LivreDTO(
+                p.getId(),
+                p.getIsbn(),
+                p.getTitre(),
+                p.getResume(),
+                p.getImageCouverture(),
+                p.getNbPage(),
+                p.getDateParution(),
+                p.getAuteurId(),
+                p.getAuteurNom(),
+                p.getAuteurPrenom(),
+                p.getCategorieId(),
+                p.getCategorieLibelle(),
+                p.getNbExemplaires(),
+                p.getNbExemplairesDisponibles(),
+                p.getMoyenneEvaluations()
+        ));
     }
 
     /**
      * Récupère un livre par son ID.
      */
     public Optional<LivreDTO> getById(Long id) {
-        return livreRepository.findByIdForDetails(id);
+        Optional<LivreProjection> projectionOptional = livreRepository.findByIdForDetails(id);
+
+        if (projectionOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        LivreProjection projection = projectionOptional.get();
+
+        return Optional.of(new LivreDTO(
+                projection.getId(),
+                projection.getIsbn(),
+                projection.getTitre(),
+                projection.getResume(),
+                projection.getImageCouverture(),
+                projection.getNbPage(),
+                projection.getDateParution(),
+                projection.getAuteurId(),
+                projection.getAuteurNom(),
+                projection.getAuteurPrenom(),
+                projection.getCategorieId(),
+                projection.getCategorieLibelle(),
+                projection.getNbExemplaires(),
+                projection.getNbExemplairesDisponibles(),
+                projection.getMoyenneEvaluations()
+        ));
     }
 
     /**
      * Création d'un nouveau livre.
      */
     @Transactional
-    public Boolean createLivre(CreateLivreDTO payload) {
+    public LivreDTO createLivre(CreateLivreDTO payload) {
         Optional<Livre> exists = livreRepository.findByIsbn(payload.getIsbn());
 
         if (exists.isPresent()) {
@@ -87,34 +137,58 @@ public class LivreService {
         }
 
         livre.setCategorie(categorie.get());
-
         livreRepository.save(livre);
 
-        return livre.getId() != null;
+        if (null == livre.getId()) {
+            throw new OperationException("Le livre n'existe pas");
+        }
+
+        return getById(livre.getId()).orElseThrow(() -> new OperationException("Le livre n'existe pas"));
     }
 
     /**
      * Modification d'un livre.
      */
     @Transactional
-    public Boolean updateLivre(Long id, CreateLivreDTO payload) {
+    public LivreDTO updateLivre(Long id, CreateLivreDTO payload) {
         Livre livre = livreRepository.findById(id)
                 .orElseThrow(() -> new OperationException("Ce livre n'existe pas"));
 
-        if (!Objects.equals(livre.getCategorie().getId(), payload.getCategorieId())) {
+        if (null != payload.getCategorieId()) {
             Categorie categorie = categorieRepository.findById(payload.getCategorieId())
                     .orElseThrow(() -> new OperationException("Impossible de trouver la catégorie"));
             livre.setCategorie(categorie);
         }
 
-        Auteur auteur = auteurRepository.findById(payload.getAuteurId())
-                .orElseThrow(() -> new OperationException("Impossible de trouver l'auteur"));
-        livre.setAuteur(auteur);
+        if (null != payload.getAuteurId()) {
+            Auteur auteur = auteurRepository.findById(payload.getAuteurId())
+                    .orElseThrow(() -> new OperationException("Impossible de trouver l'auteur"));
+            livre.setAuteur(auteur);
+        }
 
-        modelMapper.map(payload, livre);
+        if (payload.getIsbn() != null) {
+            livre.setIsbn(payload.getIsbn());
+        }
+
+        if (payload.getTitre() != null) {
+            livre.setTitre(payload.getTitre());
+        }
+
+        if (payload.getResume() != null) {
+            livre.setResume(payload.getResume());
+        }
+
+        if (payload.getNbPage() != null) {
+            livre.setNbPage(payload.getNbPage());
+        }
+
+        if (payload.getDateParution() != null) {
+            livre.setDateParution(payload.getDateParution());
+        }
+
         livreRepository.save(livre);
 
-        return true;
+        return getById(livre.getId()).orElseThrow(() -> new OperationException("Le livre n'existe pas"));
     }
 
     /**
@@ -122,7 +196,8 @@ public class LivreService {
      * @todo Il faut vérifier si des emprunts / réservation sont en cours
      */
     @Transactional
-    public void deleteLivre(Long id) {
+    public void deleteLivre(Long id)
+    {
         livreRepository.deleteById(id);
     }
 

@@ -10,26 +10,26 @@ import { inject } from '@angular/core';
     LIBRARIAN: 2,
     ADMIN: 3,
   };
-  
+
   export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     const authService = inject(AuthService);
     const router = inject(Router);
-  
+
     const roleRequis: string = route.data['role'];
     const roleUtilisateur = authService.obtenirRole();
-  
+
     if (!roleUtilisateur) {
       return router.createUrlTree(['/login']);
     }
-  
+
     // rôle de niveau 99 = inconnu, donc pas accès
     const niveauRequis = HIERARCHIE_ROLES[roleRequis] ?? 99;
     const niveauUtilisateur = HIERARCHIE_ROLES[roleUtilisateur] ?? 0;
-  
+
     if (niveauUtilisateur >= niveauRequis) {
       return true;
     }
-  
+
     // 403 si rôle pas suffisant
     return router.createUrlTree(['/forbidden']);
 };

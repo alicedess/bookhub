@@ -61,8 +61,8 @@ public class EmpruntService {
     }
 
     @Transactional
-    public EmpruntDTO emprunterLivreDto(Long idUtilisateur, Long idExemplaire) {
-        Emprunt emprunt = emprunterLivre(idUtilisateur, idExemplaire);
+    public EmpruntDTO emprunterLivreDto(Long idUtilisateur, Long idLivre) {
+        Emprunt emprunt = emprunterLivre(idUtilisateur, idLivre);
         return empruntMapper.convertToDto(emprunt);
     }
 

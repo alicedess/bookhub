@@ -1,0 +1,211 @@
+<app-header></app-header>
+
+<div class="container mx-auto">
+
+  <div class="mt-8">
+    <a (click)="goBack()" class="btn btn-back">
+      <i class="fa fa-arrow-left-long"></i>
+      Retour
+    </a>
+  </div>
+
+  @if (livre(); as livre) {
+    <div class="mt-8 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-xl">{{ livre.titre }}</h1>
+        <p>Modification du livre</p>
+      </div>
+    </div>
+  } @else {
+    <div class="mt-8 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-xl">Nouveau livre</h1>
+        <p>Création d'un livre</p>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="bg-red-500 px-4 py-2 font-bold text-white rounded-2xl shadow mt-4">
+      {{errorMessage()}}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="bg-green-600 px-4 py-2 font-bold text-white rounded-2xl shadow mt-4">
+      {{successMessage()}}
+    </div>
+  }
+
+  <div class="bg-white rounded-2xl shadow mt-4 flex">
+    @if (livre(); as livre) {
+
+    <div class="sm:w-full md:w-1/3">
+        <div class="flex justify-center p-8">
+          <img
+            src="http://localhost:8080/api/books/{{livre.id}}/cover?filename={{livre.imageCouverture}}"
+            loading="lazy"
+            alt="Couverture"
+            class="w-full h-auto block img--cover"
+          >
+        </div>
+
+        <div>
+          <form class="p-4">
+            <div class="mb-4">
+              <input #cover class="form-input" type="file" placeholder="Couverture" accept="image/png, image/jpeg, image/webp">
+            </div>
+            <div class="flex items-center justify-end">
+              <button class="btn" type="button" (click)="updateCover(cover.files)">Modifier la couverture</button>
+            </div>
+          </form>
+        </div>
+    </div>
+    }
+
+    <div class="flex-grow">
+      <form [formGroup]="form" class="p-4">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="titre">Titre</label>
+          <input formControlName="titre" class="form-input" [class.border-red-500]="form.get('titre')?.invalid && form.get('titre')?.touched" type="text" placeholder="Titre">
+          @if (form.get('titre')?.invalid && form.get('titre')?.touched) {
+            <p class="text-red-500 text-xs italic mt-1">
+              @if (form.get('titre')?.errors?.['required']) { Le titre est obligatoire. }
+              @if (form.get('titre')?.errors?.['minlength']) { Le titre doit faire au moins 3 caractères. }
+            </p>
+          }
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="mb-4">
+            <label class="form-label" for="categorieId">Catégorie</label>
+            <select formControlName="categorieId" class="form-input" [class.border-red-500]="form.get('categorieId')?.invalid && form.get('categorieId')?.touched">
+              <option value="">Sélectionner une catégorie</option>
+              @for (categorie of categories(); track categorie.id) {
+                <option value="{{categorie.id}}">{{categorie.libelle}}</option>
+              }
+            </select>
+            @if (form.get('categorieId')?.invalid && form.get('categorieId')?.touched) {
+              <p class="text-red-500 text-xs italic mt-1">Veuillez choisir une catégorie.</p>
+            }
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="auteurId">Auteur</label>
+            <select formControlName="auteurId" class="form-input" [class.border-red-500]="form.get('auteurId')?.invalid && form.get('auteurId')?.touched">
+              <option value="">Sélectionner un auteur</option>
+              @for (auteur of auteurs(); track auteur.id) {
+                <option value="{{auteur.id}}">{{auteur.nom}} {{auteur.prenom}}</option>
+              }
+            </select>
+            @if (form.get('auteurId')?.invalid && form.get('auteurId')?.touched) {
+              <p class="text-red-500 text-xs italic mt-1">Veuillez choisir un auteur.</p>
+            }
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="isbn">ISBN</label>
+          <input formControlName="isbn" class="form-input" id="isbn" type="text" placeholder="ISBN" [class.border-red-500]="form.get('isbn')?.invalid && form.get('isbn')?.touched">
+          @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
+            <p class="text-red-500 text-xs italic mt-1">
+              @if (form.get('isbn')?.errors?.['required']) { L'ISBN est obligatoire. }
+              @if (form.get('isbn')?.errors?.['pattern']) { Le format de l'ISBN est invalide (10 ou 13 chiffres). }
+            </p>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="dateParution">Date de parution</label>
+          <input formControlName="dateParution" class="form-input" id="dateParution" type="date" [class.border-red-500]="form.get('dateParution')?.invalid && form.get('dateParution')?.touched">
+          @if (form.get('dateParution')?.invalid && form.get('dateParution')?.touched) {
+            <p class="text-red-500 text-xs italic mt-1">La date de parution est requise.</p>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="nbPage">Nombre de pages</label>
+          <input formControlName="nbPage" class="form-input" id="nbPage" type="number" placeholder="Ex: 250" [class.border-red-500]="form.get('nbPage')?.invalid && form.get('nbPage')?.touched">
+          @if (form.get('nbPage')?.invalid && form.get('nbPage')?.touched) {
+            <p class="text-red-500 text-xs italic mt-1">
+              @if (form.get('nbPage')?.errors?.['required']) { Indiquez le nombre de pages. }
+              @if (form.get('nbPage')?.errors?.['min']) { Le nombre de pages doit être supérieur à 0. }
+            </p>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="resume">Résumé</label>
+          <textarea formControlName="resume" class="form-input" id="resume" placeholder="Résumé du livre..." [class.border-red-500]="form.get('resume')?.invalid && form.get('resume')?.touched"></textarea>
+          @if (form.get('resume')?.invalid && form.get('resume')?.touched) {
+            <p class="text-red-500 text-xs italic mt-1">Le résumé est trop long (2000 caractères max).</p>
+          }
+        </div>
+
+        <div class="flex items-center justify-end">
+          <button class="btn" type="button" (click)="save()">Sauvegarder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <div>
+    <form [formGroup]="exemplairesForm" (ngSubmit)="save()">
+      <hr>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Gestion des exemplaires</h3>
+        <button type="button" class="btn btn-sm btn-outline-primary" (click)="addExemplaire()">
+          + Ajouter un exemplaire
+        </button>
+      </div>
+
+      <div formArrayName="exemplaires">
+        @for (ex of exemplaires.controls; track ex; let i = $index) {
+          <div [formGroupName]="i" class="card mb-2 p-3 bg-light">
+            <div class="row g-3 align-items-end">
+
+              <div class="col-md-4">
+                <label class="form-label">Code-barres / Identifiant</label>
+                <input type="text" formControlName="codeBarre" class="form-control" placeholder="Ex: LIB-001">
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">État</label>
+                <select formControlName="etat" class="form-select">
+                  <option value="NEUF">Neuf</option>
+                  <option value="BON_ETAT">Bon état</option>
+                  <option value="ABIME">Abîmé</option>
+                </select>
+              </div>
+
+              <div class="col-md-3 d-flex align-items-center">
+                <div class="form-check">
+                  <input type="checkbox" formControlName="disponible" class="form-check-input" [id]="'dispo' + i">
+                  <label class="form-check-label" [for]="'dispo' + i">Disponible</label>
+                </div>
+              </div>
+
+              <div class="col-md-2 text-end">
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeExemplaire(i)">
+                  Supprimer
+                </button>
+              </div>
+
+            </div>
+          </div>
+        } @empty {
+          <p class="text-muted italic">Aucun exemplaire enregistré pour ce livre.</p>
+        }
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          Enregistrer toutes les modifications
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>

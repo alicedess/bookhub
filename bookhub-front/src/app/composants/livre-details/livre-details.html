@@ -18,18 +18,18 @@
            {{ livre.auteurNom }} {{ livre.auteurPrenom }}
          </div>
          <div class="flex items-center gap-2 text-[#4A5D3B] font-semibold">
-            <span class="bg-[#4A5D3B] text-white rounded-full p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-              </svg>
-            </span>
+           @if (livre.nbExemplaireDispo > 0) {
+             <span class="fa fa-circle-check text-[#4A5D3B]"></span>
+           } @else {
+             <span class="fa fa-circle-xmark text-red-500"></span>
+           }
 
            <span>
              @if(livre.nbExemplaireDispo <= 0) {
                Indisponible
              } @else {
                Disponible
-             }
+             } ({{ livre.nbExemplaireDispo }}/{{ livre.nbExemplaire }})
            </span>
          </div>
          <div class="text-[#4A5D3B] font-semibold">{{ livre.nbPage }} pages</div>
@@ -58,22 +58,22 @@
              </div>
            </div>
 
-           <div class="relative">
-             @if(livre.nbExemplaireDispo <= 0) {
-               <button
-                 (click)="onClickReserver()"
-                 class="bg-[#D9A066] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
-                 Réserver
-               </button>
-             } @else {
-               <button
-                 (click)="onClickEmprunter()"
-                 class="bg-[#2D3A18] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
-                 Emprunter
-               </button>
-             }
+            <div class="relative">
+              @if(livre.nbExemplaireDispo <= 0) {
+                <button
+                  (click)="onClickReserver()"
+                  class="bg-[#D9A066] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
+                  Réserver
+                </button>
+              } @else {
+                <button
+                  (click)="onClickEmprunter()"
+                  class="bg-[#2D3A18] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    Emprunter
+                </button>
+              }
+            </div>
 
-           </div>
          </div>
 
          @if (canComment()) {

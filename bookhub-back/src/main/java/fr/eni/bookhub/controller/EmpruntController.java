@@ -25,10 +25,11 @@ public class EmpruntController {
     @PostMapping
     public ResponseEntity<?> emprunterLivre(
             @AuthenticationPrincipal Utilisateur utilisateur,
-            @RequestParam Long exemplaireId) {
+            @RequestParam Long idLivre) {
         try {
             EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), exemplaireId);
             return ResponseEntity.status(201)
+
                     .body(Map.of(
                             "message", "Emprunt confirmé ! Retour prévu le " +
                                     emprunt.getDateRetourPrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
