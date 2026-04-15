@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 
-<h1 class="text-green-950 font-serif text-2xl font-bold my-10 text-center">Mon profil</h1>
+<h1 class="text-green-950 font-serif text-2xl font-bold my-12 mb-10 text-center">Mon profil</h1>
 
 <div class="max-w-md mx-auto m-10">  
 
@@ -12,7 +12,7 @@
   novalidate
   >
 
-  <h1 class="text-orange-50 font-serif text-2xl font-bold mb-6 text-center">Modifier mon compte</h1>
+  <h1 class="text-orange-50 font-serif text-2xl font-bold my-6 mb-10 text-center">Modifier mon compte</h1>
 
     <div>
       <input
@@ -56,6 +56,27 @@
       }
     </div>
 
+    <!-- ajout d'un pseudo, modifiable -->
+     <div>
+      <input
+        id="pseudo"
+        type="text"
+        formControlName="pseudo"
+        placeholder="Pseudo"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(pseudo),
+          'border-gray-300': !afficherErreur(pseudo)
+        }"
+      />
+
+      @if (afficherErreur(pseudo)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (pseudo.errors?.['minlength']) { 2 caractères minimum. }
+        </p>
+      }
+     </div>
+
     <div>
       <input
         id="telephone"
@@ -83,7 +104,7 @@
           type="text"
           [value]="utilisateur?.dateNaissance | date:'longDate'"
           readonly
-          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none"
+          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none cursor-not-allowed"
         />
       </div>
 
@@ -94,16 +115,37 @@
           type="email"
           [value]="utilisateur?.email"
           readonly
-          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none"
+          class="bg-lime-900 text-orange-200 w-full px-3 py-2 rounded focus:outline-none cursor-not-allowed"
         />
       </div>
+
+    <!-- oldPassword obligatoire pour modifier le password actuel -->
+     <div>
+      <input
+        id="oldPassword"
+        type="password"
+        formControlName="oldPassword"
+        placeholder="Mot de passe actuel"
+        class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
+        [ngClass]="{
+          'border-red-400': afficherErreur(oldPassword),
+          'border-gray-300': !afficherErreur(oldPassword)
+        }"
+      />
+
+      @if (afficherErreur(oldPassword)) {
+        <p class="text-red-400 text-sm mt-1">
+          @if (oldPassword.errors?.['required']) { Le mot de passe actuel est requis. }
+        </p>
+      }
+     </div>
 
     <div>
       <input
         id="password"
         type="password"
         formControlName="password"
-        placeholder="Mot de passe"
+        placeholder="Nouveau mot de passe"
         class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
         [ngClass]="{
           'border-red-400': afficherErreur(password),
@@ -123,7 +165,7 @@
         id="confirmation"
         type="password"
         formControlName="confirmation"
-        placeholder="Confirmer le mot de passe"
+        placeholder="Confirmer le nouveau mot de passe"
         class="bg-lime-900 text-orange-50 w-full px-3 py-2  rounded focus:outline-none focus:ring"
         [ngClass]="{
           'border-red-500':

@@ -62,10 +62,19 @@ public class SecurityConfig {
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/reservation/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
-                                .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
+//                                .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/admin/**").hasRole("ADMIN") // Seuls les admins peuvent accéder à /admin
                                 .requestMatchers("/librarian/**").hasAnyRole("ADMIN", "LIBRARIAN") // Les libraires et les admins peuvent accéder à /librarian
+
+                                // Profile
+                                .requestMatchers(HttpMethod.GET, "/api/user/me").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/api/user/me").authenticated()
+                                .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER")
+                                .requestMatchers("/api/auth/**").permitAll()
+
                                 .anyRequest().authenticated()) // Pour le reste, il faut un token d'accès
+
+
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

@@ -21,12 +21,24 @@ export interface ReponseConnexion {
   token: string;
 }
 
+export interface UpdateProfilDTO {
+  oldPassword?: string;
+  profil: {
+    prenom?: string;
+    nom?: string;
+    telephone?: string;
+    password?: string;
+    pseudo?: string;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
   private readonly URL_BASE = 'http://localhost:8080/api/auth';
+  private readonly URL_BASE_USER = 'http://localhost:8080/api/user';
   private readonly CLE_TOKEN = 'bookhub_token';
 
   constructor(
@@ -75,7 +87,7 @@ export class AuthService {
   }
 
   obtenirProfilUtilisateur(): Observable<any> {
-    return this.http.get(`http://localhost:8080/api/user/me`);
+    return this.http.get(`${this.URL_BASE_USER}/me`);
   }
 
   // on récupère le rôle contenu dans le payload du back
@@ -101,11 +113,11 @@ export class AuthService {
     this.router.navigate(['/connexion']);
   }
 
-  modifierProfil(donnees: Partial<DemandeInscription>): Observable<void> {
-    return this.http.put<void>(`${this.URL_BASE}/profile`, donnees);
+  modifierProfil(donnees: UpdateProfilDTO): Observable<void> {
+    return this.http.put<void>(`${this.URL_BASE_USER}/me`, donnees);
   }
 
   supprimerCompte(): Observable<void> {
-    return this.http.delete<void>(`${this.URL_BASE}/profile`);
+    return this.http.delete<void>(`${this.URL_BASE_USER}/me`);
   }
 }

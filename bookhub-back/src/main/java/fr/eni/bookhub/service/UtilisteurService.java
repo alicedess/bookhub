@@ -76,4 +76,10 @@ public class UtilisteurService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         return userMap.convertToDto(user);
     }
+
+    public void deleteUtilisateur(String email) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        utilisateurRepository.delete(utilisateur);
+    }
 }

@@ -48,4 +48,25 @@ public class UtilisateurController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/me")
+    public ResponseEntity<ProfilDTO> updateMonProfil(Principal principal, @RequestBody UpdateProfilDTO request) {
+        try {
+            UtilisateurDTO actuel = utilisteurService.getUtilisateurParEmail(principal.getName());
+            ProfilDTO updated = utilisteurService.updateUtilisateur(actuel.getId(), request);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(403).build();
+        }
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> supprimerMonCompte(Principal principal) {
+        try {
+            utilisteurService.deleteUtilisateur(principal.getName());
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

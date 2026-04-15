@@ -31,9 +31,11 @@ export class Profil  {
       {
         prenom: ['', Validators.required],
         nom: ['', Validators.required],
+        pseudo: [''],
         telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
         password: ['', [Validators.required, Validators.pattern(this.REGEX_MDP)]],
         confirmation: ['', Validators.required],
+        oldPassword: ['', Validators.required]
       },
       { validators: this.motsDePasseIdentiques }
     );
@@ -47,13 +49,16 @@ export class Profil  {
     // raccourcis template
     get prenom()       { return this.formulaire.get('prenom')!; }
     get nom()          { return this.formulaire.get('nom')!; }
+    get pseudo()       { return this.formulaire.get('pseudo')!; }
     get dateNaissance() {return this.formulaire.get('dateNaissance')!;}
     get email()        { return this.formulaire.get('email')!; }
+    get oldPassword()   { return this.formulaire.get('oldPassword')!; }
     get password()   { return this.formulaire.get('password')!; }
     get confirmation() { return this.formulaire.get('confirmation')!; }
     get telephone()     { return this.formulaire.get('telephone')!; }
 
-    chargerInformationsUtilisateur() {
+  
+  chargerInformationsUtilisateur() {
       this.authService.obtenirProfilUtilisateur().subscribe({
         next: (utilisateur) => {
           this.utilisateur = utilisateur;
@@ -91,12 +96,27 @@ motsDePasseIdentiques(groupe: AbstractControl) {
     this.erreurServeur = null;
     this.messageSucces = null;
 
-    const { prenom, nom, telephone, password } = this.formulaire.value;
+    const { pseudo, prenom, nom, telephone, password, oldPassword } = this.formulaire.value;
 
-    this.authService.modifierProfil({ prenom, nom, telephone, password }).subscribe({
+    // le back attend un UpdateProfilDTO avec l'ancien mdp + les infos de profil
+    const body = {
+      oldPassword: oldPassword,
+      profil: {
+        pseudo: pseudo,
+        prenom: prenom,
+        nom: nom,
+        telephone: telephone,
+        password: password
+      }
+    };
+
+    this.authService.modifierProfil(body).subscribe({
       next: () => {
         this.chargement = false;
         this.messageSucces = 'Votre profil a été mis à jour avec succès.';
+        this.formulaire.get('password')?.reset();
+        this.formulaire.get('confirmation')?.reset();
+        this.formulaire.get('oldPassword')?.reset();
       },
       error: () => {
         this.chargement = false;
