@@ -7,7 +7,6 @@ import { AuthService } from '../../core/services/auth-service';
   selector: 'app-header',
   imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './header.html',
-  // styleUrl: './header.css',
 })
 export class Header {
   isMobileMenuOpen = false;
@@ -28,5 +27,15 @@ export class Header {
 
   logout() {
     this.authService.seDeconnecter();
+  }
+
+  get isLibrairian(){
+    return this.authService.obtenirRole() === "LIBRARIAN";
+
+  }
+
+  get isAdmin(){
+    return this.authService.obtenirRole() === "ADMIN";
+
   }
 }
