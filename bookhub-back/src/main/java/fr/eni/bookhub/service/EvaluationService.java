@@ -89,12 +89,10 @@ public class EvaluationService {
      * @param evaluationDTO
      * @return
      */
-    public EvaluationDTO updateEvaluation(Integer id, EvaluationDTO evaluationDTO) {
+    public EvaluationDTO updateEvaluation(Long id, EvaluationDTO evaluationDTO) {
         try{
-            Evaluation evaluation = evaluationRepository.findById(id);
-            if (evaluation == null) {
-                throw new OperationException("Evaluation non trouvée");
-            }
+            Evaluation evaluation = evaluationRepository.findById(id)
+                    .orElseThrow(() -> new OperationException("Evaluation non trouvée"));
             evaluation.setNote(evaluationDTO.getNote());
             evaluation.setCommentaire(evaluationDTO.getCommentaire());
             evaluationRepository.save(evaluation);
@@ -108,12 +106,10 @@ public class EvaluationService {
      * Cache une evaluation (soft delete)
      * @param id
      */
-    public void modererEvaluation(Integer id){
+    public void modererEvaluation(Long id){
         try {
-            Evaluation evaluation = evaluationRepository.findById(id);
-            if (evaluation == null) {
-                throw new OperationException("Evaluation non trouvée");
-            }
+            Evaluation evaluation = evaluationRepository.findById(id)
+                    .orElseThrow(() -> new OperationException("Evaluation non trouvée"));
             evaluation.setEstModere(true);
             evaluationRepository.save(evaluation);
         } catch (OperationException e) {
@@ -125,12 +121,10 @@ public class EvaluationService {
      * Supprimer une evaluation (hard delete)
      * @param id
      */
-    public void deleteEvaluation(Integer id){
+    public void deleteEvaluation(Long id){
         try{
-            Evaluation evaluation = evaluationRepository.findById(id);
-            if (evaluation == null) {
-                throw new OperationException("Evaluation non trouvée");
-            }
+            Evaluation evaluation = evaluationRepository.findById(id)
+                    .orElseThrow(() -> new OperationException("Evaluation non trouvée"));
             evaluationRepository.delete(evaluation);
         } catch (OperationException e) {
             throw new RuntimeException(e);
