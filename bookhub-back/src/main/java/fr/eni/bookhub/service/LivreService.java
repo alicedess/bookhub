@@ -237,4 +237,14 @@ public class LivreService {
 
         return modelMapper.map(livre, LivreDTO.class);
     }
+
+    public EvaluationDTO addRating(Long id, EvaluationDTO ratingRequest){
+        Optional<Livre> livre = livreRepository.findById(id);
+        Evaluation evaluation = new Evaluation();
+        evaluation.setNote(ratingRequest.getNote());
+        evaluation.setCommentaire(ratingRequest.getCommentaire());
+        modelMapper.map(livre, EvaluationDTO.class);
+        evaluationRepository.save(evaluation);
+        return ratingRequest;
+    }
 }
