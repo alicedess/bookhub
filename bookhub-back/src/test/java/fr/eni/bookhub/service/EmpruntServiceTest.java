@@ -11,13 +11,14 @@ import fr.eni.bookhub.repository.ExemplaireRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,21 +49,20 @@ class EmpruntServiceTest {
     @Test
     void getEmpruntsEnCoursDTO_RetourneLaListeEnCoursAvecIndicationRetard() {
         Utilisateur utilisateur = new Utilisateur();
+
         Emprunt emprunt1 = new Emprunt();
         Emprunt emprunt2 = new Emprunt();
         emprunt1.setIdEmprunt(1L);
         emprunt2.setIdEmprunt(2L);
-        List<Emprunt> empruntsEnCours = List.of(emprunt1, emprunt2);
-        List<Emprunt> empruntsEnRetard = List.of(emprunt2);
+
+        emprunt1.setDateRetourPrevue(LocalDateTime.now().plusDays(5));
+        emprunt2.setDateRetourPrevue(LocalDateTime.now().minusDays(1));
 
         EmpruntDTO dto1 = new EmpruntDTO();
         EmpruntDTO dto2 = new EmpruntDTO();
 
         when(empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
-                .thenReturn(empruntsEnCours);
-        when(empruntRepository.findByUtilisateurAndStatutAndDateRetourPrevueBefore(
-                eq(utilisateur), eq(StatutEnum.EN_COURS), any()))
-                .thenReturn(empruntsEnRetard);
+                .thenReturn(List.of(emprunt1, emprunt2));
         when(empruntMapper.convertToDto(emprunt1)).thenReturn(dto1);
         when(empruntMapper.convertToDto(emprunt2)).thenReturn(dto2);
 
@@ -72,9 +72,8 @@ class EmpruntServiceTest {
         assertEquals(2, resultat.size());
         assertFalse(resultat.get(0).isEnRetard());
         assertTrue(resultat.get(1).isEnRetard());
+
         verify(empruntRepository).findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
-        verify(empruntRepository).findByUtilisateurAndStatutAndDateRetourPrevueBefore(
-                eq(utilisateur), eq(StatutEnum.EN_COURS), any());
         verify(empruntMapper).convertToDto(emprunt1);
         verify(empruntMapper).convertToDto(emprunt2);
     }
@@ -127,7 +126,7 @@ class EmpruntServiceTest {
         Exemplaire exemplaire = new Exemplaire();
         exemplaire.setEstDisponible(true);
 
-        when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
+        when(utilisateurRepository.findById(ID_UTILISATEUR)).thenReturn(Optional.of(utilisateur));
         when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn(0L);
@@ -152,17 +151,17 @@ class EmpruntServiceTest {
 
     @Test
     void emprunterLivre_LeverUneExceptionQuandUtilisateurIntrouvable() {
-        when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(null);
+        when(utilisateurRepository.findById(ID_UTILISATEUR)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
                 () -> empruntService.emprunterLivre(ID_UTILISATEUR, ID_EXEMPLAIRE)
         );
 
         assertEquals("Utilisateur non trouvé", exception.getMessage());
     }
 
-    static Stream<Arguments> reglesEmpruntCases() {
+    static Stream<Arguments> reglesEmpruntCas() {
         return Stream.of(
                 Arguments.of(3, false, true, "Vous avez déjà 3 emprunts en cours."),
                 Arguments.of(0, true, true,
@@ -172,7 +171,7 @@ class EmpruntServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("reglesEmpruntCases")
+    @MethodSource("reglesEmpruntCas")
     void emprunterLivre_LeverUneExceptionSelonReglesEmprunt(int nbEmpruntsEnCours,
                                                              boolean aUnRetard,
                                                              boolean exemplaireDisponible,
@@ -186,7 +185,7 @@ class EmpruntServiceTest {
             emprunts.add(new Emprunt());
         }
 
-        when(utilisateurRepository.findUtilisateurById(ID_UTILISATEUR)).thenReturn(utilisateur);
+        when(utilisateurRepository.findById(ID_UTILISATEUR)).thenReturn(Optional.of(utilisateur));
         when(exemplaireRepository.findById(ID_EXEMPLAIRE)).thenReturn(Optional.of(exemplaire));
         when(empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS))
                 .thenReturn((long) emprunts.size());

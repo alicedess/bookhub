@@ -5,17 +5,22 @@ import fr.eni.bookhub.entity.Emprunt;
 import fr.eni.bookhub.entity.Exemplaire;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.enumeration.StatutEnum;
+import fr.eni.bookhub.exception.EmpruntException;
+import fr.eni.bookhub.exception.ExemplaireIndisponibleException;
 import fr.eni.bookhub.mapper.EmpruntMapper;
 import fr.eni.bookhub.repository.EmpruntRepository;
 import fr.eni.bookhub.repository.ExemplaireRepository;
 import fr.eni.bookhub.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -26,12 +31,17 @@ public class EmpruntService {
     private final UtilisateurRepository utilisateurRepository;
     private final EmpruntMapper empruntMapper;
 
+    private static final int DUREE_EMPRUNT_JOURS = 14;
+
+    public Page<EmpruntDTO> getAllEmpruntsDTO(int page, int size, String sortBy){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return empruntRepository.findAll(pageable)
+                .map(empruntMapper::convertToDto);
+    }
 
     protected Emprunt emprunterLivre(Long idUtilisateur, Long idExemplaire) {
-        Utilisateur utilisateur = utilisateurRepository.findUtilisateurById(idUtilisateur);
-        if (utilisateur == null) {
-            throw new IllegalArgumentException("Utilisateur non trouvé");
-        }
+        Utilisateur utilisateur = utilisateurRepository.findById(idUtilisateur)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         Exemplaire exemplaire = exemplaireRepository.findById(idExemplaire)
                 .orElseThrow(() -> new RuntimeException("Exemplaire non trouvé"));
 
@@ -41,7 +51,7 @@ public class EmpruntService {
         emprunt.setUtilisateur(utilisateur);
         emprunt.setExemplaire(exemplaire);
         emprunt.setDateDebut(LocalDateTime.now());
-        emprunt.setDateRetourPrevue(LocalDateTime.now().plusDays(14));
+        emprunt.setDateRetourPrevue(LocalDateTime.now().plusDays(DUREE_EMPRUNT_JOURS));
         emprunt.setStatut(StatutEnum.EN_COURS);
 
         exemplaire.setEstDisponible(false);
@@ -60,33 +70,32 @@ public class EmpruntService {
         // Max 3 emprunts simultanés
         long empruntsEnCours = empruntRepository.countByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
         if (empruntsEnCours >= 3) {
-            throw new RuntimeException("Vous avez déjà 3 emprunts en cours.");
+            throw new EmpruntException("Vous avez déjà 3 emprunts en cours.");
         }
 
         //Bloqué si retard
         boolean aUnRetard = empruntRepository.existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
                 utilisateur, StatutEnum.EN_COURS, LocalDateTime.now());
         if (aUnRetard) {
-            throw new RuntimeException("Vous avez un emprunt en retard. Veuillez le retourner avant de pouvoir emprunter un nouveau livre.");
+            throw new EmpruntException("Vous avez un emprunt en retard. Veuillez le retourner avant de pouvoir emprunter un nouveau livre.");
         }
 
         //Exemplaire dispo
         if (!exemplaire.getEstDisponible()) {
-            throw new RuntimeException("L'exemplaire n'est pas disponible");
+            throw new ExemplaireIndisponibleException("L'exemplaire n'est pas disponible");
         }
     }
 
     public List<EmpruntDTO> getEmpruntsEnCoursDTO(Utilisateur utilisateur) {
-        List<Emprunt> emprunts = empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS);
-        List<Emprunt> empruntsEnRetard = getEmpruntsEnRetard(utilisateur);
-
-        return emprunts.stream()
+        LocalDateTime maintenant = LocalDateTime.now();
+        return empruntRepository.findByUtilisateurAndStatut(utilisateur, StatutEnum.EN_COURS)
+                .stream()
                 .map(emprunt -> {
                     EmpruntDTO dto = empruntMapper.convertToDto(emprunt);
-                    dto.setEnRetard(empruntsEnRetard.contains(emprunt));
+                    dto.setEnRetard(emprunt.getDateRetourPrevue().isBefore(maintenant));
                     return dto;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<EmpruntDTO> getEmpruntsHistoriqueDTO(Utilisateur utilisateur) {
