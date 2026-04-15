@@ -2,6 +2,11 @@ package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.AuteurDTO;
 import fr.eni.bookhub.service.AuteurService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +22,14 @@ public class AuteurController {
 
     private AuteurService auteurService;
 
+    @Operation(summary = "Récupérer tous les auteurs", description = "Retourne une liste complète des auteurs disponibles en base de données.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuteurDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur",
+                    content = @Content)
+    })
     @GetMapping("")
     public ResponseEntity<?> getAuteurs(){
         try {

@@ -26,7 +26,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./composants/livre-details/livre-details').then((m) => m.LivreDetails),
   },
-  { path: '**', redirectTo: 'books' },
   //   { path: 'books/:id', loadComponent: () => import('') },
 
   // rôle USER
@@ -59,9 +58,18 @@ export const routes: Routes = [
     data: { role: 'LIBRARIAN' },
     children: [
       //   { path: '', loadComponent: () => import('') },
-      //   { path: 'books', loadComponent: () => import('') },
-      //   { path: 'books/new', loadComponent: () => import('') },
-      //   { path: 'books/:id/edit', loadComponent: () => import('') },
+        {
+          path: 'books',
+          loadComponent: () => import('./composants/gestion-livre/liste/liste').then(m => m.Liste)
+        },
+        {
+          path: 'books/new',
+          loadComponent: () => import('./composants/gestion-livre/edition/edition').then(m => m.Edition)
+        },
+        {
+          path: 'books/:id/edit',
+          loadComponent: () => import('./composants/gestion-livre/edition/edition').then(m => m.Edition)
+        },
       //   { path: 'loans', loadComponent: () => import('') },
       //   { path: 'reviews', loadComponent: () => import('') },
     ],
@@ -77,4 +85,6 @@ export const routes: Routes = [
       //   { path: 'users', loadComponent: () => import('') },
     ],
   },
+
+  { path: '**', redirectTo: 'books' },
 ];
