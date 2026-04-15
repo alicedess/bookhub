@@ -1,6 +1,7 @@
 package fr.eni.bookhub.service;
 
 import fr.eni.bookhub.dto.CreateLivreDTO;
+import fr.eni.bookhub.dto.LivreDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,9 @@ public class LivreServiceTest {
         dto.setResume("Resume Livre");
         dto.setImageCouverture("Image Livre");
 
-        Boolean result = livreService.createLivre(dto);
-        Assertions.assertTrue(result);
+        LivreDTO result = livreService.createLivre(dto);
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getId());
     }
 
 }

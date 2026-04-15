@@ -1,0 +1,29 @@
+<app-header/>
+
+<div class="flex overflow-hidden">
+  <aside class="w-64 border-r border-gray-200 flex flex-col">
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+      <p class="text-xs font-semibold text-gray-400 uppercase px-3 mb-2">Principal</p>
+
+      <a routerLink="/librarian" routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all group">
+        <i class="fa-solid fa-chart-line w-5"></i>
+        <span class="font-medium">Tableau de bord</span>
+      </a>
+
+      <p class="text-xs font-semibold text-gray-400 uppercase px-3 mt-6 mb-2">Gestion</p>
+
+      <a routerLink="/librarian/books" routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all group">
+        <i class="fa-solid fa-book w-5"></i>
+        <span class="font-medium">Livres</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-grow overflow-y-auto">
+    <div class="p-6 min-h-screen">
+      <router-outlet/>
+    </div>
+  </main>
+</div>

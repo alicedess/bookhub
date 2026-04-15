@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Connexion } from './connexion';
+import Connexion from './connexion';
 
 describe('Connexion', () => {
   let component: Connexion;
