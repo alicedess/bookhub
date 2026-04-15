@@ -4,7 +4,9 @@ import fr.eni.bookhub.dto.EmpruntDTO;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.service.EmpruntService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,7 @@ public class EmpruntController {
             @RequestParam Long idLivre) {
         try {
             EmpruntDTO emprunt = empruntService.emprunterLivreDto(utilisateur.getId(), idLivre);
-            return ResponseEntity.ok()
+            return ResponseEntity.status(201)
                     .body(Map.of(
                             "message", "Emprunt confirmé ! Retour prévu le " +
                                     emprunt.getDateRetourPrevue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
@@ -48,5 +50,14 @@ public class EmpruntController {
         response.put("historique", empruntsHistoriques);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('LIBRARIAN')")
+    public ResponseEntity<Page<EmpruntDTO>> tousLesEmprunts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "dateDebut") String sortBy) {
+        return ResponseEntity.ok(empruntService.getAllEmpruntsDTO(page, size, sortBy));
     }
 }
