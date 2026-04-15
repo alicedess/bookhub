@@ -1,6 +1,5 @@
 package fr.eni.bookhub.controller;
 
-import fr.eni.bookhub.dto.AuteurDTO;
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.exception.OperationException;
@@ -8,12 +7,12 @@ import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,31 +45,19 @@ public class LivreController {
             @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
     })
     @GetMapping({"", "/search"})
-    public ResponseEntity<?> searchLivres(
+    public ResponseEntity<Page<LivreDTO>> searchLivres(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
         @RequestParam(required = false, name = "categorie") Long catId,
         @RequestParam(defaultValue = "0") int page
     )
     {
-        try {
-            return ResponseEntity.ok().body(livreService.searchLivres(
-                    query,
-                    auteurId,
-                    catId,
-                    page
-            ));
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de récupérer les livres"
-            ));
-        }
+        return ResponseEntity.ok().body(livreService.searchLivres(
+                query,
+                auteurId,
+                catId,
+                page
+        ));
     }
 
     /**
@@ -79,21 +66,9 @@ public class LivreController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getLivreById(@PathVariable Long id)
     {
-        try {
-            return livreService.getById(id)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de récupérer ce livre"
-            ));
-        }
+        return livreService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -102,25 +77,13 @@ public class LivreController {
     @PostMapping("")
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
-        try {
-            LivreDTO createdLivre = livreService.createLivre(payload);
+        LivreDTO createdLivre = livreService.createLivre(payload);
 
-            if (null != createdLivre) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdLivre);
-            }
-
-            return ResponseEntity.badRequest().build();
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de créer ce livre"
-            ));
+        if (null != createdLivre) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdLivre);
         }
+
+        return ResponseEntity.badRequest().build();
     }
 
     /**
@@ -129,25 +92,13 @@ public class LivreController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
-        try {
-            LivreDTO updatedLivre = livreService.updateLivre(id, payload);
+        LivreDTO updatedLivre = livreService.updateLivre(id, payload);
 
-            if (null != updatedLivre) {
-                return ResponseEntity.status(HttpStatus.OK).body(updatedLivre);
-            }
-
-            return ResponseEntity.badRequest().build();
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de modifier ce livre"
-            ));
+        if (null != updatedLivre) {
+            return ResponseEntity.status(HttpStatus.OK).body(updatedLivre);
         }
+
+        return ResponseEntity.badRequest().build();
     }
 
     /**
@@ -156,21 +107,9 @@ public class LivreController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLivre(@PathVariable Long id)
     {
-        try {
-            livreService.deleteLivre(id);
+        livreService.deleteLivre(id);
 
-            return ResponseEntity.noContent().build();
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de supprimer ce livre"
-            ));
-        }
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -182,24 +121,12 @@ public class LivreController {
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes)
     {
-        try {
-            LivreDTO livre = livreService.updateCouvertureLivre(id, file);
+        LivreDTO livre = livreService.updateCouvertureLivre(id, file);
 
-            redirectAttributes.addFlashAttribute("message",
-                    "You successfully uploaded " + file.getOriginalFilename() + "!");
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-            return ResponseEntity.ok().body(livre);
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de modifier la couverture du livre"
-            ));
-        }
+        return ResponseEntity.ok().body(livre);
     }
 
     /**
@@ -207,33 +134,21 @@ public class LivreController {
      */
     @GetMapping("/{id}/cover")
     public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
-        try {
-            Optional<LivreDTO> livre = livreService.getById(id);
+        Optional<LivreDTO> livre = livreService.getById(id);
 
-            if (livre.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            LivreDTO livreDTO = livre.get();
-
-            if (null == livreDTO.getImageCouverture()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(resource);
-        } catch (OperationException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Impossible de récupérer la couverture du livre"
-            ));
+        if (livre.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+
+        LivreDTO livreDTO = livre.get();
+
+        if (null == livreDTO.getImageCouverture()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 }
