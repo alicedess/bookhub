@@ -91,7 +91,7 @@ public class EmpruntService {
     }
 
     public List<EmpruntDTO> getEmpruntsHistoriqueDTO(Utilisateur utilisateur) {
-        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE, StatutEnum.RETURNED);
         List<Emprunt> emprunts = empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique);
 
         return empruntMapper.convertToDto(emprunts);
@@ -102,5 +102,41 @@ public class EmpruntService {
                 utilisateur, StatutEnum.EN_COURS, LocalDateTime.now());
     }
 
+    @Transactional
+    public EmpruntDTO retournerLivreDto(Long idEmprunt) {
+        Emprunt emprunt = empruntRepository.findById(idEmprunt)
+                .orElseThrow(() -> new RuntimeException("Emprunt non trouvé"));
+
+        if (emprunt.getStatut() != StatutEnum.EN_COURS) {
+            throw new RuntimeException("Cet emprunt n'est pas en cours");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        emprunt.setDateRetourEffective(now);
+
+        boolean enRetard = now.isAfter(emprunt.getDateRetourPrevue());
+        emprunt.setEnRetard(enRetard);
+        emprunt.setStatut(StatutEnum.RETURNED);
+
+        Exemplaire exemplaire = emprunt.getExemplaire();
+        exemplaire.setEstDisponible(true);
+        exemplaireRepository.save(exemplaire);
+
+        empruntRepository.save(emprunt);
+
+        return empruntMapper.convertToDto(emprunt);
+    }
+
+    public List<EmpruntDTO> getAllEmpruntsEnCoursDTO() {
+        List<Emprunt> emprunts = empruntRepository.findByStatut(StatutEnum.EN_COURS);
+
+        return emprunts.stream()
+                .map(emprunt -> {
+                    EmpruntDTO dto = empruntMapper.convertToDto(emprunt);
+                    dto.setEnRetard(emprunt.getDateRetourPrevue().isBefore(LocalDateTime.now()));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
 }

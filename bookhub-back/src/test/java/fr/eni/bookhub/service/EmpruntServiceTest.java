@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +86,7 @@ class EmpruntServiceTest {
         Emprunt emprunt1 = new Emprunt();
         Emprunt emprunt2 = new Emprunt();
         List<Emprunt> empruntsHistorique = List.of(emprunt1, emprunt2);
-        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE, StatutEnum.RETURNED);
         List<EmpruntDTO> empruntsHistoriqueDto = List.of(new EmpruntDTO(), new EmpruntDTO());
 
         when(empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique))
@@ -219,6 +220,133 @@ class EmpruntServiceTest {
             verify(empruntRepository, never()).existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
                     any(Utilisateur.class), any(StatutEnum.class), any());
         }
+    }
+
+    @Test
+    void retournerLivre_RetourDansLesDelais() {
+        Exemplaire exemplaire = new Exemplaire();
+        exemplaire.setId(10L);
+        exemplaire.setEstDisponible(false);
+
+        Emprunt emprunt = new Emprunt();
+        emprunt.setIdEmprunt(1L);
+        emprunt.setStatut(StatutEnum.EN_COURS);
+        emprunt.setDateDebut(LocalDateTime.now().minusDays(7));
+        emprunt.setDateRetourPrevue(LocalDateTime.now().plusDays(7));
+        emprunt.setExemplaire(exemplaire);
+
+        EmpruntDTO dto = new EmpruntDTO();
+        dto.setStatut(StatutEnum.RETURNED);
+        dto.setEnRetard(false);
+
+        when(empruntRepository.findById(1L)).thenReturn(Optional.of(emprunt));
+        when(empruntRepository.save(any(Emprunt.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(empruntMapper.convertToDto(any(Emprunt.class))).thenReturn(dto);
+
+        EmpruntDTO resultat = empruntService.retournerLivreDto(1L);
+
+        assertNotNull(resultat);
+        assertEquals(StatutEnum.RETURNED, resultat.getStatut());
+        assertFalse(resultat.isEnRetard());
+        assertEquals(StatutEnum.RETURNED, emprunt.getStatut());
+        assertNotNull(emprunt.getDateRetourEffective());
+        assertTrue(exemplaire.getEstDisponible());
+
+        verify(exemplaireRepository).save(exemplaire);
+        verify(empruntRepository).save(emprunt);
+    }
+
+    @Test
+    void retournerLivre_RetourEnRetard() {
+        Exemplaire exemplaire = new Exemplaire();
+        exemplaire.setId(10L);
+        exemplaire.setEstDisponible(false);
+
+        Emprunt emprunt = new Emprunt();
+        emprunt.setIdEmprunt(2L);
+        emprunt.setStatut(StatutEnum.EN_COURS);
+        emprunt.setDateDebut(LocalDateTime.now().minusDays(21));
+        emprunt.setDateRetourPrevue(LocalDateTime.now().minusDays(7));
+        emprunt.setExemplaire(exemplaire);
+
+        EmpruntDTO dto = new EmpruntDTO();
+        dto.setStatut(StatutEnum.RETURNED);
+        dto.setEnRetard(true);
+
+        when(empruntRepository.findById(2L)).thenReturn(Optional.of(emprunt));
+        when(empruntRepository.save(any(Emprunt.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(empruntMapper.convertToDto(any(Emprunt.class))).thenReturn(dto);
+
+        EmpruntDTO resultat = empruntService.retournerLivreDto(2L);
+
+        assertNotNull(resultat);
+        assertTrue(emprunt.isEnRetard());
+        assertEquals(StatutEnum.RETURNED, emprunt.getStatut());
+        assertNotNull(emprunt.getDateRetourEffective());
+        assertTrue(exemplaire.getEstDisponible());
+
+        verify(exemplaireRepository).save(exemplaire);
+        verify(empruntRepository).save(emprunt);
+    }
+
+    @Test
+    void retournerLivre_LeverUneExceptionQuandEmpruntIntrouvable() {
+        when(empruntRepository.findById(99L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> empruntService.retournerLivreDto(99L)
+        );
+
+        assertEquals("Emprunt non trouvé", exception.getMessage());
+        verify(exemplaireRepository, never()).save(any(Exemplaire.class));
+        verify(empruntRepository, never()).save(any(Emprunt.class));
+    }
+
+    @Test
+    void retournerLivre_LeverUneExceptionQuandEmpruntPasEnCours() {
+        Emprunt emprunt = new Emprunt();
+        emprunt.setIdEmprunt(3L);
+        emprunt.setStatut(StatutEnum.RETURNED);
+
+        when(empruntRepository.findById(3L)).thenReturn(Optional.of(emprunt));
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> empruntService.retournerLivreDto(3L)
+        );
+
+        assertEquals("Cet emprunt n'est pas en cours", exception.getMessage());
+        verify(exemplaireRepository, never()).save(any(Exemplaire.class));
+        verify(empruntRepository, never()).save(any(Emprunt.class));
+    }
+
+    @Test
+    void getAllEmpruntsEnCoursDTO_RetourneTousLesEmpruntsEnCours() {
+        Emprunt emprunt1 = new Emprunt();
+        emprunt1.setIdEmprunt(1L);
+        emprunt1.setDateRetourPrevue(LocalDateTime.now().plusDays(7));
+
+        Emprunt emprunt2 = new Emprunt();
+        emprunt2.setIdEmprunt(2L);
+        emprunt2.setDateRetourPrevue(LocalDateTime.now().minusDays(3));
+
+        List<Emprunt> emprunts = List.of(emprunt1, emprunt2);
+
+        EmpruntDTO dto1 = new EmpruntDTO();
+        EmpruntDTO dto2 = new EmpruntDTO();
+
+        when(empruntRepository.findByStatut(StatutEnum.EN_COURS)).thenReturn(emprunts);
+        when(empruntMapper.convertToDto(emprunt1)).thenReturn(dto1);
+        when(empruntMapper.convertToDto(emprunt2)).thenReturn(dto2);
+
+        List<EmpruntDTO> resultat = empruntService.getAllEmpruntsEnCoursDTO();
+
+        assertNotNull(resultat);
+        assertEquals(2, resultat.size());
+        assertFalse(resultat.get(0).isEnRetard());
+        assertTrue(resultat.get(1).isEnRetard());
+        verify(empruntRepository).findByStatut(StatutEnum.EN_COURS);
     }
 
 }

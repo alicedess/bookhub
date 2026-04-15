@@ -23,4 +23,6 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     List<Emprunt> findByUtilisateurAndStatutIn(Utilisateur utilisateur, List<StatutEnum> status);
 
     List<Emprunt> findByUtilisateurAndStatutAndDateRetourPrevueBefore(Utilisateur utilisateur, StatutEnum statutEnum, LocalDateTime now);
+
+    List<Emprunt> findByStatut(StatutEnum statut);
 }

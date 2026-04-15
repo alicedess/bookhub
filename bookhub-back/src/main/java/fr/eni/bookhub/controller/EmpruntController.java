@@ -49,4 +49,27 @@ public class EmpruntController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<EmpruntDTO>> getAllActiveLoans() {
+        List<EmpruntDTO> empruntsEnCours = empruntService.getAllEmpruntsEnCoursDTO();
+        return ResponseEntity.ok(empruntsEnCours);
+    }
+
+    @PutMapping("/{id}/return")
+    public ResponseEntity<?> retournerLivre(@PathVariable Long id) {
+        try {
+            EmpruntDTO emprunt = empruntService.retournerLivreDto(id);
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "message", emprunt.isEnRetard()
+                                    ? "Retour enregistré avec retard"
+                                    : "Retour enregistré avec succès",
+                            "emprunt", emprunt
+                    ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Erreur : " + e.getMessage()));
+        }
+    }
 }

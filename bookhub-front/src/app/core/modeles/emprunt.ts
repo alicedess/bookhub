@@ -1,4 +1,5 @@
 export interface EmpruntDTO {
+  idEmprunt: number;
   id: number;
   dateDebut: Date;
   dateRetourPrevue: Date;
@@ -17,6 +18,11 @@ export interface MesEmpruntsResponse {
 }
 
 export interface EmpruntCreationResponse {
+  message: string;
+  emprunt: EmpruntDTO;
+}
+
+export interface RetourResponse {
   message: string;
   emprunt: EmpruntDTO;
 }

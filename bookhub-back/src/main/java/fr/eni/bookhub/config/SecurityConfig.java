@@ -56,6 +56,10 @@ public class SecurityConfig {
                                 // Auteurs
                                 .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()
 
+                                // Loans
+                                .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasAnyRole("LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/loans/active").hasAnyRole("LIBRARIAN", "ADMIN")
+
                                 // Authentication
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
 
