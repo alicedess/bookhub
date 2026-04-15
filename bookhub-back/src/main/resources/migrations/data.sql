@@ -63,7 +63,7 @@ INSERT INTO utilisateur
 (pseudo, email, password, nom, prenom, date_naissance, telephone, id_role, date_suppression, commentaire_avec_pseudo)
 VALUES
     ('admin_hub', 'admin@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Admin', 'Système', '1990-01-01', '0102030405', 1, NULL, 1),
-    ('jdupont', 'jean.dupont@email.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
+    ('jdupont', 'librarian@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
     ('msmith', 'marie.smith@gmail.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Smith', 'Marie', '1992-11-20', '0623456789', 2, NULL, 1),
     ('lartigaud', 'lucas.a@outlook.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Artigaud', 'Lucas', '1998-03-15', '0634567890', 2, NULL, 0),
     ('bibliophile', 'sophie.biblio@yahoo.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Morel', 'Sophie', '1978-07-22', '0645678901', 2, NULL, 1),
@@ -80,7 +80,7 @@ INSERT INTO exemplaire (code_barre, etat, est_disponible, id_livre)
 VALUES
     -- Exemplaires pour Livre 1
     ('CB-97801-1', 'NEUF', 1, 1),
-    ('CB-97801-2', 'BON_ETAT', 0, 1),
+    ('CB-97801-2', 'BON', 0, 1),
     -- Exemplaires pour Livre 2
     ('CB-97802-1', 'NEUF', 1, 2),
     ('CB-97802-2', 'ABIME', 1, 2),
