@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiPageResponse } from '../modeles/api-page-response';
 import { type Livre } from '../modeles/livre';
+import { Exemplaire } from '../modeles/exemplaire';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +47,13 @@ export class CatalogueService {
     formData.append('file', file, file.name);
 
     return this.httpClient.put(`${this.URL_BASE}/${livre.id}/cover`, formData);
+  }
+
+  getExemplaires(livre: Livre) {
+    return this.httpClient.get<Exemplaire[]>(`${this.URL_BASE}/${livre.id}/exemplaires`)
+  }
+
+  saveExemplaires(livre: Livre, data: Partial<Exemplaire>[]) {
+    return this.httpClient.post(`${this.URL_BASE}/${livre.id}/exemplaires`, data)
   }
 }
