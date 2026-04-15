@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,6 +35,37 @@ public class UtilisateurController {
             return ResponseEntity.ok().body(updatedUtilisateur);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UtilisateurDTO> getMonProfil(Principal principal) {
+        try {
+            UtilisateurDTO utilisateur = utilisteurService.getUtilisateurParEmail(principal.getName());
+            return ResponseEntity.ok().body(utilisateur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ProfilDTO> updateMonProfil(Principal principal, @RequestBody UpdateProfilDTO request) {
+        try {
+            UtilisateurDTO actuel = utilisteurService.getUtilisateurParEmail(principal.getName());
+            ProfilDTO updated = utilisteurService.updateUtilisateur(actuel.getId(), request);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(403).build();
+        }
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> supprimerMonCompte(Principal principal) {
+        try {
+            utilisteurService.deleteUtilisateur(principal.getName());
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

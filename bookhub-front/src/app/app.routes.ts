@@ -29,28 +29,28 @@ export const routes: Routes = [
   },
   //   { path: 'books/:id', loadComponent: () => import('') },
 
-  // rôle USER
-  //   {
-  //     path: 'dashboard',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
+
+// rôle USER
+//   {
+//     path: 'dashboard',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
+//   {
+//     path: 'loans/my',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
+//   {
+//     path: 'reservations/my',
+//     canActivate: [authGuard],
+//     loadComponent: () => import('')
+//   },
   {
-    path: 'loans/my',
+    path: 'profile',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./composants/mes-emprunts/mes-emprunts').then((m) => m.MesEmprunts),
-  },
-  //   {
-  //     path: 'reservations/my',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
-  //   {
-  //     path: 'profile',
-  //     canActivate: [authGuard],
-  //     loadComponent: () => import('')
-  //   },
+    data: { role: 'USER' },
+    loadComponent: () => import('./composants/authentification/profil/profil').then((m) => m.Profil)  },
 
   // rôle LIBRARIAN
   {
@@ -91,5 +91,6 @@ export const routes: Routes = [
     ],
   },
 
+  // Wildcard en dernier pour éviter les soucis de redirection
   { path: '**', redirectTo: 'books' },
 ];
