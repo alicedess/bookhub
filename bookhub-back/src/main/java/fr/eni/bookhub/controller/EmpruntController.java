@@ -91,7 +91,9 @@ public class EmpruntController {
         try {
             EmpruntDTO emprunt = empruntService.retournerLivreDTO(id);
             return ResponseEntity.ok(Map.of(
-                    "message", "Retour enregistré avec succès !",
+                    "message", emprunt.isEnRetard()
+                            ? "Retour enregistré avec retard"
+                            : "Retour enregistré avec succès",
                     "emprunt", emprunt
             ));
         } catch (RuntimeException e) {

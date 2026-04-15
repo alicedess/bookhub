@@ -60,7 +60,9 @@ public class EmpruntService {
 
     public Page<EmpruntDTO> getAllEmpruntsDTO(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return empruntRepository.findAll(pageable)
+        List<StatutEnum> statutsActifs = List.of(StatutEnum.EN_COURS, StatutEnum.RETARDE);
+
+        return empruntRepository.findByStatutIn(statutsActifs, pageable)
                 .map(empruntMapper::convertToDto);
     }
 
