@@ -79,6 +79,21 @@ export class AuthService {
     }
   }
 
+  obtenirUtilisateur(): { email: string; nom: string; prenom: string } | null {
+    const token = this.obtenirToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        email: payload.email,
+        nom: payload.nom,
+        prenom: payload.prenom
+      };
+    } catch {
+      return null;
+    }
+  }
+
   seDeconnecter(): void {
     localStorage.removeItem(this.CLE_TOKEN);
     this.router.navigate(['/connexion']);
