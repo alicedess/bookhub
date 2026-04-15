@@ -17,10 +17,12 @@
              class="text-white hover:text-orange-300 transition duration-200 font-medium">
             Mes Emprunts
           </a>
-          <a routerLink="/librarian/books" routerLinkActive="text-yellow-400"
-             class="text-white hover:text-orange-300 transition duration-200 font-medium">
-            Gestion
-          </a>
+          @if (isLibrairian || isAdmin) {
+            <a routerLink="/librarian/books" routerLinkActive="text-yellow-400"
+               class="text-white hover:text-orange-300 transition duration-200 font-medium">
+              Gestion
+            </a>
+          }
         </div>
 
         <!-- Desktop Auth Buttons -->
@@ -79,30 +81,36 @@
            class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
           Mes Emprunts
         </a>
-        <a routerLink="/librarian/books" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+        @if (isLibrairian || isAdmin) {
+          <a routerLink="/librarian/books" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
            class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
           Gestion
         </a>
-        <div *ngIf="!isLoggedIn" class="border-t border-lime-700 pt-2 mt-2 space-y-2">
-          <a routerLink="/login" (click)="isMobileMenuOpen = false"
-             class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
-            Connexion
-          </a>
-          <a routerLink="/register" (click)="isMobileMenuOpen = false"
-             class="block px-3 py-2 rounded-lg bg-orange-200 text-lime-900 hover:bg-orange-300 transition duration-200 font-bold">
-            Inscription
-          </a>
-        </div>
-        <div *ngIf="isLoggedIn" class="border-t border-lime-700 pt-2 mt-2 space-y-2">
-          <div class="px-3 py-2 text-white">
-            <p class="font-medium">{{ currentUser?.prenom }} {{ currentUser?.nom }}</p>
-            <p class="text-sm text-orange-200">{{ currentUser?.email }}</p>
+        }
+        @if (!isLoggedIn) {
+          <div class="border-t border-lime-700 pt-2 mt-2 space-y-2">
+            <a routerLink="/login" (click)="isMobileMenuOpen = false"
+               class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+              Connexion
+            </a>
+            <a routerLink="/register" (click)="isMobileMenuOpen = false"
+               class="block px-3 py-2 rounded-lg bg-orange-200 text-lime-900 hover:bg-orange-300 transition duration-200 font-bold">
+              Inscription
+            </a>
           </div>
-          <button (click)="logout(); isMobileMenuOpen = false"
-                  class="block w-full text-left px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-200 font-medium">
-            Déconnexion
-          </button>
-        </div>
+        }
+        @if (isLoggedIn) {
+          <div class="border-t border-lime-700 pt-2 mt-2 space-y-2">
+            <div class="px-3 py-2 text-white">
+              <p class="font-medium">{{ currentUser?.prenom }} {{ currentUser?.nom }}</p>
+              <p class="text-sm text-orange-200">{{ currentUser?.email }}</p>
+            </div>
+            <button (click)="logout(); isMobileMenuOpen = false"
+                    class="block w-full text-left px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-200 font-medium">
+              Déconnexion
+            </button>
+          </div>
+        }
       </div>
     </div>
   }
