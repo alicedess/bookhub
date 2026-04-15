@@ -22,5 +22,7 @@ public class EmpruntDTO {
     private Long exemplaireId;
     private Long livreId;
     private String titreLivre;
+    private String auteurNom;
+    private String auteurPrenom;
 }
 
