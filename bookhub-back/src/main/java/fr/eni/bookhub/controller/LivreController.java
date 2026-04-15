@@ -56,6 +56,7 @@ public class LivreController {
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
         @RequestParam(required = false, name = "categorie") Long catId,
+        @RequestParam(required = false, name = "disponibilite") Integer estDisponible,
         @RequestParam(defaultValue = "0") int page
     )
     {
@@ -63,6 +64,7 @@ public class LivreController {
                 query,
                 auteurId,
                 catId,
+                estDisponible,
                 page
         ));
     }
