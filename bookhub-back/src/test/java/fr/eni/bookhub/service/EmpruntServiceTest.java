@@ -33,6 +33,7 @@ class EmpruntServiceTest {
 
     private static final Long ID_UTILISATEUR = 1L;
     private static final Long ID_LIVRE = 2L;
+    private static final Long ID_EMPRUNT = 3L;
 
     @InjectMocks
     private EmpruntService empruntService;
@@ -117,6 +118,56 @@ class EmpruntServiceTest {
         assertEquals(empruntsRetard, resultat);
         verify(empruntRepository).findByUtilisateurAndStatutAndDateRetourPrevueBefore(
                 eq(utilisateur), eq(StatutEnum.EN_COURS), any());
+    }
+
+    @Test
+    void retournerLivreDTO_MetAJourEmpruntEtExemplaire() {
+        Emprunt emprunt = new Emprunt();
+        emprunt.setStatut(StatutEnum.EN_COURS);
+        emprunt.setDateRetourPrevue(LocalDateTime.now().plusDays(2));
+
+        Exemplaire exemplaire = new Exemplaire();
+        exemplaire.setEstDisponible(false);
+        emprunt.setExemplaire(exemplaire);
+
+        when(empruntRepository.findById(ID_EMPRUNT)).thenReturn(Optional.of(emprunt));
+        when(empruntRepository.save(any(Emprunt.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(empruntMapper.convertToDto(any(Emprunt.class))).thenAnswer(invocation -> {
+            Emprunt saved = invocation.getArgument(0);
+            EmpruntDTO dto = new EmpruntDTO();
+            dto.setStatut(saved.getStatut());
+            dto.setDateRetourEffective(saved.getDateRetourEffective());
+            dto.setEnRetard(saved.isEnRetard());
+            return dto;
+        });
+
+        EmpruntDTO resultat = empruntService.retournerLivreDTO(ID_EMPRUNT);
+
+        assertNotNull(resultat);
+        assertEquals(StatutEnum.RETOURNE, resultat.getStatut());
+        assertFalse(resultat.isEnRetard());
+        assertNotNull(resultat.getDateRetourEffective());
+        assertTrue(exemplaire.getEstDisponible());
+
+        verify(empruntRepository).findById(ID_EMPRUNT);
+        verify(exemplaireRepository).save(exemplaire);
+        verify(empruntRepository).save(emprunt);
+        verify(empruntMapper).convertToDto(emprunt);
+    }
+
+    @Test
+    void retournerLivreDTO_LeverExceptionQuandEmpruntIntrouvable() {
+        when(empruntRepository.findById(ID_EMPRUNT)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> empruntService.retournerLivreDTO(ID_EMPRUNT)
+        );
+
+        assertEquals("Emprunt non trouvé", exception.getMessage());
+        verify(exemplaireRepository, never()).save(any(Exemplaire.class));
+        verify(empruntRepository, never()).save(any(Emprunt.class));
+        verify(empruntMapper, never()).convertToDto(any(Emprunt.class));
     }
 
     @Test
