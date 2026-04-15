@@ -36,7 +36,7 @@ SELECT new fr.eni.bookhub.dto.LivreDTO(
         l.categorie.id,
         l.categorie.libelle,
         COUNT(DISTINCT e.id),
-        SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END) OVER(PARTITION BY l.id),
+        SUM(DISTINCT CASE WHEN e.estDisponible = true THEN 1 ELSE 0 END),
         AVG(eval.note)
 )
 FROM Livre l 
@@ -44,7 +44,7 @@ LEFT JOIN Exemplaire e ON e.livre = l
 LEFT JOIN Evaluation eval ON eval.livre = l
 WHERE l.id = :id      
 GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle, l.dateParution, e.estDisponible
+         l.categorie.id, l.categorie.libelle, l.dateParution
 """)
     Optional<LivreDTO> findByIdForDetails(@Param("id") Long id);
 
@@ -67,7 +67,7 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
             l.categorie.id,
             l.categorie.libelle,
             COUNT(DISTINCT e.id),
-            SUM(CASE WHEN e.estDisponible = true THEN 1L ELSE 0L END) OVER(PARTITION BY l.id),
+            SUM(DISTINCT CASE WHEN e.estDisponible = true THEN 1 ELSE 0 END),
             AVG(eval.note) 
         )
         FROM Livre l
@@ -82,7 +82,7 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
           AND (:auteurId IS NULL OR l.auteur.id = :auteurId)
           AND (:catId IS NULL OR l.categorie.id = :catId)
        GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-         l.categorie.id, l.categorie.libelle, l.dateParution, e.estDisponible   
+         l.categorie.id, l.categorie.libelle, l.dateParution   
     """)
     Page<LivreDTO> findByCustomFilters(
             @Param("query") String queryFilter,

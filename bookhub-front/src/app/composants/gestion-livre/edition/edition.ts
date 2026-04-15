@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CatalogueService } from '../../../core/services/catalogue-service';
 import { Livre } from '../../../core/modeles/livre';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Header } from '../../../layout/header/header';
 import { CategorieService } from '../../../core/services/categorie-service';
 import { AuteurService } from '../../../core/services/auteur-service';
@@ -53,6 +53,14 @@ export class Edition implements OnInit {
     categorieId: new FormControl<number | null>(null, [Validators.required]),
     auteurId: new FormControl<number | null>(null, [Validators.required]),
   });
+
+  exemplairesForm = new FormGroup({
+    exemplaires: new FormArray([])
+  })
+
+  get exemplaires() {
+    return this.exemplairesForm.get('exemplaires') as FormArray;
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -169,4 +177,41 @@ export class Edition implements OnInit {
   protected goBack() {
     this.location.back();
   }
+
+  /**
+   * Ajoute un nouvel exemplaire vide au formulaire
+   */
+  addExemplaire(exemplaireData?: any) {
+    const exemplaireForm = new FormGroup({
+      id: new FormControl(exemplaireData?.id || null),
+      codeBarre: new FormControl(exemplaireData?.codeBarre || '', [Validators.required]),
+      etat: new FormControl(exemplaireData?.etat || 'NEUF', [Validators.required]),
+      disponible: new FormControl(exemplaireData?.disponible ?? true)
+    });
+
+    this.exemplaires.push(exemplaireForm);
+  }
+
+  /**
+   * Supprime un exemplaire de la liste (localement)
+   */
+  removeExemplaire(index: number) {
+    this.exemplaires.removeAt(index);
+  }
+//
+// // Dans ton ngOnInit, lors de la récupération du livre :
+//   this.catalogueService.getLivre(id).subscribe(livre => {
+//   this.livre.set(livre);
+//
+//   // On vide le tableau actuel au cas où
+//   this.exemplaires.clear();
+//
+//   // On remplit le formulaire avec les données de base
+//   this.form.patchValue(livre);
+//
+//   // On remplit le FormArray avec les exemplaires existants (si ton modèle Livre les contient)
+//   if (livre.exemplaires) {
+//   livre.exemplaires.forEach(ex => this.addExemplaire(ex));
+// }
+// });
 }
