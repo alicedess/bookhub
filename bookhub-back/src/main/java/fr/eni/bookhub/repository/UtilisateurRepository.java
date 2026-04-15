@@ -26,4 +26,6 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     Utilisateur findByEmail(String email, Limit limit);
 
     List<Utilisateur> email(String email);
+
+    long countByDateSuppressionIsNull();
 }
