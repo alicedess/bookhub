@@ -1,9 +1,13 @@
 package fr.eni.bookhub.repository;
 
 import fr.eni.bookhub.entity.Emprunt;
+import fr.eni.bookhub.entity.Livre;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.enumeration.StatutEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -23,4 +27,20 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     List<Emprunt> findByUtilisateurAndStatutIn(Utilisateur utilisateur, List<StatutEnum> status);
 
     List<Emprunt> findByUtilisateurAndStatutAndDateRetourPrevueBefore(Utilisateur utilisateur, StatutEnum statutEnum, LocalDateTime now);
+
+
+    /**
+     * Retourne si des emprunts sont en cours sur le livre.
+     */
+    @Query(value = """
+SELECT COUNT(e) > 0
+FROM Emprunt e 
+JOIN Exemplaire ex ON ex = e.exemplaire
+JOIN Livre l ON ex.livre = l
+WHERE l = :livre AND e.statut = :statut
+""")
+    boolean existsByLivre(
+            @Param("livre") Livre livre,
+            @Param("statut") StatutEnum statut
+    );
 }
