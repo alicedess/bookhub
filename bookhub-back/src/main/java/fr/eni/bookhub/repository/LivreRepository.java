@@ -92,4 +92,5 @@ GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.
     );
 
     Optional<Livre> findByIsbn(@NotBlank @Size(min = 3, max = 13) String isbn);
+
 }
