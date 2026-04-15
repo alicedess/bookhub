@@ -1,0 +1,93 @@
+  <div class=" mx-auto">
+    <h1 class="text-2xl font-bold text-gray-800 mb-8">Tableau de Bord Libraire</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-medium">Total Livres</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{ totalLivres() }}</h3>
+          </div>
+          <div class="p-3 bg-blue-100 rounded-lg text-blue-600">
+            <i class="fa-solid fa-book text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-medium">Emprunts en cours</p>
+            <h3 class="text-3xl font-bold text-indigo-600">{{ empruntsEnCours() }}</h3>
+          </div>
+          <div class="p-3 bg-indigo-100 rounded-lg text-indigo-600">
+            <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-medium">Utilisateurs</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{ totalUtilisateurs() }}</h3>
+          </div>
+          <div class="p-3 bg-green-100 rounded-lg text-green-600">
+            <i class="fa-solid fa-users text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-red-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-red-500 font-medium">Retards critiques</p>
+            <h3 class="text-3xl font-bold text-red-600">{{ nombreRetards() }}</h3>
+          </div>
+          <div class="p-3 bg-red-100 rounded-lg text-red-600">
+            <i class="fa-solid fa-clock text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-gray-800">Retards prioritaires</h2>
+        <button class="text-sm text-blue-600 hover:underline font-medium">Voir tout</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+          <tr>
+            <th class="px-6 py-4">Utilisateur</th>
+            <th class="px-6 py-4">Livre</th>
+            <th class="px-6 py-4">Retard</th>
+            <th class="px-6 py-4 text-right">Action</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (item of retardsRecents(); track item.id) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ item.utilisateur }}</td>
+                <td class="px-6 py-4 text-gray-600 italic">"{{ item.livre }}"</td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                    + {{ item.joursRetard }} jours
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button class="text-gray-400 hover:text-blue-600">
+                    <i class="fa-solid fa-paper-plane mr-1"></i> Relancer
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>

@@ -1,103 +1,98 @@
-<app-header></app-header>
+@if (searchResult(); as result) {
 
-<div class="container mx-auto">
-
-  @if (searchResult(); as result) {
-
-    <div class="mt-8 flex justify-between items-center">
-      <div>
-        <h1 class="font-bold text-xl">Livres</h1>
-        <p>Gestion des Livres</p>
-      </div>
-      <div>
-        <a [routerLink]="['new']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Ajouter un livre</a>
-      </div>
+  <div class=" flex justify-between items-center">
+    <div>
+      <h1 class="font-bold text-xl">Livres</h1>
+      <p>Gestion des Livres</p>
     </div>
+    <div>
+      <a [routerLink]="['new']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Ajouter un livre</a>
+    </div>
+  </div>
 
-    <!-- Recherche -->
-    <div class="my-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="relative group">
+  <!-- Recherche -->
+  <div class="my-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="relative group">
         <span class="absolute inset-y-0 left-3 flex items-center text-[#D9A066]">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </span>
-        <input
-          #searchQuery
-          type="text"
-          (input)="onSearchUpdated(searchQuery.value)"
-          placeholder="Rechercher un livre..."
-          class="w-full pl-10 pr-4 py-3 bg-white border-2 border-[#D9A066] rounded-xl
+      <input
+        #searchQuery
+        type="text"
+        (input)="onSearchUpdated(searchQuery.value)"
+        placeholder="Rechercher un livre..."
+        class="w-full pl-10 pr-4 py-3 bg-white border-2 border-[#D9A066] rounded-xl
                  shadow-inner focus:border-[#D9A066] focus:ring-0 outline-none
                  transition-all placeholder-[#D9A066] text-[#8B5E3C]">
-      </div>
     </div>
+  </div>
 
-    <div class="bg-white rounded-2xl shadow mt-4">
-      <table class="w-full text-left table-auto min-w-max">
-        <thead>
-        <tr>
-          <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Titre</th>
-          <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">ISBN</th>
-          <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Date parution</th>
-          <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Auteur</th>
-          <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-          @for (livre of result.content; track livre.id) {
-            <tr>
-              <td class="p-4 border-b border-b-gray-200">{{ livre.titre }}</td>
-              <td class="p-4 border-b border-b-gray-200">{{ livre.isbn }}</td>
-              <td class="p-4 border-b border-b-gray-200">{{ livre.dateParution|date:"MMMM y":"":"fr-FR" }}</td>
-              <td class="p-4 border-b border-b-gray-200">{{ livre.auteurNom }} {{ livre.auteurPrenom }}</td>
-              <td class="p-4 border-b border-b-gray-200">
-                <a [routerLink]="[livre.id, 'edit']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+  <div class="bg-white rounded-2xl shadow mt-4">
+    <table class="w-full text-left table-auto min-w-max">
+      <thead>
+      <tr>
+        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Titre</th>
+        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">ISBN</th>
+        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Date parution</th>
+        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Auteur</th>
+        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (livre of result.content; track livre.id) {
+          <tr>
+            <td class="p-4 border-b border-b-gray-200">{{ livre.titre }}</td>
+            <td class="p-4 border-b border-b-gray-200">{{ livre.isbn }}</td>
+            <td class="p-4 border-b border-b-gray-200">{{ livre.dateParution|date:"MMMM y":"":"fr-FR" }}</td>
+            <td class="p-4 border-b border-b-gray-200">{{ livre.auteurNom }} {{ livre.auteurPrenom }}</td>
+            <td class="p-4 border-b border-b-gray-200">
+              <a [routerLink]="[livre.id, 'edit']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
            bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Modifier</a>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
-    <!--Pagination-->
-    <div class="flex items-center justify-center gap-4 w-full mt-12 py-6 border-t border-[#D9A066]/30">
-      <button
-        [disabled]="currentPage() === 0"
-        (click)="currentPage.set(currentPage() - 1)"
-        class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+  <!--Pagination-->
+  <div class="flex items-center justify-center gap-4 w-full mt-12 py-6 border-t border-[#D9A066]/30">
+    <button
+      [disabled]="currentPage() === 0"
+      (click)="currentPage.set(currentPage() - 1)"
+      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
            enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        Précédent
-      </button>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      Précédent
+    </button>
 
-      <div class="flex items-center gap-2 bg-white/50 px-6 py-2 rounded-full shadow-inner border border-[#D9A066]/20">
-        <span class="text-[#8B5E3C] font-medium">Page</span>
-        <span class="bg-[#D9A066] text-white w-8 h-8 flex items-center justify-center rounded-full font-bold">
+    <div class="flex items-center gap-2 bg-white/50 px-6 py-2 rounded-full shadow-inner border border-[#D9A066]/20">
+      <span class="text-[#8B5E3C] font-medium">Page</span>
+      <span class="bg-[#D9A066] text-white w-8 h-8 flex items-center justify-center rounded-full font-bold">
       {{ currentPage() + 1 }}
     </span>
-        <span class="text-[#8B5E3C] font-medium text-sm">sur {{ result.page.totalPages }}</span>
-      </div>
+      <span class="text-[#8B5E3C] font-medium text-sm">sur {{ result.page.totalPages }}</span>
+    </div>
 
-      <button
-        [disabled]="currentPage() >= result.page.totalPages - 1"
-        (click)="currentPage.set(currentPage() + 1)"
-        class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+    <button
+      [disabled]="currentPage() >= result.page.totalPages - 1"
+      (click)="currentPage.set(currentPage() + 1)"
+      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
            enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
            disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
-        Suivant
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+      Suivant
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
 
-    </div>
-  }
+  </div>
+}
 
-</div>

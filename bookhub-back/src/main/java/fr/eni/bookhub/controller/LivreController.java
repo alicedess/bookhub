@@ -38,10 +38,6 @@ public class LivreController {
     private EvaluationService evaluationService;
     private ExemplaireService exemplaireService;
 
-
-    /**
-     * Récupère la liste des livres paginée par 20
-     */
     @Operation(
             summary = "Rechercher des livres",
             description = "Filtre les livres par mot-clé, auteur ou catégorie avec pagination."
@@ -69,20 +65,32 @@ public class LivreController {
         ));
     }
 
-    /**
-     * Récupère les données d'un livre
-     */
+    @Operation(
+            summary = "Récupère les informations d'un livre",
+            description = "Récupère les informations d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getLivreById(@PathVariable Long id)
+    public ResponseEntity<LivreDTO> getLivreById(@PathVariable Long id)
     {
         return livreService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     *  Création d'un nouveau livre
-     */
+    @Operation(
+            summary = "Création d'un livre",
+            description = "Création d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @PostMapping("")
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
     {
@@ -95,11 +103,17 @@ public class LivreController {
         return ResponseEntity.badRequest().build();
     }
 
-    /**
-     * Modification d'une livre
-     */
+    @Operation(
+            summary = "Modification d'un livre",
+            description = "Modification d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
+    public ResponseEntity<LivreDTO> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
     {
         LivreDTO updatedLivre = livreService.updateLivre(id, payload);
 
@@ -110,9 +124,15 @@ public class LivreController {
         return ResponseEntity.badRequest().build();
     }
 
-    /**
-     * Suppression d'un livre
-     */
+    @Operation(
+            summary = "Suppression d'un livre",
+            description = "Suppression d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLivre(@PathVariable Long id)
     {
@@ -121,11 +141,17 @@ public class LivreController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Upload de la couverture du Livre.
-     */
+    @Operation(
+            summary = "Mise à jour de la couverture d'un livre",
+            description = "Mise à jour de la couverture d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @PutMapping("/{id}/cover")
-    public ResponseEntity<?> handleFileUpload(
+    public ResponseEntity<LivreDTO> handleFileUpload(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes)
@@ -138,9 +164,15 @@ public class LivreController {
         return ResponseEntity.ok().body(livre);
     }
 
-    /**
-     * Récupération de la couverture du livre
-     */
+    @Operation(
+            summary = "Modification de la couverture d'un livre",
+            description = "Modification de la couverture d'un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @GetMapping("/{id}/cover")
     public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
         Optional<LivreDTO> livre = livreService.getById(id);
@@ -198,12 +230,30 @@ public class LivreController {
         }
     }
 
+    @Operation(
+            summary = "Récupération de la liste des exemplaires",
+            description = "Récupération de la liste des exemplaires."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @GetMapping("/{id}/exemplaires")
     public ResponseEntity<List<ExemplaireDTO>> modificationExemplaires(@PathVariable Long id)
     {
         return ResponseEntity.ok().body(exemplaireService.getExemplairesParLivreId(id));
     }
 
+    @Operation(
+            summary = "Modification des exemplaires",
+            description = "Modification des exemplaires."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Le livre"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+    })
     @PostMapping("/{id}/exemplaires")
     public ResponseEntity<?> modificationExemplaires(@PathVariable Long id, @RequestBody List<ExemplaireDTO> payload)
     {

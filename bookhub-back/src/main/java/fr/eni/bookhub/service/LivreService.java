@@ -8,11 +8,9 @@ import fr.eni.bookhub.entity.Auteur;
 import fr.eni.bookhub.entity.Categorie;
 import fr.eni.bookhub.entity.Evaluation;
 import fr.eni.bookhub.entity.Livre;
+import fr.eni.bookhub.enumeration.StatutEnum;
 import fr.eni.bookhub.exception.OperationException;
-import fr.eni.bookhub.repository.AuteurRepository;
-import fr.eni.bookhub.repository.CategorieRepository;
-import fr.eni.bookhub.repository.EvaluationRepository;
-import fr.eni.bookhub.repository.LivreRepository;
+import fr.eni.bookhub.repository.*;
 import fr.eni.bookhub.storage.StorageService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -34,6 +32,7 @@ public class LivreService {
     private final AuteurRepository auteurRepository;
     private final CategorieRepository categorieRepository;
     private final EvaluationRepository evaluationRepository;
+    private final EmpruntRepository empruntRepository;
     private final StorageService storageService;
     private final ModelMapper modelMapper;
 
@@ -200,7 +199,14 @@ public class LivreService {
     @Transactional
     public void deleteLivre(Long id)
     {
-        livreRepository.deleteById(id);
+        Livre livre = livreRepository.findById(id)
+                .orElseThrow(() -> new OperationException("Impossible de trouver le Livre"));
+
+        boolean aDesEmpruntsEnCours = empruntRepository.existsByLivre(livre, StatutEnum.EN_COURS);
+
+        if (!aDesEmpruntsEnCours) {
+            livreRepository.deleteById(id);
+        }
     }
 
     /**
