@@ -72,3 +72,63 @@ VALUES
     ('v_hugo_fan', 'victor.fan@culture.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Durand', 'Paul', '1988-04-18', '0678901234', 2, NULL, 0),
     ('julie_dev', 'julie.dev@code.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Gauthier', 'Julie', '1993-02-28', '0689012345', 2, NULL, 1),
     ('reader99', 'marc.reader@mail.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Bernard', 'Marc', '1982-10-10', '0690123456', 2, NULL, 1);
+
+
+-- 4. GÉNÉRATION DES EXEMPLAIRES (2 à 3 par livre)
+-- On boucle sur les 30 livres (IDs 1 à 30)
+INSERT INTO exemplaire (code_barre, etat, est_disponible, id_livre)
+VALUES
+    -- Exemplaires pour Livre 1
+    ('CB-97801-1', 'NEUF', 1, 1),
+    ('CB-97801-2', 'BON_ETAT', 0, 1),
+    -- Exemplaires pour Livre 2
+    ('CB-97802-1', 'NEUF', 1, 2),
+    ('CB-97802-2', 'ABIME', 1, 2),
+    -- Exemplaires pour Livre 3
+    ('CB-97803-1', 'BON_ETAT', 1, 3),
+    -- Exemplaires pour Livre 4
+    ('CB-97804-1', 'NEUF', 0, 4),
+    ('CB-97804-2', 'NEUF', 1, 4),
+    -- Exemplaires pour Livre 5 (1984)
+    ('CB-97805-1', 'BON_ETAT', 1, 5),
+    ('CB-97805-2', 'BON_ETAT', 1, 5),
+    ('CB-97805-3', 'ABIME', 0, 5),
+    -- ... On continue pour quelques autres livres significatifs
+    ('CB-97807-1', 'NEUF', 1, 7),
+    ('CB-97808-1', 'BON_ETAT', 1, 8),
+    ('CB-97809-1', 'NEUF', 1, 9),
+    ('CB-97810-1', 'ABIME', 1, 10),
+    ('CB-97811-1', 'NEUF', 1, 11),
+    ('CB-97811-2', 'NEUF', 0, 11),
+    ('CB-97812-1', 'BON_ETAT', 1, 12),
+    ('CB-97824-1', 'NEUF', 1, 24),
+    ('CB-97830-1', 'BON_ETAT', 1, 30);
+
+-- 5. GÉNÉRATION DES ÉVALUATIONS (Commentaires et notes)
+-- Utilisateurs IDs 1 à 10, Livres IDs 1 à 30
+INSERT INTO evaluation (note, commentaire, date_publication, id_utilisateur, id_livre)
+VALUES
+    -- Évaluations pour Les Misérables (Livre 1)
+    (5, 'Un chef-d oeuvre absolu du patrimoine français.', '2024-01-15', 2, 1),
+    (4, 'Un peu long par moments, mais quelle histoire !', '2024-02-10', 3, 1),
+
+    -- Évaluations pour 1984 (Livre 5)
+    (5, 'Effrayant de réalisme, même encore aujourd hui.', '2024-03-05', 4, 5),
+    (5, 'À lire absolument une fois dans sa vie.', '2024-03-12', 7, 5),
+
+    -- Évaluations pour Fondation (Livre 7)
+    (4, 'La science-fiction à son apogée.', '2024-01-20', 9, 7),
+
+    -- Évaluations pour Harry Potter (Livre 11)
+    (5, 'Toute mon enfance, je ne m en lasse pas.', '2024-04-01', 10, 11),
+    (3, 'Sympa mais un peu jeunesse pour moi.', '2024-04-05', 5, 11),
+
+    -- Évaluations pour Le Crime de l Orient-Express (Livre 9)
+    (5, 'La fin est tout simplement géniale, je ne m y attendais pas !', '2024-02-28', 8, 9),
+
+    -- Évaluations pour Germinal (Livre 3)
+    (4, 'Zola nous plonge dans l enfer des mines avec brio.', '2024-03-20', 2, 3),
+
+    -- Évaluation diverse
+    (2, 'Pas du tout accroché au style de l auteur.', '2024-03-25', 6, 13),
+    (4, 'Une belle découverte.', '2024-04-10', 7, 20);
