@@ -19,7 +19,7 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     boolean existsByUtilisateurAndStatutAndDateRetourPrevueBefore(
             Utilisateur utilisateur, StatutEnum statut, LocalDateTime date);
 
-    //Emprunts historiques (statut = TERMINE ou RETARDE)
+    //Emprunts historiques (statut = RETOURNE ou RETARDE)
     List<Emprunt> findByUtilisateurAndStatutIn(Utilisateur utilisateur, List<StatutEnum> status);
 
     List<Emprunt> findByUtilisateurAndStatutAndDateRetourPrevueBefore(Utilisateur utilisateur, StatutEnum statutEnum, LocalDateTime now);

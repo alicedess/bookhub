@@ -33,7 +33,32 @@ public class EmpruntService {
 
     private static final int DUREE_EMPRUNT_JOURS = 14;
 
-    public Page<EmpruntDTO> getAllEmpruntsDTO(int page, int size, String sortBy){
+
+    @Transactional
+    public EmpruntDTO retournerLivreDTO(Long idEmprunt) {
+        Emprunt emprunt = empruntRepository.findById(idEmprunt)
+                .orElseThrow(() -> new RuntimeException("Emprunt non trouvé"));
+
+        if (emprunt.getStatut() != StatutEnum.EN_COURS) {
+            throw new RuntimeException("Cet emprunt n'est pas en cours.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        emprunt.setDateRetourEffective(now);
+
+        boolean enRetard = now.isAfter(emprunt.getDateRetourPrevue());
+        emprunt.setEnRetard(enRetard);
+        emprunt.setStatut(StatutEnum.RETOURNE);
+
+        Exemplaire exemplaire = emprunt.getExemplaire();
+        exemplaire.setEstDisponible(true);
+        exemplaireRepository.save(exemplaire);
+
+        return empruntMapper.convertToDto(empruntRepository.save(emprunt));
+
+    }
+
+    public Page<EmpruntDTO> getAllEmpruntsDTO(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return empruntRepository.findAll(pageable)
                 .map(empruntMapper::convertToDto);
@@ -100,7 +125,7 @@ public class EmpruntService {
     }
 
     public List<EmpruntDTO> getEmpruntsHistoriqueDTO(Utilisateur utilisateur) {
-        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.RETOURNE, StatutEnum.RETARDE);
         List<Emprunt> emprunts = empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique);
 
         return empruntMapper.convertToDto(emprunts);
