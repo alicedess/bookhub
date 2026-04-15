@@ -57,8 +57,10 @@ export class LivreDetails implements OnInit {
     return "http://localhost:8080/api/books/" + this.id + "/cover";
   }
 
+  // @TODO
   protected canComment(): boolean {
-    return this.authService.estConnecte();
+    return false;
+    // return this.authService.estConnecte();
   }
 
   protected onClickReserver(): void {
