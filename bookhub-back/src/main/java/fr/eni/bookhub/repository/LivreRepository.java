@@ -81,7 +81,11 @@ public interface LivreRepository extends JpaRepository<Livre, Long> {
                   AND (:auteurId IS NULL OR l.auteur.id = :auteurId)
                   AND (:catId IS NULL OR l.categorie.id = :catId)
                GROUP BY l.id, l.isbn, l.titre, l.resume, l.imageCouverture, l.nbPage, l.auteur.id, l.auteur.nom, l.auteur.prenom, 
-                 l.categorie.id, l.categorie.libelle, l.dateParution   
+                 l.categorie.id, l.categorie.libelle, l.dateParution
+            HAVING
+            (:estDisponibleFilter = 0) OR
+            (:estDisponibleFilter = 1 AND (SELECT COUNT(e.id) FROM Exemplaire e WHERE e.livre = l AND e.estDisponible = true) > 0) OR
+            (:estDisponibleFilter = 2 AND (SELECT COUNT(e.id) FROM Exemplaire e WHERE e.livre = l AND e.estDisponible = true) = 0)
             """, countQuery = """
                     SELECT COUNT(DISTINCT l.id)
                     FROM Livre l
@@ -93,11 +97,17 @@ public interface LivreRepository extends JpaRepository<Livre, Long> {
                           )
                       AND (:auteurId IS NULL OR l.auteur.id = :auteurId)
                       AND (:catId IS NULL OR l.categorie.id = :catId)
+                    GROUP BY l.id
+            HAVING
+                (:estDisponibleFilter = 0) OR
+                (:estDisponibleFilter = 1 AND (SELECT COUNT(e.id) FROM Exemplaire e WHERE e.livre = l AND e.estDisponible = true) > 0) OR
+                (:estDisponibleFilter = 2 AND (SELECT COUNT(e.id) FROM Exemplaire e WHERE e.livre = l AND e.estDisponible = true) = 0)         
             """)
     Page<LivreProjection> findByCustomFilters(
             @Param("query") String queryFilter,
             @Param("auteurId") Long auteurFilter,
             @Param("catId") Long categorieFilter,
+            @Param("estDisponibleFilter") Integer estDisponibleFilter,
             Pageable pageable
     );
 
