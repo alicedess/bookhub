@@ -44,6 +44,7 @@ public class LivreService {
             String query,
             Long auteurId,
             Long catId,
+            Integer estDisponible,
             int page
     ) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("titre").ascending());
@@ -56,6 +57,7 @@ public class LivreService {
                 queryFilter,
                 auteurFilter,
                 categorieFilter,
+                estDisponible,
                 pageable
         );
 

@@ -2,9 +2,10 @@ package fr.eni.bookhub.controller;
 
 import fr.eni.bookhub.dto.CreateLivreDTO;
 import fr.eni.bookhub.dto.EvaluationDTO;
+import fr.eni.bookhub.dto.ExemplaireDTO;
 import fr.eni.bookhub.dto.LivreDTO;
-import fr.eni.bookhub.exception.OperationException;
 import fr.eni.bookhub.service.EvaluationService;
+import fr.eni.bookhub.service.ExemplaireService;
 import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +36,8 @@ public class LivreController {
     private LivreService livreService;
     private StorageService storageService;
     private EvaluationService evaluationService;
+    private ExemplaireService exemplaireService;
+
 
     /**
      * Récupère la liste des livres paginée par 20
@@ -53,6 +56,7 @@ public class LivreController {
         @RequestParam(required = false) String query,
         @RequestParam(required = false) Long auteurId,
         @RequestParam(required = false, name = "categorie") Long catId,
+        @RequestParam(required = false, name = "disponibilite") Integer estDisponible,
         @RequestParam(defaultValue = "0") int page
     )
     {
@@ -60,6 +64,7 @@ public class LivreController {
                 query,
                 auteurId,
                 catId,
+                estDisponible,
                 page
         ));
     }
@@ -163,10 +168,10 @@ public class LivreController {
      * @return ok si l'évaluation a été ajoutée, sinon une erreur
      */
     @PostMapping("/{id}/ratings")
-    public ResponseEntity<?> addRating(@PathVariable Integer id, @RequestBody EvaluationDTO payload){
+    public ResponseEntity<?> addRating(@PathVariable Long id, @RequestBody EvaluationDTO payload){
         try{
-            evaluationService.createEvaluation(id, payload);
-            return ResponseEntity.ok().build();
+            EvaluationDTO ajoutEval = evaluationService.createEvaluation(id, payload);
+            return ResponseEntity.ok(ajoutEval);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
@@ -191,5 +196,19 @@ public class LivreController {
                     "message", "Impossible de récupérer les évaluations de ce livre"
             ));
         }
+    }
+
+    @GetMapping("/{id}/exemplaires")
+    public ResponseEntity<List<ExemplaireDTO>> modificationExemplaires(@PathVariable Long id)
+    {
+        return ResponseEntity.ok().body(exemplaireService.getExemplairesParLivreId(id));
+    }
+
+    @PostMapping("/{id}/exemplaires")
+    public ResponseEntity<?> modificationExemplaires(@PathVariable Long id, @RequestBody List<ExemplaireDTO> payload)
+    {
+        exemplaireService.updateExemplairesParLivreId(id,  payload);
+
+        return ResponseEntity.ok().build();
     }
 }

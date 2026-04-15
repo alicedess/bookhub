@@ -13,10 +13,11 @@ import java.time.Instant;
 @Table(name = "evaluation")
 @Data
 public class Evaluation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "note")
     private Integer note;
@@ -27,7 +28,7 @@ public class Evaluation {
     private String commentaire;
 
     @Column(name = "est_modere")
-    private Boolean estModere;
+    private Boolean estModere = false;
 
     @ColumnDefault("getdate()")
     @Column(name = "date_publication")
