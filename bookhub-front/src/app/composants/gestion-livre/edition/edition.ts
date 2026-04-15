@@ -130,11 +130,18 @@ export class Edition implements OnInit {
         this.exemplaires.clear();
 
         exemplaires.forEach(ex => {
+          const dispoControl = new FormControl(ex.estDisponible ?? true);
+
+          // SI L'ID EXISTE, ON DÉSACTIVE LE CONTRÔLE
+          if (ex.id) {
+            dispoControl.disable();
+          }
+
           this.exemplaires.push(new FormGroup({
             id: new FormControl(ex.id),
             codeBarre: new FormControl(ex.codeBarre, [Validators.required]),
             etat: new FormControl(ex.etat || 'NEUF', [Validators.required]),
-            estDisponible: new FormControl(ex.estDisponible ?? true)
+            estDisponible: dispoControl
           }));
         });
 

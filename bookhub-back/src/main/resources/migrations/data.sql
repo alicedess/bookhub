@@ -18,37 +18,49 @@ VALUES ('Roman Classique'),
 -- 3. GÉNÉRATION DES LIVRES (30 livres)
 -- On alterne les auteurs (IDs 1 à 6) et les catégories (IDs 1 à 5)
 
-INSERT INTO livre (isbn, titre, resume, image_couverture, id_auteur, id_categorie)
-VALUES ('97801', 'Les Misérables', 'La vie de Jean Valjean.', 'hugo_mis.jpg', 1, 1),
-       ('97802', 'Notre-Dame de Paris', 'L histoire de Quasimodo.', 'hugo_ndp.jpg', 1, 1),
-       ('97803', 'Germinal', 'La grève des mineurs.', 'zola_ger.jpg', 2, 1),
-       ('97804', 'L Assommoir', 'La chute de Gervaise.', 'zola_ass.jpg', 2, 1),
-       ('97805', '1984', 'Big Brother vous regarde.', 'orwell_1984.jpg', 3, 2),
-       ('97806', 'La Ferme des animaux', 'Une satire politique.', 'orwell_ferme.jpg', 3, 5),
-       ('97807', 'Fondation', 'La psychohistoire de Seldon.', 'asimov_fond.jpg', 4, 2),
-       ('97808', 'Les Robots', 'Les trois lois de la robotique.', 'asimov_rob.jpg', 4, 2),
-       ('97809', 'Le Crime de l Orient-Express', 'Hercule Poirot enquête.', 'christie_orient.jpg', 5, 3),
-       ('97810', 'Ils étaient dix', 'Dix personnes sur une île.', 'christie_dix.jpg', 5, 3),
-       ('97811', 'Harry Potter à l école des sorciers', 'Le début de la saga.', 'jk_hp1.jpg', 6, 4),
-       ('97812', 'Harry Potter et la Chambre des secrets', 'Le tome 2.', 'jk_hp2.jpg', 6, 4),
-       ('97813', 'Le Dernier Jour d un condamné', 'Réflexion sur la peine de mort.', 'hugo_cond.jpg', 1, 5),
-       ('97814', 'Nana', 'L ascension d une courtisane.', 'zola_nana.jpg', 2, 1),
-       ('97815', 'Hommage à la Catalogne', 'Récit de guerre.', 'orwell_cat.jpg', 3, 5),
-       ('97816', 'La Fin de l éternité', 'Voyage dans le temps.', 'asimov_fin.jpg', 4, 2),
-       ('97817', 'Mort sur le Nil', 'Une nouvelle enquête.', 'christie_nil.jpg', 5, 3),
-       ('97818', 'Harry Potter et le Prisonnier d Azkaban', 'Le tome 3.', 'jk_hp3.jpg', 6, 4),
-       ('97819', 'Les Travailleurs de la mer', 'Lutte contre les éléments.', 'hugo_mer.jpg', 1, 1),
-       ('97820', 'Au Bonheur des Dames', 'Les débuts des grands magasins.', 'zola_dames.jpg', 2, 1),
-       ('97821', 'Dans la dèche à Paris et à Londres', 'Récit de pauvreté.', 'orwell_deche.jpg', 3, 5),
-       ('97822', 'Cavernes d acier', 'Enquête futuriste.', 'asimov_cav.jpg', 4, 2),
-       ('97823', 'ABC contre Poirot', 'Un tueur en série.', 'christie_abc.jpg', 5, 3),
-       ('97824', 'Harry Potter et la Coupe de feu', 'Le tournoi des trois sorciers.', 'jk_hp4.jpg', 6, 4),
-       ('97825', 'Claude Gueux', 'Critique sociale.', 'hugo_claude.jpg', 1, 1),
-       ('97826', 'La Bête humaine', 'Drame ferroviaire.', 'zola_bete.jpg', 2, 1),
-       ('97827', 'Face aux feux du soleil', 'Suite des robots.', 'asimov_soleil.jpg', 4, 2),
-       ('97828', 'La Maison du péril', 'Enquête de Poirot.', 'christie_peril.jpg', 5, 3),
-       ('97829', 'Une place à prendre', 'Roman social.', 'jk_place.jpg', 6, 1),
-       ('97830', 'Le Rhin', 'Récit de voyage.', 'hugo_rhin.jpg', 1, 5);
+INSERT INTO livre (isbn, titre, resume, image_couverture, id_auteur, id_categorie, nb_page, date_parution)
+VALUES
+    -- Victor Hugo (Auteur ID: 1)
+    ('9782070409228', 'Les Misérables', 'La vie de Jean Valjean.', 'hugo_mis.jpg', 1, 1, 1500, '1862-01-01'),
+    ('9782070409174', 'Notre-Dame de Paris', 'L histoire de Quasimodo.', 'hugo_ndp.jpg', 1, 1, 640, '1831-01-14'),
+    ('9782253006244', 'Le Dernier Jour d un condamné', 'Réflexion sur la peine de mort.', 'hugo_cond.jpg', 1, 5, 120, '1829-02-01'),
+    ('9782253004325', 'Les Travailleurs de la mer', 'Lutte contre les éléments.', 'hugo_mer.jpg', 1, 1, 480, '1866-03-12'),
+    ('9782253009771', 'Claude Gueux', 'Critique sociale.', 'hugo_claude.jpg', 1, 1, 80, '1834-07-01'),
+    ('9782070322251', 'Le Rhin', 'Récit de voyage.', 'hugo_rhin.jpg', 1, 5, 520, '1842-01-20'),
+
+    -- Émile Zola (Auteur ID: 2)
+    ('9782253002840', 'Germinal', 'La grève des mineurs.', 'zola_ger.jpg', 2, 1, 550, '1885-02-01'),
+    ('9782253005421', 'L Assommoir', 'La chute de Gervaise.', 'zola_ass.jpg', 2, 1, 440, '1877-01-01'),
+    ('9782253003052', 'Nana', 'L ascension d une courtisane.', 'zola_nana.jpg', 2, 1, 480, '1880-02-15'),
+    ('9782253005438', 'Au Bonheur des Dames', 'Les débuts des grands magasins.', 'zola_dames.jpg', 2, 1, 520, '1883-03-01'),
+    ('9782253005445', 'La Bête humaine', 'Drame ferroviaire.', 'zola_bete.jpg', 2, 1, 450, '1890-01-01'),
+
+    -- George Orwell (Auteur ID: 3)
+    ('9782070409242', '1984', 'Big Brother vous regarde.', 'orwell_1984.jpg', 3, 2, 328, '1949-06-08'),
+    ('9782070375165', 'La Ferme des animaux', 'Une satire politique.', 'orwell_ferme.jpg', 3, 5, 144, '1945-08-17'),
+    ('9782264030382', 'Hommage à la Catalogne', 'Récit de guerre.', 'orwell_cat.jpg', 3, 5, 320, '1938-04-25'),
+    ('9782264030375', 'Dans la dèche à Paris et à Londres', 'Récit de pauvreté.', 'orwell_deche.jpg', 3, 5, 280, '1933-01-09'),
+
+    -- Isaac Asimov (Auteur ID: 4)
+    ('9782207249123', 'Fondation', 'La psychohistoire de Seldon.', 'asimov_fond.jpg', 4, 2, 255, '1951-01-01'),
+    ('9782290342480', 'Les Robots', 'Les trois lois de la robotique.', 'asimov_rob.jpg', 4, 2, 320, '1950-12-02'),
+    ('9782207249130', 'La Fin de l éternité', 'Voyage dans le temps.', 'asimov_fin.jpg', 4, 2, 250, '1955-01-01'),
+    ('9782207249147', 'Cavernes d acier', 'Enquête futuriste.', 'asimov_cav.jpg', 4, 2, 280, '1954-01-01'),
+    ('9782207249154', 'Face aux feux du soleil', 'Suite des robots.', 'asimov_soleil.jpg', 4, 2, 300, '1957-01-01'),
+
+    -- Agatha Christie (Auteur ID: 5)
+    ('9782253004110', 'Le Crime de l Orient-Express', 'Hercule Poirot enquête.', 'christie_orient.jpg', 5, 3, 250, '1934-01-01'),
+    ('9782253004127', 'Ils étaient dix', 'Dix personnes sur une île.', 'christie_dix.jpg', 5, 3, 220, '1939-11-06'),
+    ('9782253004134', 'Mort sur le Nil', 'Une nouvelle enquête.', 'christie_nil.jpg', 5, 3, 320, '1937-11-01'),
+    ('9782253004141', 'ABC contre Poirot', 'Un tueur en série.', 'christie_abc.jpg', 5, 3, 240, '1936-01-06'),
+    ('9782253004158', 'La Maison du péril', 'Enquête de Poirot.', 'christie_peril.jpg', 5, 3, 260, '1932-03-01'),
+
+    -- J.K. Rowling (Auteur ID: 6)
+    ('9782070643028', 'Harry Potter à l école des sorciers', 'Le début de la saga.', 'jk_hp1.jpg', 6, 4, 305, '1997-06-26'),
+    ('9782070643035', 'Harry Potter et la Chambre des secrets', 'Le tome 2.', 'jk_hp2.jpg', 6, 4, 340, '1998-07-02'),
+    ('9782070643042', 'Harry Potter et le Prisonnier d Azkaban', 'Le tome 3.', 'jk_hp3.jpg', 6, 4, 435, '1999-07-08'),
+    ('9782070643059', 'Harry Potter et la Coupe de feu', 'Le tournoi des trois sorciers.', 'jk_hp4.jpg', 6, 4, 640, '2000-07-08'),
+    ('9782246779414', 'Une place à prendre', 'Roman social.', 'jk_place.jpg', 6, 1, 608, '2012-09-27');
 
 
 
@@ -63,7 +75,7 @@ INSERT INTO utilisateur
 (pseudo, email, password, nom, prenom, date_naissance, telephone, id_role, date_suppression, commentaire_avec_pseudo)
 VALUES
     ('admin_hub', 'admin@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Admin', 'Système', '1990-01-01', '0102030405', 1, NULL, 1),
-    ('jdupont', 'librarian@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
+    ('librarian_hub', 'librarian@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
     ('msmith', 'marie.smith@gmail.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Smith', 'Marie', '1992-11-20', '0623456789', 2, NULL, 1),
     ('lartigaud', 'lucas.a@outlook.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Artigaud', 'Lucas', '1998-03-15', '0634567890', 2, NULL, 0),
     ('bibliophile', 'sophie.biblio@yahoo.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Morel', 'Sophie', '1978-07-22', '0645678901', 2, NULL, 1),
