@@ -84,7 +84,7 @@ class EmpruntServiceTest {
         Emprunt emprunt1 = new Emprunt();
         Emprunt emprunt2 = new Emprunt();
         List<Emprunt> empruntsHistorique = List.of(emprunt1, emprunt2);
-        List<StatutEnum> statutsHistorique = List.of(StatutEnum.TERMINE, StatutEnum.RETARDE);
+        List<StatutEnum> statutsHistorique = List.of(StatutEnum.RETOURNE, StatutEnum.RETARDE);
         List<EmpruntDTO> empruntsHistoriqueDto = List.of(new EmpruntDTO(), new EmpruntDTO());
 
         when(empruntRepository.findByUtilisateurAndStatutIn(utilisateur, statutsHistorique))
