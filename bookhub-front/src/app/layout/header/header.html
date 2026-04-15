@@ -18,7 +18,7 @@
             Mes Emprunts
           </a>
           @if (isLibrairian || isAdmin) {
-            <a routerLink="/librarian/books" routerLinkActive="text-yellow-400"
+            <a routerLink="/librarian" routerLinkActive="text-yellow-400"
                class="text-white hover:text-orange-300 transition duration-200 font-medium">
               Gestion
             </a>
@@ -82,7 +82,7 @@
           Mes Emprunts
         </a>
         @if (isLibrairian || isAdmin) {
-          <a routerLink="/librarian/books" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+          <a routerLink="/librarian" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
            class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
           Gestion
         </a>

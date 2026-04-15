@@ -1,98 +1,137 @@
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+  <div>
+    <h1 class="font-bold text-xl text-gray-800">Livres</h1>
+    <p class="text-sm text-gray-500 mt-0.5">
+      @if (searchResult(); as r) {
+        {{ r.page.totalElements }} livre{{ r.page.totalElements > 1 ? 's' : '' }} trouvé{{ r.page.totalElements > 1 ? 's' : '' }}
+      } @else {
+        Gestion des livres
+      }
+    </p>
+  </div>
+  <a [routerLink]="['new']" class="btn shrink-0">
+    <i class="fa-solid fa-plus"></i>
+    Ajouter un livre
+  </a>
+</div>
+
+<!-- Barre de recherche -->
+<div class="mb-6">
+  <div class="relative">
+    <span class="absolute inset-y-0 left-3 flex items-center text-[#D9A066] pointer-events-none">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </span>
+    <input
+      #searchQuery
+      type="text"
+      (input)="onSearchUpdated(searchQuery.value)"
+      placeholder="Rechercher par titre, ISBN, auteur…"
+      class="w-full sm:max-w-sm pl-10 pr-4 py-2.5 bg-white border-2 border-[#D9A066] rounded-xl
+             shadow-inner focus:border-[#D9A066] focus:ring-0 outline-none
+             transition-all placeholder-[#D9A066] text-[#8B5E3C]">
+  </div>
+</div>
+
+<!-- Table -->
 @if (searchResult(); as result) {
 
-  <div class=" flex justify-between items-center">
-    <div>
-      <h1 class="font-bold text-xl">Livres</h1>
-      <p>Gestion des Livres</p>
-    </div>
-    <div>
-      <a [routerLink]="['new']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Ajouter un livre</a>
-    </div>
-  </div>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-  <!-- Recherche -->
-  <div class="my-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="relative group">
-        <span class="absolute inset-y-0 left-3 flex items-center text-[#D9A066]">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-      <input
-        #searchQuery
-        type="text"
-        (input)="onSearchUpdated(searchQuery.value)"
-        placeholder="Rechercher un livre..."
-        class="w-full pl-10 pr-4 py-3 bg-white border-2 border-[#D9A066] rounded-xl
-                 shadow-inner focus:border-[#D9A066] focus:ring-0 outline-none
-                 transition-all placeholder-[#D9A066] text-[#8B5E3C]">
+    <!-- Vue mobile : cartes -->
+    <div class="sm:hidden divide-y divide-gray-100">
+      @for (livre of result.content; track livre.id) {
+        <div class="p-4 hover:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start gap-2">
+            <div class="min-w-0">
+              <p class="font-semibold text-gray-900 truncate">{{ livre.titre }}</p>
+              <p class="text-sm text-gray-500 mt-0.5">{{ livre.auteurNom }} {{ livre.auteurPrenom }}</p>
+              <p class="text-xs text-gray-400 mt-1 font-mono">{{ livre.isbn }}</p>
+            </div>
+            <a [routerLink]="[livre.id, 'edit']"
+               class="btn shrink-0 text-sm py-1.5 px-3">
+              <i class="fa-solid fa-pen"></i>
+            </a>
+          </div>
+        </div>
+      } @empty {
+        <div class="p-12 text-center text-gray-500">
+          <i class="fa-solid fa-book-open text-3xl text-gray-300 mb-3 block"></i>
+          Aucun livre trouvé.
+        </div>
+      }
     </div>
-  </div>
 
-  <div class="bg-white rounded-2xl shadow mt-4">
-    <table class="w-full text-left table-auto min-w-max">
-      <thead>
-      <tr>
-        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Titre</th>
-        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">ISBN</th>
-        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Date parution</th>
-        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Auteur</th>
-        <th class="p-4 border-b border-b-gray-100 bg-b-gray-50">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (livre of result.content; track livre.id) {
+    <!-- Vue desktop : table -->
+    <div class="hidden sm:block overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
-            <td class="p-4 border-b border-b-gray-200">{{ livre.titre }}</td>
-            <td class="p-4 border-b border-b-gray-200">{{ livre.isbn }}</td>
-            <td class="p-4 border-b border-b-gray-200">{{ livre.dateParution|date:"MMMM y":"":"fr-FR" }}</td>
-            <td class="p-4 border-b border-b-gray-200">{{ livre.auteurNom }} {{ livre.auteurPrenom }}</td>
-            <td class="p-4 border-b border-b-gray-200">
-              <a [routerLink]="[livre.id, 'edit']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Modifier</a>
-            </td>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider">Titre</th>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider">ISBN</th>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider hidden lg:table-cell">Parution</th>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider">Auteur</th>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider hidden md:table-cell">Dispo.</th>
+            <th class="px-5 py-3.5 font-semibold text-gray-600 uppercase text-xs tracking-wider text-right">Action</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <!--Pagination-->
-  <div class="flex items-center justify-center gap-4 w-full mt-12 py-6 border-t border-[#D9A066]/30">
-    <button
-      [disabled]="currentPage() === 0"
-      (click)="currentPage.set(currentPage() - 1)"
-      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
-           disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-      Précédent
-    </button>
-
-    <div class="flex items-center gap-2 bg-white/50 px-6 py-2 rounded-full shadow-inner border border-[#D9A066]/20">
-      <span class="text-[#8B5E3C] font-medium">Page</span>
-      <span class="bg-[#D9A066] text-white w-8 h-8 flex items-center justify-center rounded-full font-bold">
-      {{ currentPage() + 1 }}
-    </span>
-      <span class="text-[#8B5E3C] font-medium text-sm">sur {{ result.page.totalPages }}</span>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @for (livre of result.content; track livre.id) {
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-5 py-4 font-medium text-gray-900 max-w-48 truncate">{{ livre.titre }}</td>
+              <td class="px-5 py-4 text-gray-500 font-mono text-xs">{{ livre.isbn }}</td>
+              <td class="px-5 py-4 text-gray-500 hidden lg:table-cell">
+                {{ livre.dateParution | date:"MMM y":"":"fr-FR" }}
+              </td>
+              <td class="px-5 py-4 text-gray-600">{{ livre.auteurNom }} {{ livre.auteurPrenom }}</td>
+              <td class="px-5 py-4 hidden md:table-cell">
+                @if (livre.nbExemplaireDispo > 0) {
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                    <i class="fa-solid fa-circle text-[6px]"></i> {{ livre.nbExemplaireDispo }}/{{ livre.nbExemplaire }}
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                    <i class="fa-solid fa-circle text-[6px]"></i> Indispo.
+                  </span>
+                }
+              </td>
+              <td class="px-5 py-4 text-right">
+                <a [routerLink]="[livre.id, 'edit']" class="btn text-sm py-1.5 px-3">
+                  <i class="fa-solid fa-pen mr-1"></i> Modifier
+                </a>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-5 py-12 text-center text-gray-500">
+                <i class="fa-solid fa-book-open text-3xl text-gray-300 mb-3 block"></i>
+                Aucun livre trouvé.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
-
-    <button
-      [disabled]="currentPage() >= result.page.totalPages - 1"
-      (click)="currentPage.set(currentPage() + 1)"
-      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
-           disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
-      Suivant
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-    </button>
-
   </div>
-}
 
+  <!-- Pagination partagée -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="result.page.totalPages"
+    (pageChange)="currentPage.set($event)"/>
+
+} @else {
+
+  <!-- Skeleton de chargement -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
+    @for (_ of [1,2,3,4,5]; track $index) {
+      <div class="flex items-center gap-4 px-5 py-4 border-b border-gray-100">
+        <div class="h-4 bg-gray-200 rounded w-48"></div>
+        <div class="h-4 bg-gray-200 rounded w-32"></div>
+        <div class="h-4 bg-gray-200 rounded w-24 hidden lg:block"></div>
+        <div class="h-4 bg-gray-200 rounded w-36 ml-auto"></div>
+        <div class="h-8 bg-gray-200 rounded w-20"></div>
+      </div>
+    }
+  </div>
+
+}

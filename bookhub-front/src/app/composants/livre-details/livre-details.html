@@ -1,128 +1,205 @@
 <app-header></app-header>
 
-<div class="container mx-auto">
+<!-- Toast flash message -->
+@if (flash(); as f) {
+  <div class="fixed bottom-6 right-6 z-50 max-w-sm w-full shadow-2xl rounded-xl overflow-hidden"
+       [class.bg-green-600]="f.type === 'succes'"
+       [class.bg-red-500]="f.type === 'erreur'">
+    <div class="flex items-start gap-3 px-4 py-3 text-white">
+      <i class="mt-0.5 shrink-0 text-lg"
+         [class.fa-solid]="true"
+         [class.fa-circle-check]="f.type === 'succes'"
+         [class.fa-circle-exclamation]="f.type === 'erreur'"></i>
+      <p class="text-sm font-medium leading-snug">{{ f.texte }}</p>
+      <button (click)="flash.set(null)" class="ml-auto shrink-0 opacity-70 hover:opacity-100">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+}
 
-   @if (livre(); as livre) {
+<div class="container mx-auto px-4 py-8 max-w-5xl">
 
-     <div class="mt-8">
+  <!-- ── Squelette ─────────────────────────────────────────────────────── -->
+  @if (chargement()) {
+    <div class="animate-pulse">
+      <div class="h-8 bg-gray-200 rounded w-16 mb-8"></div>
+      <div class="h-6 bg-gray-200 rounded w-64 mb-4"></div>
+      <div class="flex flex-wrap gap-4 mb-8">
+        <div class="h-4 bg-gray-200 rounded w-32"></div>
+        <div class="h-4 bg-gray-200 rounded w-24"></div>
+        <div class="h-4 bg-gray-200 rounded w-20"></div>
+      </div>
+      <div class="flex flex-col md:flex-row gap-10">
+        <div class="w-full md:w-56 h-80 bg-gray-200 rounded-lg shrink-0"></div>
+        <div class="flex-grow space-y-4">
+          <div class="h-4 bg-gray-200 rounded w-48"></div>
+          <div class="h-4 bg-gray-200 rounded w-40"></div>
+          <div class="h-4 bg-gray-200 rounded w-36"></div>
+          <div class="h-4 bg-gray-200 rounded w-32"></div>
+          <div class="h-12 bg-gray-200 rounded-lg w-36 mt-8"></div>
+        </div>
+      </div>
+    </div>
+  }
 
-       <div>
-         <a [routerLink]="['/books']" class="items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
-           bg-[#2D3A18] text-[#FDF8E1] hover:bg-[#3d4d22] shadow-md">Retour</a>
-       </div>
+  <!-- ── Contenu ────────────────────────────────────────────────────────── -->
+  @if (livre(); as livre) {
 
-       <h1 class="text-[#4A5D3B] font-semibold text-xl my-8">{{ livre.titre }}</h1>
+    <!-- Bouton retour -->
+    <a [routerLink]="['/books']" class="btn btn-back inline-flex items-center gap-2 mb-6">
+      <i class="fa-solid fa-arrow-left"></i>
+      Retour
+    </a>
 
-       <div class="flex justify-between items-center">
-         <div class="text-[#8B4513] font-semibold">
-           {{ livre.auteurNom }} {{ livre.auteurPrenom }}
-         </div>
-         <div class="flex items-center gap-2 text-[#4A5D3B] font-semibold">
-           @if (livre.nbExemplaireDispo > 0) {
-             <span class="fa fa-circle-check text-[#4A5D3B]"></span>
-           } @else {
-             <span class="fa fa-circle-xmark text-red-500"></span>
-           }
+    <!-- Titre + meta -->
+    <h1 class="text-2xl font-bold text-[#4A5D3B] mb-2">{{ livre.titre }}</h1>
 
-           <span>
-             @if(livre.nbExemplaireDispo <= 0) {
-               Indisponible
-             } @else {
-               Disponible
-             } ({{ livre.nbExemplaireDispo }}/{{ livre.nbExemplaire }})
-           </span>
-         </div>
-         <div class="text-[#4A5D3B] font-semibold">{{ livre.nbPage }} pages</div>
-       </div>
-     </div>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 text-sm">
+      <span class="font-semibold text-[#8B4513]">
+        {{ livre.auteurNom }} {{ livre.auteurPrenom }}
+      </span>
+      <span class="text-gray-400">·</span>
+      <span class="font-medium"
+            [class.text-[#4A5D3B]]="livre.nbExemplaireDispo > 0"
+            [class.text-red-500]="livre.nbExemplaireDispo === 0">
+        <i class="fa-solid mr-1"
+           [class.fa-circle-check]="livre.nbExemplaireDispo > 0"
+           [class.fa-circle-xmark]="livre.nbExemplaireDispo === 0"></i>
+        {{ livre.nbExemplaireDispo > 0 ? 'Disponible' : 'Indisponible' }}
+        ({{ livre.nbExemplaireDispo }}/{{ livre.nbExemplaire }})
+      </span>
+      @if (livre.nbPage) {
+        <span class="text-gray-400">·</span>
+        <span class="text-gray-500">{{ livre.nbPage }} pages</span>
+      }
+    </div>
 
-     <div class="mt-8 flex flex-col md:flex-row gap-12">
+    <!-- Contenu principal -->
+    <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
 
-       <div class="w-full md:w-64 flex-shrink-0">
-         <img [src]="bookCoverUrl(livre)"
-              alt="Couverture"
-              class="w-full rounded-sm shadow-2xl border-4 border-white/20 img--cover--medium">
-       </div>
+      <!-- Couverture -->
+      <div class="flex-shrink-0 flex flex-col items-center md:items-start gap-4">
+        <img [src]="bookCoverUrl()"
+             alt="Couverture de {{ livre.titre }}"
+             class="rounded-lg shadow-2xl border-4 border-white/20 img--cover--medium">
 
-       <div class="flex-grow space-y-4">
-         <div class="flex justify-between items-start">
-           <div class="space-y-4">
-             <p><span class="font-bold text-[#D9A066]">ISBN :</span> {{ livre.isbn }}</p>
-             <p><span class="font-bold text-[#D9A066]">Date de parution :</span> {{livre.dateParution|date:"MMMM y":"":"fr-FR"}} </p>
-             <p><span class="font-bold text-[#D9A066]">Catégorie :</span> {{ livre.categorieLibelle }}</p>
-             <div class="flex items-center gap-2">
-               <span class="font-bold text-[#D9A066]">Note moyenne</span>
-               <div class="flex text-[#D9A066]">
-                 <app-book-rating [rating]="livre.note"/>
-               </div>
-             </div>
-           </div>
+        <!-- CTA mobile (sous la couverture) -->
+        <div class="w-full md:hidden">
+          @if (livre.nbExemplaireDispo === 0) {
+            <button (click)="onClickReserver()"
+                    class="w-full bg-[#D9A066] text-white py-3 rounded-xl font-bold text-lg
+                           hover:bg-[#c68b50] transition-colors shadow-md">
+              <i class="fa-solid fa-bookmark mr-2"></i> Réserver
+            </button>
+          } @else {
+            <button (click)="onClickEmprunter()"
+                    class="w-full bg-[#2D3A18] text-white py-3 rounded-xl font-bold text-lg
+                           hover:bg-[#3d4d22] transition-colors shadow-md">
+              <i class="fa-solid fa-hand-holding-heart mr-2"></i> Emprunter
+            </button>
+          }
+        </div>
+      </div>
 
-            <div class="relative">
-              @if(livre.nbExemplaireDispo <= 0) {
-                <button
-                  (click)="onClickReserver()"
-                  class="bg-[#D9A066] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg">
-                  Réserver
-                </button>
-              } @else {
-                <button
-                  (click)="onClickEmprunter()"
-                  class="bg-[#2D3A18] text-white px-12 py-4 rounded-lg text-2xl font-serif hover:bg-[#3d4d22] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    Emprunter
-                </button>
-              }
+      <!-- Détails -->
+      <div class="flex-grow min-w-0">
+
+        <!-- Infos + CTA desktop -->
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6 mb-8">
+
+          <div class="space-y-3">
+            <p class="text-gray-700">
+              <span class="font-bold text-[#D9A066]">ISBN :</span>
+              <span class="font-mono ml-1">{{ livre.isbn }}</span>
+            </p>
+            @if (livre.dateParution) {
+              <p class="text-gray-700">
+                <span class="font-bold text-[#D9A066]">Parution :</span>
+                {{ livre.dateParution | date:"MMMM y":"":"fr-FR" }}
+              </p>
+            }
+            <p class="text-gray-700">
+              <span class="font-bold text-[#D9A066]">Catégorie :</span>
+              {{ livre.categorieLibelle }}
+            </p>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-[#D9A066]">Note :</span>
+              <app-book-rating [rating]="livre.note"/>
+              <span class="text-sm text-gray-500">({{ livre.note | number:'1.1-1' }} / 5)</span>
             </div>
+          </div>
 
-         </div>
+          <!-- CTA desktop -->
+          <div class="hidden md:block shrink-0">
+            @if (livre.nbExemplaireDispo === 0) {
+              <button (click)="onClickReserver()"
+                      class="bg-[#D9A066] text-white px-8 py-4 rounded-xl text-xl font-serif
+                             hover:bg-[#c68b50] transition-colors shadow-lg whitespace-nowrap">
+                <i class="fa-solid fa-bookmark mr-2"></i> Réserver
+              </button>
+            } @else {
+              <button (click)="onClickEmprunter()"
+                      class="bg-[#2D3A18] text-white px-8 py-4 rounded-xl text-xl font-serif
+                             hover:bg-[#3d4d22] transition-colors shadow-lg whitespace-nowrap">
+                <i class="fa-solid fa-hand-holding-heart mr-2"></i> Emprunter
+              </button>
+            }
+          </div>
+        </div>
 
+        <!-- Résumé -->
+        @if (livre.resume) {
+          <div class="bg-white/60 rounded-xl p-5 border border-gray-100 mb-8">
+            <h3 class="font-bold text-gray-700 mb-2">Résumé</h3>
+            <p class="text-gray-600 leading-relaxed text-sm">{{ livre.resume }}</p>
+          </div>
+        }
 
-         <div class="mt-12 space-y-6">
-           <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-             <i class="fa-solid fa-comments text-blue-600"></i>
-             Avis des lecteurs
-           </h3>
+        <!-- Évaluations -->
+        <div>
+          <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-5">
+            <i class="fa-solid fa-comments text-blue-500"></i>
+            Avis des lecteurs
+          </h3>
 
-           @for (evaluation of evaluations(); track $index) {
-             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-hover hover:shadow-md">
-               <div class="flex justify-between items-start mb-3">
-                 <app-book-rating [rating]="evaluation.note"></app-book-rating>
-
-                 <span class="text-xs font-bold px-2 py-1 bg-blue-50 text-blue-600 rounded-lg">
+          <div class="space-y-4">
+            @for (evaluation of evaluations(); track $index) {
+              <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                  <app-book-rating [rating]="evaluation.note"/>
+                  <span class="text-xs font-bold px-2 py-1 bg-blue-50 text-blue-600 rounded-lg">
                     {{ evaluation.note }} / 5
                   </span>
-               </div>
+                </div>
+                <p class="text-gray-600 italic leading-relaxed text-sm">"{{ evaluation.commentaire }}"</p>
+              </div>
+            } @empty {
+              <div class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                <i class="fa-regular fa-comment text-3xl text-gray-300 mb-2 block"></i>
+                <p class="text-gray-500 text-sm">Aucune évaluation pour le moment.</p>
+              </div>
+            }
+          </div>
 
-               <p class="text-gray-600 italic leading-relaxed">
-                 "{{ evaluation.commentaire }}"
-               </p>
-             </div>
-           } @empty {
-             <div class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-               <p class="text-gray-500">Aucune évaluation pour le moment.</p>
-             </div>
-           }
-         </div>
-
-         @if (canComment()) {
-           <div class="mt-12">
-             <h3 class="text-xl font-bold text-[#D9A066] mb-4">Commentaires</h3>
-             <div class="relative">
+          @if (canComment()) {
+            <div class="mt-8">
+              <h3 class="text-lg font-bold text-[#D9A066] mb-3">Laisser un avis</h3>
               <textarea
-                class="w-full h-32 p-4 rounded-xl border-none shadow-inner focus:ring-2 focus:ring-[#D9A066] bg-white/70 placeholder-[#D9A066]/50"
-                placeholder="Votre commentaire"></textarea>
-               <div class="flex justify-end mt-2">
-                 <button class="bg-[#D9A066] text-white px-6 py-2 rounded shadow-md hover:bg-[#c68b50] transition-colors">
-                   Envoyer
-                 </button>
-               </div>
-             </div>
-           </div>
-         }
-       </div>
-     </div>
-   } @else {
-     <p>Chargement en cours...</p>
-   }
+                class="w-full h-28 p-4 rounded-xl shadow-inner focus:ring-2 focus:ring-[#D9A066]
+                       bg-white/70 placeholder-[#D9A066]/50 border-0 outline-none resize-none"
+                placeholder="Votre commentaire…"></textarea>
+              <div class="flex justify-end mt-2">
+                <button class="bg-[#D9A066] text-white px-6 py-2 rounded-lg shadow hover:bg-[#c68b50] transition-colors font-bold">
+                  Envoyer
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
 
 </div>
