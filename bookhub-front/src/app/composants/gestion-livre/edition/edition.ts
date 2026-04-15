@@ -1,9 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogueService } from '../../../core/services/catalogue-service';
 import { Livre } from '../../../core/modeles/livre';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Header } from '../../../layout/header/header';
 import { CategorieService } from '../../../core/services/categorie-service';
 import { AuteurService } from '../../../core/services/auteur-service';
 import { Location } from '@angular/common';
@@ -11,7 +10,7 @@ import { Exemplaire } from '../../../core/modeles/exemplaire';
 
 @Component({
   selector: 'app-edition',
-  imports: [Header, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './edition.html',
   styleUrl: './edition.css'
 })
@@ -130,11 +129,18 @@ export class Edition implements OnInit {
         this.exemplaires.clear();
 
         exemplaires.forEach(ex => {
+          const dispoControl = new FormControl(ex.estDisponible ?? true);
+
+          // SI L'ID EXISTE, ON DÉSACTIVE LE CONTRÔLE
+          if (ex.id) {
+            dispoControl.disable();
+          }
+
           this.exemplaires.push(new FormGroup({
             id: new FormControl(ex.id),
             codeBarre: new FormControl(ex.codeBarre, [Validators.required]),
             etat: new FormControl(ex.etat || 'NEUF', [Validators.required]),
-            estDisponible: new FormControl(ex.estDisponible ?? true)
+            estDisponible: dispoControl
           }));
         });
 
@@ -149,7 +155,7 @@ export class Edition implements OnInit {
       id: new FormControl(null),
       codeBarre: new FormControl('', [Validators.required]),
       etat: new FormControl('NEUF', [Validators.required]),
-      estDisponible: new FormControl(true)   // ✅ cohérent avec refreshExemplaires
+      estDisponible: new FormControl(true)
     }));
   }
 
@@ -183,7 +189,7 @@ export class Edition implements OnInit {
   }
 
   protected goBack() {
-    this.location.back();
+    this.router.navigate(['librarian', 'books']);
   }
 
   showError(message: string) {

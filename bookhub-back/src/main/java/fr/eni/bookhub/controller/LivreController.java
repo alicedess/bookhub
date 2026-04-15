@@ -7,6 +7,7 @@ import fr.eni.bookhub.dto.LivreDTO;
 import fr.eni.bookhub.service.EvaluationService;
 import fr.eni.bookhub.service.ExemplaireService;
 import fr.eni.bookhub.service.LivreService;
+import fr.eni.bookhub.storage.StorageFileNotFoundException;
 import fr.eni.bookhub.storage.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,10 +20,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -183,11 +186,20 @@ public class LivreController {
 
         LivreDTO livreDTO = livre.get();
 
-        if (null == livreDTO.getImageCouverture()) {
-            return ResponseEntity.notFound().build();
+        if (null != livreDTO.getImageCouverture()) {
+            try {
+                Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } catch (StorageFileNotFoundException e) {
+            }
         }
 
-        Resource resource = storageService.loadAsResource(livreDTO.getImageCouverture());
+        File file = ResourceUtils.getFile("classpath:assets/default_cover.png");
+        Resource resource = storageService.loadAsResource(file.toPath());
+
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);

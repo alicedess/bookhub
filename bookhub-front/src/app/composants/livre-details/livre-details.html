@@ -76,8 +76,35 @@
 
          </div>
 
-         @if (canComment()) {
 
+         <div class="mt-12 space-y-6">
+           <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+             <i class="fa-solid fa-comments text-blue-600"></i>
+             Avis des lecteurs
+           </h3>
+
+           @for (evaluation of evaluations(); track $index) {
+             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-hover hover:shadow-md">
+               <div class="flex justify-between items-start mb-3">
+                 <app-book-rating [rating]="evaluation.note"></app-book-rating>
+
+                 <span class="text-xs font-bold px-2 py-1 bg-blue-50 text-blue-600 rounded-lg">
+                    {{ evaluation.note }} / 5
+                  </span>
+               </div>
+
+               <p class="text-gray-600 italic leading-relaxed">
+                 "{{ evaluation.commentaire }}"
+               </p>
+             </div>
+           } @empty {
+             <div class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+               <p class="text-gray-500">Aucune évaluation pour le moment.</p>
+             </div>
+           }
+         </div>
+
+         @if (canComment()) {
            <div class="mt-12">
              <h3 class="text-xl font-bold text-[#D9A066] mb-4">Commentaires</h3>
              <div class="relative">
@@ -91,7 +118,6 @@
                </div>
              </div>
            </div>
-
          }
        </div>
      </div>
