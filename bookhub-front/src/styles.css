@@ -17,6 +17,16 @@ body {
   --input-border-color: #D9A066;
 }
 
+.sidebar {
+  @apply flex flex-col w-64 border-r border-gray-200 flex-shrink-0;
+  background: #fffcf2;
+}
+
+.bg-white {
+  background: #fffdf8 !important;
+}
+
+
 /**
  * Buttons
  */

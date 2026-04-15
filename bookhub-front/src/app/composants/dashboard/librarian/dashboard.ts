@@ -1,12 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Header } from '../../../layout/header/header';
 import { RouterLink } from '@angular/router';
 import { StatsService } from '../../../core/services/stats-service';
 import { Stats } from '../../../core/modeles/stats';
 
 @Component({
   selector: 'app-librarian-dashboard',
-  imports: [Header, RouterLink],
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
