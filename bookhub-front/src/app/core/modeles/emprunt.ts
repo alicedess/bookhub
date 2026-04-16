@@ -1,5 +1,5 @@
 export interface EmpruntDTO {
-  id: number;
+  idEmprunt: number;
   dateDebut: Date;
   dateRetourPrevue: Date;
   dateRetourEffective?: Date;
@@ -9,7 +9,8 @@ export interface EmpruntDTO {
   exemplaireId: number;
   livreId: number;
   titreLivre: string;
-  auteur: string;
+  auteurNom: string;
+  auteurPrenom: string;
 }
 
 export interface MesEmpruntsResponse {

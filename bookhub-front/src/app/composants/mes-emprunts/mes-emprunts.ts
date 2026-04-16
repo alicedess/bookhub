@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EmpruntDTO } from '../../core/modeles/emprunt';
 import { EmpruntService } from '../../core/services/emprunt-service';
 import { Header } from '../../layout/header/header';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-mes-emprunts',
@@ -14,13 +15,14 @@ import { Header } from '../../layout/header/header';
     RouterLink,
   ],
   templateUrl: './mes-emprunts.html',
-  styleUrl: './mes-emprunts.css',
 })
 export class MesEmprunts implements OnInit {
+  
   empruntsEnCours: EmpruntDTO[] = [];
   empruntsHistorique: EmpruntDTO[] = [];
   ongletActif: 'enCours' | 'historique' = 'enCours';
   erreur: string | null = null;
+  private cdr = inject(ChangeDetectorRef);
 
   private empruntService: EmpruntService = inject(EmpruntService);
 
@@ -28,18 +30,21 @@ export class MesEmprunts implements OnInit {
     this.chargerEmprunts();
   }
 
+
   chargerEmprunts(): void {
     this.erreur = null;
     this.empruntService.getMesEmprunts().subscribe({
       next: (data) => {
         this.empruntsEnCours = data.enCours;
         this.empruntsHistorique = data.historique;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.erreur = 'Impossible de charger vos emprunts pour le moment.';
       }
     });
   }
+
 
   chargerOnglet(onglet: 'enCours' | 'historique'): void {
     this.ongletActif = onglet;
@@ -61,11 +66,13 @@ export class MesEmprunts implements OnInit {
     const diffJours = Math.ceil(diffDate / (1000 * 60 * 60 * 24));
 
     if (diffJours < 0) {
-      return `${Math.abs(diffJours)} jour(s) de retard`;
+      return `${Math.abs(diffJours)} jours de retard`;
     }
     if (diffJours === 0) {
       return 'À rendre aujourd\'hui';
     }
-    return `${diffJours} jour(s) restant(s)`;
+    return `${diffJours} jours`;
   }
 }
+
+export default MesEmprunts;
