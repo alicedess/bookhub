@@ -10,6 +10,8 @@ export interface EmpruntDTO {
   exemplaireId: number;
   livreId: number;
   titreLivre: string;
+  auteurNom: string;
+  auteurPrenom: string;
 }
 
 export interface MesEmpruntsResponse {

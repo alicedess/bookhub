@@ -42,11 +42,11 @@ export const routes: Routes = [
 //     canActivate: [authGuard],
 //     loadComponent: () => import('')
 //   },
-//   {
-//     path: 'loans/my',
-//     canActivate: [authGuard],
-//     loadComponent: () => import('')
-//   },
+  {
+    path: 'loans/my',
+    canActivate: [authGuard],
+    loadComponent: () => import('./composants/mes-emprunts/mes-emprunts').then((m) => m.MesEmprunts)
+  },
 //   {
 //     path: 'reservations/my',
 //     canActivate: [authGuard],

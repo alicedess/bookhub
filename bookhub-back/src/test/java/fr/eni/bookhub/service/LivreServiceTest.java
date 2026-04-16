@@ -51,8 +51,8 @@ class LivreServiceTest {
         when(p.getTitre()).thenReturn(titre);
         when(p.getResume()).thenReturn("Un résumé");
         when(p.getImageCouverture()).thenReturn(null);
-        when(p.getNbPage()).thenReturn(300L);
-        when(p.getDateParution()).thenReturn(new Date());
+        when(p.getNbPage()).thenReturn(300);
+        //when(p.getDateParution()).thenReturn(new Date());
         when(p.getAuteurId()).thenReturn(1L);
         when(p.getAuteurNom()).thenReturn("Hugo");
         when(p.getAuteurPrenom()).thenReturn("Victor");
@@ -137,7 +137,7 @@ class LivreServiceTest {
         CreateLivreDTO dto = new CreateLivreDTO();
         dto.setIsbn("9782070360024");
         dto.setTitre("Les Misérables");
-        dto.setAuteurId(1);
+        dto.setAuteurId(1L);
         dto.setCategorieId(1L);
         dto.setResume("Un grand roman");
 
@@ -150,7 +150,7 @@ class LivreServiceTest {
 
         when(livreRepository.findByIsbn("9782070360024")).thenReturn(Optional.empty());
         when(modelMapper.map(dto, Livre.class)).thenReturn(livreSauve);
-        when(auteurRepository.findById(1)).thenReturn(Optional.of(auteur));
+        when(auteurRepository.findById(1L)).thenReturn(Optional.of(auteur));
         when(categorieRepository.findById(1L)).thenReturn(Optional.of(categorie));
         when(livreRepository.save(any(Livre.class))).thenReturn(livreSauve);
         when(livreRepository.findByIdForDetails(10L)).thenReturn(Optional.of(proj));
@@ -179,11 +179,11 @@ class LivreServiceTest {
     void createLivre_auteurInexistant_leveOperationException() {
         CreateLivreDTO dto = new CreateLivreDTO();
         dto.setIsbn("9782070360024");
-        dto.setAuteurId(99);
+        dto.setAuteurId(99L);
 
         when(livreRepository.findByIsbn(any())).thenReturn(Optional.empty());
         when(modelMapper.map(dto, Livre.class)).thenReturn(new Livre());
-        when(auteurRepository.findById(99)).thenReturn(Optional.empty());
+        when(auteurRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(OperationException.class, () -> livreService.createLivre(dto));
         verify(categorieRepository, never()).findById(any());
@@ -193,12 +193,12 @@ class LivreServiceTest {
     void createLivre_categorieInexistante_leveOperationException() {
         CreateLivreDTO dto = new CreateLivreDTO();
         dto.setIsbn("9782070360024");
-        dto.setAuteurId(1);
+        dto.setAuteurId(1L);
         dto.setCategorieId(99L);
 
         when(livreRepository.findByIsbn(any())).thenReturn(Optional.empty());
         when(modelMapper.map(dto, Livre.class)).thenReturn(new Livre());
-        when(auteurRepository.findById(1)).thenReturn(Optional.of(new Auteur()));
+        when(auteurRepository.findById(1L)).thenReturn(Optional.of(new Auteur()));
         when(categorieRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(OperationException.class, () -> livreService.createLivre(dto));
@@ -279,10 +279,10 @@ class LivreServiceTest {
         livre.setId(1L);
 
         CreateLivreDTO dto = new CreateLivreDTO();
-        dto.setAuteurId(99);
+        dto.setAuteurId(99L);
 
         when(livreRepository.findById(1L)).thenReturn(Optional.of(livre));
-        when(auteurRepository.findById(99)).thenReturn(Optional.empty());
+        when(auteurRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(OperationException.class, () -> livreService.updateLivre(1L, dto));
     }
