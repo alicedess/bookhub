@@ -18,4 +18,4 @@
 
 ## Infrastructure
 
-![Infra](./docs/infra/infra.drawio.png)
+![Infra](./docs/infra/schema.infra.pdf)
