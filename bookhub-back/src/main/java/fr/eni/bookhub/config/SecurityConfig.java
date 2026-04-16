@@ -59,7 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/loans").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/loans/my").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/loans").hasAnyRole("LIBRARIAN", "ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/loans/**/return").hasAnyRole("LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasAnyRole("LIBRARIAN", "ADMIN")
 
                                 // Authentication
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
