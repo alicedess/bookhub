@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -77,6 +78,25 @@ public class UtilisteurService {
         return userMap.convertToDto(user);
     }
 
+    /**
+     * Soft Delete
+     * @param principal
+     */
+    public void softDeleteUtilisateur(String principal){
+        Optional<Utilisateur> utilisateur = utilisateurRepository.findByEmail(principal);
+        if (utilisateur.isPresent()) {
+            Utilisateur user = utilisateur.get();
+            user.setDateSuppression(java.time.LocalDateTime.now());
+            utilisateurRepository.save(user);
+        } else {
+            throw new RuntimeException("Utilisateur non trouvé");
+        }
+    }
+
+    /**
+     * Hard Delete
+     * @param email
+     */
     public void deleteUtilisateur(String email) {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));

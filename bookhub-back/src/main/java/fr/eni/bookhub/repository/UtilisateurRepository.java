@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 
-    Utilisateur findUtilisateurById(Long id);
+    Optional<Utilisateur> findById(Long id);
 
     @Query("SELECT u FROM Utilisateur u WHERE u.id = :id AND u.dateSuppression IS NULL")
     Utilisateur findUtilisateurByIdWhereDateSuppressionIsNull(Long id);
