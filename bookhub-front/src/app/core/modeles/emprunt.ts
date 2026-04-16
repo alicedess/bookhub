@@ -6,6 +6,7 @@ export interface EmpruntDTO {
   statut: string;
   enRetard: boolean;
   utilisateurId: number;
+  nomUtilisateur: string;
   exemplaireId: number;
   livreId: number;
   titreLivre: string;
@@ -20,4 +21,3 @@ export interface EmpruntResponse {
   message: string;
   emprunt: EmpruntDTO;
 }
-

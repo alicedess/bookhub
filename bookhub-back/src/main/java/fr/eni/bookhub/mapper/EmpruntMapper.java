@@ -25,6 +25,7 @@ public class EmpruntMapper {
 
         if (emprunt.getUtilisateur() != null) {
             dto.setUtilisateurId(emprunt.getUtilisateur().getId());
+            dto.setNomUtilisateur(emprunt.getUtilisateur().getPrenom() + " " + emprunt.getUtilisateur().getNom());
         }
 
         if (emprunt.getExemplaire() != null) {

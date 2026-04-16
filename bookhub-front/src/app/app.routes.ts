@@ -27,6 +27,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./composants/livre-details/livre-details').then((m) => m.LivreDetails),
   },
+  {
+    path: 'loans/my',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./composants/mes-emprunts/mes-emprunts').then((m) => m.MesEmprunts),
+  },
   //   { path: 'books/:id', loadComponent: () => import('') },
 
 
@@ -75,7 +81,11 @@ export const routes: Routes = [
           path: 'books/:id/edit',
           loadComponent: () => import('./composants/gestion-livre/edition/edition').then(m => m.Edition)
         },
-      //   { path: 'loans', loadComponent: () => import('') },
+        {
+          path: 'loans',
+          loadComponent: () =>
+            import('./composants/gestion-emprunts/gestion-emprunts').then((m) => m.GestionEmprunts),
+        },
       //   { path: 'reviews', loadComponent: () => import('') },
     ],
   },
