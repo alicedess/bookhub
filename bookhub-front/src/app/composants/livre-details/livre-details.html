@@ -20,7 +20,6 @@
 
 <div class="container mx-auto px-4 py-8 max-w-5xl">
 
-  <!-- ── Squelette ─────────────────────────────────────────────────────── -->
   @if (chargement()) {
     <div class="animate-pulse">
       <div class="h-8 bg-gray-200 rounded w-16 mb-8"></div>
@@ -43,7 +42,6 @@
     </div>
   }
 
-  <!-- ── Contenu ────────────────────────────────────────────────────────── -->
   @if (livre(); as livre) {
 
     <!-- Bouton retour -->
@@ -125,7 +123,7 @@
             </p>
             <div class="flex items-center gap-2">
               <span class="font-bold text-[#D9A066]">Note :</span>
-              <app-book-rating [rating]="livre.note"/>
+              <app-book-rating [rating]="livre.note" class="text-[#8B4513] font-bold text-sm uppercase tracking-wide truncate"/>
               <span class="text-sm text-gray-500">({{ livre.note | number:'1.1-1' }} / 5)</span>
             </div>
           </div>
@@ -167,7 +165,7 @@
             @for (evaluation of evaluations(); track $index) {
               <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-3">
-                  <app-book-rating [rating]="evaluation.note"/>
+                  <app-book-rating [rating]="evaluation.note" class="text-[#8B4513] font-bold text-sm uppercase tracking-wide truncate"/>
                   <span class="text-xs font-bold px-2 py-1 bg-blue-50 text-blue-600 rounded-lg">
                     {{ evaluation.note }} / 5
                   </span>
