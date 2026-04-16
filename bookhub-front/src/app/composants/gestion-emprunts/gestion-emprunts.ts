@@ -43,11 +43,11 @@ export class GestionEmprunts implements OnInit {
 
     this.empruntService.retournerLivre(emprunt.idEmprunt).subscribe({
       next: (response) => {
-        this.messageSucces = `Livre "${emprunt.livre.titre}" retourné avec succès.`;
+        this.messageSucces = `Livre "${emprunt.titreLivre}" retourné avec succès.`;
         this.chargerEmprunts();
       },
       error: () => {
-        this.erreur = `Impossible de retourner le livre "${emprunt.livre.titre}" pour le moment.`;
+        this.erreur = `Impossible de retourner le livre "${emprunt.titreLivre}" pour le moment.`;
       }
     });
   }
