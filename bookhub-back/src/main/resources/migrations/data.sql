@@ -147,5 +147,5 @@ VALUES
 
 
 INSERT INTO emprunt (date_debut, date_retour_prevue, date_retour_effective, statut, id_utilisateur, id_exemplaire) VALUES ( N'2026-04-15 22:54:33.7370890', N'2026-04-29 22:54:33.7370890', null, N'EN_COURS', 2, 17);
-INSERT INTO emprunt (date_debut, date_retour_prevue, date_retour_effective, statut, id_utilisateur, id_exemplaire) VALUES ( N'2025-04-15 23:32:26.9633565', N'2025-04-29 23:32:26.9633565', null, N'EN_COURS', 2, 14);
+INSERT INTO emprunt (date_debut, date_retour_prevue, date_retour_effective, statut, id_utilisateur, id_exemplaire) VALUES ( N'2025-04-15 23:32:26.9633565', N'2025-04-29 23:32:26.9633565', null, N'EN_COURS', 1, 14);
 INSERT INTO emprunt (date_debut, date_retour_prevue, date_retour_effective, statut, id_utilisateur, id_exemplaire) VALUES ( N'2026-04-15 23:32:38.8619303', N'2026-04-29 23:32:38.8619303', null, N'EN_COURS', 2, 11);
