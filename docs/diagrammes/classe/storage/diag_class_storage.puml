@@ -1,0 +1,62 @@
+@startuml
+
+!theme plain
+left to right direction
+skinparam linetype ortho
+
+class FileSystemStorageService {
+  + loadAsResource(Path): Resource
+  + deleteAll(): void
+  + store(MultipartFile, String): void
+  + delete(String): void
+  + init(): void
+  + loadAll(): Stream<Path>
+  + load(String): Path
+  + loadAsResource(String): Resource
+}
+class LivreController {
+  + deleteLivre(Long): ResponseEntity<?>
+  + addRating(Long, EvaluationDTO): ResponseEntity<?>
+  + createLivre(CreateLivreDTO): ResponseEntity<?>
+  + handleFileUpload(Long, MultipartFile, RedirectAttributes): ResponseEntity<LivreDTO>
+  + getImage(Long): ResponseEntity<?>
+  + lesEvaluationsParLivre(Long): ResponseEntity<?>
+  + updateExemplaires(Long, List<ExemplaireDTO>): ResponseEntity<?>
+  + searchLivres(String, Long, Long, Integer, int): ResponseEntity<Page<LivreDTO>>
+  + getLivreById(Long): ResponseEntity<LivreDTO>
+  + updateLivre(Long, CreateLivreDTO): ResponseEntity<LivreDTO>
+  + getExemplaires(Long): ResponseEntity<List<ExemplaireDTO>>
+}
+class LivreDTO
+class LivreService {
+  + addRating(Long, EvaluationDTO): EvaluationDTO
+  + deleteLivre(Long): void
+  + searchLivres(String, Long, Long, Integer, int): Page<LivreDTO>
+  + getById(Long): Optional<LivreDTO>
+  + updateCouvertureLivre(Long, MultipartFile): LivreDTO
+  + updateLivre(Long, CreateLivreDTO): LivreDTO
+  + createLivre(CreateLivreDTO): LivreDTO
+}
+class StorageException
+class StorageFileNotFoundException
+class StorageProperties
+interface StorageService << interface >> {
+  + loadAll(): Stream<Path>
+  + delete(String): void
+  + deleteAll(): void
+  + store(MultipartFile, String): void
+  + load(String): Path
+  + loadAsResource(String): Resource
+  + init(): void
+  + loadAsResource(Path): Resource
+}
+
+FileSystemStorageService      -[#595959,dashed]->  StorageException             : "«create»"
+FileSystemStorageService      -[#595959,dashed]->  StorageFileNotFoundException : "«create»"
+FileSystemStorageService      -[#008200,dashed]-^  StorageService               
+LivreController              "1" *-[#595959,plain]-> "livreService\n1" LivreService                 
+LivreController              "1" *-[#595959,plain]-> "storageService\n1" StorageService               
+LivreService                  -[#595959,dashed]->  LivreDTO                     : "«create»"
+LivreService                 "1" *-[#595959,plain]-> "storageService\n1" StorageService               
+StorageFileNotFoundException  -[#000082,plain]-^  StorageException             
+@enduml
