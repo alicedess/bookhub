@@ -1,0 +1,123 @@
+@startuml
+
+!theme plain
+left to right direction
+skinparam linetype ortho
+
+package enumeration {
+    enum StatutEnum {
+        EN_COURS
+        RETARDE
+        RETOURNE
+    }
+
+    enum EtatExemplaireEnum {
+        NEUF
+        BON
+        ABIME
+        PERDU
+    }
+
+    enum RoleEnum {
+        ROLE_USER
+        ROLE_ADMIN
+        ROLE_LIBRARIAN
+    }
+}
+
+package entity {
+    class Auteur {
+       id: Long
+       nom: String
+       prenom: String
+    }
+    class Categorie {
+       libelle: String
+       id: Long
+    }
+    class Emprunt {
+       utilisateur: Utilisateur
+       exemplaire: Exemplaire
+       dateRetourPrevue: LocalDateTime
+       enRetard: boolean
+       idEmprunt: Long
+       dateRetourEffective: LocalDateTime
+       statut: StatutEnum
+       dateDebut: LocalDateTime
+    }
+    class Evaluation {
+       utilisateur: Utilisateur
+       estModere: Boolean
+       id: Long
+       datePublication: Instant
+       commentaire: String
+       livre: Livre
+       note: Integer
+    }
+    class Exemplaire {
+       etat: EtatExemplaireEnum
+       estDisponible: Boolean
+       livre: Livre
+       codeBarre: String
+       id: Long
+    }
+    class Livre {
+       dateParution: LocalDate
+       nbPage: Integer
+       resume: String
+       id: Long
+       imageCouverture: String
+       titre: String
+       auteur: Auteur
+       isbn: String
+       categorie: Categorie
+    }
+    class Role {
+       id: Long
+       libelle: RoleEnum
+    }
+    class Utilisateur {
+       role: Role
+       dateSuppression: LocalDateTime
+       id: Long
+       pseudo: String
+       authorities: Collection<GrantedAuthority>
+       commentaireAvecPseudo: Boolean
+       nom: String
+       enabled: boolean
+       telephone: String
+       accountNonExpired: boolean
+       password: String?
+       credentialsNonExpired: boolean
+       email: String
+       dateNaissance: LocalDate
+       prenom: String
+       username: String
+       accountNonLocked: boolean
+    }
+
+    class Reservation {
+       dateReservation: LocalDateTime
+       rangFile: Integer
+       statut: String
+       utilisateur: Utilisateur
+       livre: Livre
+       id: Long
+    }
+}
+
+Emprunt     "*"--> "exemplaire\n1" Exemplaire
+Emprunt     "*"--> "utilisateur\n1" Utilisateur
+Evaluation  "*"--> "livre\n1" Livre
+Evaluation  "*"--> "utilisateur\n1" Utilisateur
+Exemplaire  "*"--> "livre\n1" Livre
+Livre       "*"--> "auteur\n1" Auteur
+Livre       "*"--> "categorie\n1" Categorie
+Utilisateur "*"--> "role\n1" Role
+Reservation     "*"--> "livre\n1" Livre
+Reservation     "*"--> "utilisateur\n1" Utilisateur
+
+Exemplaire -> EtatExemplaireEnum
+Role -> RoleEnum
+Emprunt -> StatutEnum
+@enduml

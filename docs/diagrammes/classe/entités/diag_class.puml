@@ -1,0 +1,89 @@
+@startuml
+skinparam linetype ortho
+
+class Utilisateur {
+  pseudo : String
+  email : String
+  password : String
+  nom : String
+  prenom : String
+  dateNaissance : Date
+  telephone : String
+  dateSuppression : Date
+  commentaireAvecPseudo : String
+}
+
+class Role {
+  libelle : String
+}
+
+class Livre {
+  isbn : String
+  titre : String
+  resume : String
+  nbPage : int
+  imageCouverture : String
+  dateParution : Date
+}
+
+class Auteur {
+  nom : String
+  prenom : String
+}
+
+class Categorie {
+  libelle : String
+}
+
+class Exemplaire {
+  codeBarre : String
+  etat : String
+  estDisponible : boolean
+}
+
+class Emprunt {
+  dateDebut : Date
+  dateRetourPrevue : Date
+  dateRetourEffective : Date
+  statut : String
+}
+
+class Reservation {
+  dateReservation : Date
+  rangFile : int
+  statut : String
+}
+
+class Evaluation {
+  note : int
+  commentaire : String
+  estModere : boolean
+  datePublication : Date
+}
+
+interface Entity {
+
+}
+
+' Relations
+
+Utilisateur "0..*" --> "1" Role : a
+
+Utilisateur "1" --> "0..*" Emprunt : effectue
+Exemplaire "1" --> "0..*" Emprunt : concerne
+
+Utilisateur "1" --> "0..*" Reservation : effectue
+Livre "1" --> "0..*" Reservation : concerne
+
+Utilisateur "1" --> "0..*" Evaluation : redige
+Livre "1" --> "0..*" Evaluation : concerne
+
+Livre "1" --> "1..*" Exemplaire : possede
+
+Livre "1" --> "1" Auteur : ecrit par
+Auteur "1" --> "0..*" Livre : ecrit
+
+Livre "1" --> "1" Categorie : appartient a
+Categorie "1" --> "0..*" Livre : regroupe
+
+@enduml

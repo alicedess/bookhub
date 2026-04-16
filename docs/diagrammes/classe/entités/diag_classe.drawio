@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Diagramme de classes" id="1cbeg-EH1hk1-w9oiALh">
+    <mxGraphModel dx="2241" dy="819" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="rML3897xkUaDyTBU01oK-1" parent="1" style="shape=rectangle" value="Utilisateur&#xa;----------------&#xa;pseudo : String&#xa;email : String&#xa;password : String&#xa;nom : String&#xa;prenom : String&#xa;dateNaissance : Date&#xa;telephone : String&#xa;dateSuppression : Date&#xa;commentaireAvecPseudo : String" vertex="1">
+          <mxGeometry height="220" width="220" x="170" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-2" parent="1" style="shape=rectangle" value="Role&#xa;----------------&#xa;libelle : String" vertex="1">
+          <mxGeometry height="100" width="160" x="-60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-3" parent="1" style="shape=rectangle" value="Livre&#xa;----------------&#xa;isbn : String&#xa;titre : String&#xa;resume : String&#xa;nbPage : int&#xa;imageCouverture : String&#xa;dateParution : Date" vertex="1">
+          <mxGeometry height="200" width="220" x="304" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-4" parent="1" style="shape=rectangle" value="Auteur&#xa;----------------&#xa;nom : String&#xa;prenom : String" vertex="1">
+          <mxGeometry height="120" width="180" x="770" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-5" parent="1" style="shape=rectangle" value="Categorie&#xa;----------------&#xa;libelle : String" vertex="1">
+          <mxGeometry height="100" width="180" x="780" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-6" parent="1" style="shape=rectangle" value="Exemplaire&#xa;----------------&#xa;codeBarre : String&#xa;etat : String&#xa;estDisponible : boolean" vertex="1">
+          <mxGeometry height="140" width="220" x="220" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-7" parent="1" style="shape=rectangle" value="Emprunt&#xa;----------------&#xa;dateDebut : Date&#xa;dateRetourPrevue : Date&#xa;dateRetourEffective : Date&#xa;statut : String" vertex="1">
+          <mxGeometry height="160" width="220" x="-80" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-8" parent="1" style="shape=rectangle" value="Reservation&#xa;----------------&#xa;dateReservation : Date&#xa;rangFile : int&#xa;statut : String" vertex="1">
+          <mxGeometry height="140" width="220" x="670" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-9" parent="1" style="shape=rectangle" value="Evaluation&#xa;----------------&#xa;note : int&#xa;commentaire : String&#xa;estModere : boolean&#xa;datePublication : Date" vertex="1">
+          <mxGeometry height="160" width="220" x="780" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-10" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-1" target="rML3897xkUaDyTBU01oK-2" value="0..* / 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-11" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-1" target="rML3897xkUaDyTBU01oK-7" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-12" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-6" target="rML3897xkUaDyTBU01oK-7" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-13" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-1" target="rML3897xkUaDyTBU01oK-8" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-14" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-3" target="rML3897xkUaDyTBU01oK-8" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-15" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-1" target="rML3897xkUaDyTBU01oK-9" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-16" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-3" target="rML3897xkUaDyTBU01oK-9" value="1 / 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-17" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-3" target="rML3897xkUaDyTBU01oK-6" value="1 / 1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-18" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-3" target="rML3897xkUaDyTBU01oK-4" value="1 / 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rML3897xkUaDyTBU01oK-19" edge="1" parent="1" source="rML3897xkUaDyTBU01oK-3" target="rML3897xkUaDyTBU01oK-5" value="1 / 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
