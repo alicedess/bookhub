@@ -1,0 +1,23 @@
+---
+config:
+  layout: lr
+---
+gitGraph
+    commit id: "initial commit"
+    branch feature/login
+    commit id: "Création des routes API"
+    commit id: "Création du HTML"
+    checkout main
+    merge feature/login tag: "feature/login merged"
+
+    branch feature/catalogue
+    commit id: "Listage des livres"
+    commit id: "Ajout de la pagination"
+    checkout main
+    merge feature/catalogue tag: "feature/catalogue merged"
+
+    branch fix/bug-123
+    commit id: "fix null pointer"
+    checkout main
+    merge fix/bug-123 tag: "fix applied"
+    commit id: "version 1.0"
