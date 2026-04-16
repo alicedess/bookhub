@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { EmpruntCreationResponse, EmpruntDTO, MesEmpruntsResponse } from '../modeles/emprunt';
+import { EmpruntDTO, EmpruntResponse, MesEmpruntsResponse } from '../modeles/emprunt';
 
 import {Observable} from 'rxjs';
 import { ApiPageResponse } from '../modeles/api-page-response';
