@@ -60,7 +60,26 @@ public class UtilisateurController {
         }
     }
 
+    /**
+     * Soft Delete User
+     * @param principalUserConnected
+     * @return
+     */
     @DeleteMapping("/me")
+    public ResponseEntity<Void> supprimerUtilisateur(Principal principalUserConnected) {
+        try{
+            utilisteurService.softDeleteUtilisateur(principalUserConnected.getName());
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Hard Delete User
+     * @param principal
+     * @return
+
     public ResponseEntity<Void> supprimerMonCompte(Principal principal) {
         try {
             utilisteurService.deleteUtilisateur(principal.getName());
@@ -68,5 +87,5 @@ public class UtilisateurController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }
