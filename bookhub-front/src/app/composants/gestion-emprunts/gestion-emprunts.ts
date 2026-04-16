@@ -1,20 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { EmpruntDTO } from '../../core/modeles/emprunt';
 import { EmpruntService } from '../../core/services/emprunt-service';
-import { Header } from '../../layout/header/header';
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-gestion-emprunts',
   imports: [
-    Header,
     DatePipe
   ],
   templateUrl: './gestion-emprunts.html',
   styleUrl: './gestion-emprunts.css',
 })
 export class GestionEmprunts implements OnInit {
-  empruntsEnCours: EmpruntDTO[] = [];
+  empruntsEnCours = signal<EmpruntDTO[]> ([]);
   erreur: string | null = null;
   messageSucces: string | null = null;
 
@@ -29,7 +27,7 @@ export class GestionEmprunts implements OnInit {
 
     this.empruntService.getTousLesEmprunts().subscribe({
       next: (data) => {
-        this.empruntsEnCours = data;
+        this.empruntsEnCours.set(data.content);
       },
       error: () => {
         this.erreur = 'Impossible de charger les emprunts pour le moment.';
@@ -37,12 +35,12 @@ export class GestionEmprunts implements OnInit {
     });
   }
 
-  retournerLivre(emprunt: EmpruntDTO): void {
+  onClickRetournerLivre(emprunt: EmpruntDTO): void {
     this.erreur = null;
     this.messageSucces = null;
 
     this.empruntService.retournerLivre(emprunt.idEmprunt).subscribe({
-      next: (response) => {
+      next: () => {
         this.messageSucces = `Livre "${emprunt.titreLivre}" retourné avec succès.`;
         this.chargerEmprunts();
       },

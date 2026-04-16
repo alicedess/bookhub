@@ -19,10 +19,10 @@ public class EmpruntDTO {
     private boolean enRetard;
 
     private Long utilisateurId;
+    private String nomUtilisateur;
     private Long exemplaireId;
     private Long livreId;
     private String titreLivre;
     private String auteurNom;
     private String auteurPrenom;
 }
-
