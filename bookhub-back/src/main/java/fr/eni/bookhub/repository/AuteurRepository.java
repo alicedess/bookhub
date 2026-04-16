@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuteurRepository extends JpaRepository<Auteur, Integer> {
+public interface AuteurRepository extends JpaRepository<Auteur, Long> {
 
     @Override
     List<Auteur> findAll();

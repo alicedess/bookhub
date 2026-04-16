@@ -9,11 +9,11 @@ import lombok.Data;
 @Table(name = "ROLE")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "libelle", unique = true)
+    @Column(name = "libelle", unique = true, nullable = false, length = 20)
     private RoleEnum libelle;
 }
