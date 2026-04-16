@@ -18,7 +18,7 @@ export interface MesEmpruntsResponse {
   historique: EmpruntDTO[];
 }
 
-export interface EmpruntCreationResponse {
+export interface EmpruntResponse {
   message: string;
   emprunt: EmpruntDTO;
 }

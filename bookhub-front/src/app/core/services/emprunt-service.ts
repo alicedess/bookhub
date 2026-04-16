@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { EmpruntCreationResponse, EmpruntDTO, MesEmpruntsResponse } from '../modeles/emprunt';
+
 import {Observable} from 'rxjs';
 import { ApiPageResponse } from '../modeles/api-page-response';
 
@@ -33,7 +34,15 @@ export class EmpruntService {
     return this.httpClient.get<MesEmpruntsResponse>(this.URL_MY_LOANS);
   }
 
-  emprunterLivre(idLivre: number): Observable<EmpruntCreationResponse> {
-    return this.httpClient.post<EmpruntCreationResponse>(`${this.URL_BASE}?idLivre=${idLivre}`, {});
+  emprunterLivre(idLivre: number): Observable<EmpruntResponse> {
+    return this.httpClient.post<EmpruntResponse>(`${this.URL_BASE}?idLivre=${idLivre}`, {});
+  }
+
+  getTousLesEmprunts(): Observable<EmpruntDTO[]> {
+    return this.httpClient.get<EmpruntDTO[]>(this.URL_BASE);
+  }
+
+  retournerLivre(idEmprunt: number) : Observable<EmpruntResponse> {
+    return this.httpClient.post<EmpruntResponse>(`${this.URL_BASE}/${idEmprunt}/return`, {});
   }
 }

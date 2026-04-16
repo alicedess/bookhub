@@ -14,7 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -56,11 +55,16 @@ public class SecurityConfig {
                                 // Auteurs
                                 .requestMatchers(HttpMethod.GET, "/api/authors/**").permitAll()
 
+                                // Emprunts
+                                .requestMatchers(HttpMethod.POST, "/api/loans").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/loans/my").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/loans").hasAnyRole("LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/loans/**/return").hasAnyRole("LIBRARIAN", "ADMIN")
+
                                 // Authentication
                                 .requestMatchers("/api/auth/**").permitAll() // Sur /auth, pas besoin d'authentification
 
                                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
-                                .requestMatchers("/loans/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/reservation/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
 //                                .requestMatchers("/profile/**").hasAnyRole("ADMIN", "LIBRARIAN", "USER") // Les utilisateurs, libraires et les admins peuvent accéder à /books
                                 .requestMatchers("/admin/**").hasRole("ADMIN") // Seuls les admins peuvent accéder à /admin

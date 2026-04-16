@@ -5,7 +5,7 @@ import { Livre } from '../../core/modeles/livre';
 import { CatalogueService } from '../../core/services/catalogue-service';
 import { AuthService } from '../../core/services/auth-service';
 import { EmpruntService } from '../../core/services/emprunt-service';
-import { BookRatingComponent } from '../book-rating/book-rating';
+import { BookRatingComponent } from '../shared/book-rating/book-rating';
 import { DatePipe, DecimalPipe} from '@angular/common';
 import { Evaluation } from '../../core/modeles/evaluation';
 import { EvaluationService } from '../../core/services/evaluation-service';

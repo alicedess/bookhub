@@ -68,7 +68,7 @@ public class EmpruntController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('LIBRARIAN')")
+    @PreAuthorize("hasRole('LIBRARIAN') or hasRole('ADMIN')")
     @Operation(
             summary = "Tous les emprunts",
             description = "Affiche la liste de tous les emprunts avec pagination et tri pour les bibliothécaires."
@@ -81,7 +81,7 @@ public class EmpruntController {
     }
 
     @PutMapping("/{id}/return")
-    @PreAuthorize("hasRole('LIBRARIAN')")
+    @PreAuthorize("hasRole('LIBRARIAN') or hasRole('ADMIN')")
     @Operation(
             summary = "Retourner un livre",
             description = "Permet à un bibliothécaire d'enregistrer le retour d'un livre emprunté, " +
@@ -91,7 +91,9 @@ public class EmpruntController {
         try {
             EmpruntDTO emprunt = empruntService.retournerLivreDTO(id);
             return ResponseEntity.ok(Map.of(
-                    "message", "Retour enregistré avec succès !",
+                    "message", emprunt.isEnRetard()
+                            ? "Retour enregistré avec retard"
+                            : "Retour enregistré avec succès",
                     "emprunt", emprunt
             ));
         } catch (RuntimeException e) {
