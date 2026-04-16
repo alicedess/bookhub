@@ -2,17 +2,17 @@ package fr.eni.bookhub.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "UTILISATEUR")
+@Table(name = "utilisateur")
 @Data
 public class Utilisateur implements UserDetails {
 
@@ -21,35 +21,36 @@ public class Utilisateur implements UserDetails {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "pseudo")
+    @Column(name = "pseudo", unique = true, nullable = false, length = 100)
     private String pseudo;
 
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false, length = 50)
     private String nom;
 
-    @Column(name = "prenom")
+    @Column(name = "prenom", nullable = false, length = 50)
     private String prenom;
 
-    @Column(name = "telephone")
+    @Column(name = "telephone", length = 20)
     private String telephone;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_role")
+    @JoinColumn(name = "id_role", nullable = false)
     private Role role;
 
-    @DateTimeFormat
-    @Column(name = "dateNaissance")
-    private Date dateNaissance;
+    @Column(name = "date_naissance", nullable = false)
+    private LocalDate dateNaissance;
 
-    @DateTimeFormat
-    @Column(name = "dateSuppression")
-    private Date dateSuppression;
+    @Column(name = "date_suppression")
+    private LocalDateTime dateSuppression;
+
+    @Column(name = "commentaire_avec_pseudo", nullable = false)
+    private Boolean commentaireAvecPseudo = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -78,6 +79,6 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return dateSuppression == null;
+        return dateSuppression == null || dateSuppression.isAfter(java.time.LocalDateTime.now());
     }
 }

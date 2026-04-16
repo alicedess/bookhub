@@ -66,6 +66,9 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/**").hasRole("ADMIN") // Seuls les admins peuvent accéder à /admin
                                 .requestMatchers("/librarian/**").hasAnyRole("ADMIN", "LIBRARIAN") // Les libraires et les admins peuvent accéder à /librarian
 
+                                // Stats
+                                .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN", "LIBRARIAN")
+
                                 // Profile
                                 .requestMatchers(HttpMethod.GET, "/api/user/me").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/api/user/me").authenticated()

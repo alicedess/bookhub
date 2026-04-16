@@ -6,78 +6,83 @@ import { CatalogueService } from '../../core/services/catalogue-service';
 import { AuthService } from '../../core/services/auth-service';
 import { EmpruntService } from '../../core/services/emprunt-service';
 import { BookRatingComponent } from '../book-rating/book-rating';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe} from '@angular/common';
+import { Evaluation } from '../../core/modeles/evaluation';
+import { EvaluationService } from '../../core/services/evaluation-service';
 
 @Component({
   selector: 'app-livre-details',
-  imports: [
-    Header,
-    RouterLink,
-    BookRatingComponent,
-    DatePipe
-  ],
+  imports: [Header, RouterLink, BookRatingComponent, DatePipe, DecimalPipe],
   templateUrl: './livre-details.html',
   styleUrl: './livre-details.css',
 })
 export class LivreDetails implements OnInit {
-  private route = inject(ActivatedRoute);
-  private catalogueService: CatalogueService = inject(CatalogueService);
-  private authService: AuthService = inject(AuthService);
-  private empruntService: EmpruntService = inject(EmpruntService);
-  private router: Router = inject(Router);
+  private route             = inject(ActivatedRoute);
+  private catalogueService  = inject(CatalogueService);
+  private authService       = inject(AuthService);
+  private empruntService    = inject(EmpruntService);
+  private evaluationService = inject(EvaluationService);
+  private router            = inject(Router);
 
-  id = 0;
+  id          = 0;
+  livre       = signal<Livre | null>(null);
+  evaluations = signal<Evaluation[]>([]);
+  chargement  = signal(true);
+  flash       = signal<{ type: 'succes' | 'erreur'; texte: string } | null>(null);
 
-  livre = signal<Livre|null>(null)
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
+      this.chargement.set(true);
 
-      this.catalogueService.getLivre(this.id).subscribe(livre => {
-        this.livre.set(livre);
+      this.catalogueService.getLivre(this.id).subscribe({
+        next: (livre) => {
+          this.livre.set(livre);
+          this.chargement.set(false);
+          this.evaluationService.getEvaluations(livre).subscribe({
+            next: (evals) => this.evaluations.set(evals),
+          });
+        },
+        error: () => this.chargement.set(false),
       });
     });
   }
 
-  protected bookCoverUrl(livre: Livre) {
-    return "http://localhost:8080/api/books/" + this.id + "/cover";
+  protected bookCoverUrl(): string {
+    return `http://localhost:8080/api/books/${this.id}/cover`;
   }
 
   protected canComment(): boolean {
-    return this.authService.estConnecte();
+    return false; // @TODO
   }
 
   protected onClickReserver(): void {
     if (!this.authService.estConnecte()) {
-      this.router.navigate(['/login'], {queryParams: { redirectTo: `/books/${this.id}` }});
-      return;
+      this.router.navigate(['/login'], { queryParams: { redirectTo: `/books/${this.id}` } });
     }
-
     // @TODO
   }
 
-  protected onClickEmprunter()  {
+  protected onClickEmprunter(): void {
     if (!this.authService.estConnecte()) {
-      this.router.navigate(['/login'], {queryParams: { redirectTo: `/books/${this.id}` }});
+      this.router.navigate(['/login'], { queryParams: { redirectTo: `/books/${this.id}` } });
       return;
     }
 
     this.empruntService.emprunterLivre(this.id).subscribe({
-      next: (response: any) => {
-        console.log('Emprunt réussi :', response);
-        alert('✅ ' + response.message);
-
-        // Recharger les données du livre pour mettre à jour la disponibilité
-        this.catalogueService.getLivre(this.id).subscribe(livre => {
-          this.livre.set(livre);
-        });
+      next: (response) => {
+        this.afficherFlash('succes', response.message);
+        this.catalogueService.getLivre(this.id).subscribe(l => this.livre.set(l));
       },
-      error: (error: any) => {
-        console.error('Erreur lors de l\'emprunt :', error);
-        const errorMessage = error.error || 'Une erreur s\'est produite lors de l\'emprunt.';
-        alert('❌ Erreur : ' + errorMessage);
-      }
+      error: (err) => {
+        const msg = err?.error ?? 'Une erreur s\'est produite lors de l\'emprunt.';
+        this.afficherFlash('erreur', msg);
+      },
     });
+  }
+
+  private afficherFlash(type: 'succes' | 'erreur', texte: string): void {
+    this.flash.set({ type, texte });
+    setTimeout(() => this.flash.set(null), 5000);
   }
 }

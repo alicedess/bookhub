@@ -1,6 +1,3 @@
-import { type Auteur } from './auteur';
-import { type Categorie } from './categorie';
-
 export type Livre = {
   id: number,
   isbn: string,
@@ -16,5 +13,5 @@ export type Livre = {
   nbExemplaire: number,
   nbExemplaireDispo: number,
   note: number,
-  dateParution: string, 
+  dateParution: string,
 }

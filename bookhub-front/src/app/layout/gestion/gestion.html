@@ -1,29 +1,87 @@
 <app-header/>
 
-<div class="flex overflow-hidden">
-  <aside class="w-64 border-r border-gray-200 flex flex-col">
-    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
-      <p class="text-xs font-semibold text-gray-400 uppercase px-3 mb-2">Principal</p>
+<!-- Overlay mobile (clique pour fermer) -->
+@if (sidebarOuvert()) {
+  <div class="fixed inset-0 bg-black/40 z-20 md:hidden"
+       (click)="sidebarOuvert.set(false)"></div>
+}
 
-      <a routerLink="/librarian" routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
-         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all group">
-        <i class="fa-solid fa-chart-line w-5"></i>
+<div class="flex min-h-screen">
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────────── -->
+  <aside class="sidebar" [class.sidebar--open]="sidebarOuvert()">
+
+    <!-- Entête sidebar (mobile uniquement) -->
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 md:hidden">
+      <span class="text-sm font-bold text-gray-700 uppercase tracking-wide">Navigation</span>
+      <button (click)="sidebarOuvert.set(false)"
+              class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-grow p-4 space-y-1 overflow-y-auto">
+
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">Principal</p>
+
+      <a routerLink="/librarian"
+         routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="sidebarOuvert.set(false)"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
+        <i class="fa-solid fa-chart-line w-5 text-center"></i>
         <span class="font-medium">Tableau de bord</span>
       </a>
 
-      <p class="text-xs font-semibold text-gray-400 uppercase px-3 mt-6 mb-2">Gestion</p>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-6 mb-3">Gestion</p>
 
-      <a routerLink="/librarian/books" routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
-         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all group">
-        <i class="fa-solid fa-book w-5"></i>
+      <a routerLink="/librarian/books"
+         routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
+         (click)="sidebarOuvert.set(false)"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
+        <i class="fa-solid fa-book w-5 text-center"></i>
         <span class="font-medium">Livres</span>
       </a>
+
+      <a routerLink="/librarian/loans"
+         routerLinkActive="bg-blue-50 text-blue-600 shadow-sm"
+         (click)="sidebarOuvert.set(false)"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
+        <i class="fa-solid fa-hand-holding-heart w-5 text-center"></i>
+        <span class="font-medium">Emprunts</span>
+      </a>
+
     </nav>
+
+    <!-- Footer sidebar -->
+    <div class="p-4 border-t border-gray-100">
+      <a routerLink="/books"
+         class="flex items-center gap-3 px-3 py-2 rounded-xl text-gray-500 hover:bg-gray-50 transition-all text-sm">
+        <i class="fa-solid fa-arrow-left w-5 text-center"></i>
+        <span>Retour au catalogue</span>
+      </a>
+    </div>
+
   </aside>
 
-  <main class="flex-grow overflow-y-auto">
-    <div class="p-6 min-h-screen">
+  <!-- ── Contenu principal ─────────────────────────────────────────── -->
+  <main class="flex-grow min-w-0 flex flex-col">
+
+    <!-- Barre mobile avec hamburger -->
+    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3
+                flex items-center gap-3 md:hidden shadow-sm">
+      <button (click)="sidebarOuvert.set(true)"
+              class="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <span class="font-semibold text-gray-700">Espace libraire</span>
+    </div>
+
+    <div class="p-4 md:p-6 flex-grow">
       <router-outlet/>
     </div>
+
   </main>
+
 </div>
