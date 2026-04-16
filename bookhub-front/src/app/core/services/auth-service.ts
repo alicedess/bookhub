@@ -75,17 +75,6 @@ export class AuthService {
     }
   }
 
-  // récupère les informations de l'utilisateur connecté (payload du token), créée pour le composant profil
-  obtenirUtilisateur(): { sub: string; role: string } | null {
-    const token = this.obtenirToken();
-    if (!token) return null;
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch {
-      return null;
-    }
-  }
-
   obtenirProfilUtilisateur(): Observable<any> {
     return this.http.get(`${this.URL_BASE_USER}/me`);
   }

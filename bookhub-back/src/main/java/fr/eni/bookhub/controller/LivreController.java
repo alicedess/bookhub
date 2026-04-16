@@ -10,9 +10,13 @@ import fr.eni.bookhub.service.LivreService;
 import fr.eni.bookhub.storage.StorageFileNotFoundException;
 import fr.eni.bookhub.storage.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -43,19 +47,26 @@ public class LivreController {
 
     @Operation(
             summary = "Rechercher des livres",
-            description = "Filtre les livres par mot-clé, auteur ou catégorie avec pagination."
+            description = "Retourne une page de livres filtrée par mot-clé (titre, auteur, ISBN), auteur, catégorie et/ou disponibilité. 20 résultats par page, triés par titre."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Recherche effectuée avec succès"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Liste paginée de livres",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @GetMapping({"", "/search"})
     public ResponseEntity<Page<LivreDTO>> searchLivres(
+        @Parameter(description = "Texte recherché dans le titre, le nom/prénom de l'auteur ou l'ISBN")
         @RequestParam(required = false) String query,
+        @Parameter(description = "Identifiant de l'auteur pour filtrer les résultats")
         @RequestParam(required = false) Long auteurId,
+        @Parameter(description = "Identifiant de la catégorie pour filtrer les résultats")
         @RequestParam(required = false, name = "categorie") Long catId,
+        @Parameter(description = "Filtre de disponibilité : 0 = tous, 1 = disponibles uniquement, 2 = indisponibles uniquement",
+                schema = @Schema(allowableValues = {"0", "1", "2"}, defaultValue = "0"))
         @RequestParam(required = false, name = "disponibilite") Integer estDisponible,
+        @Parameter(description = "Numéro de la page (commence à 0)")
         @RequestParam(defaultValue = "0") int page
     )
     {
@@ -69,16 +80,20 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Récupère les informations d'un livre",
-            description = "Récupère les informations d'un livre."
+            summary = "Récupérer un livre par son identifiant",
+            description = "Retourne le détail complet d'un livre (auteur, catégorie, nombre d'exemplaires, note moyenne)."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Livre trouvé",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LivreDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<LivreDTO> getLivreById(@PathVariable Long id)
+    public ResponseEntity<LivreDTO> getLivreById(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id)
     {
         return livreService.getById(id)
                 .map(ResponseEntity::ok)
@@ -86,13 +101,18 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Création d'un livre",
-            description = "Création d'un livre."
+            summary = "Créer un livre",
+            description = "Crée un nouveau livre. L'ISBN doit être unique. Requiert le rôle LIBRARIAN ou ADMIN.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "201", description = "Livre créé avec succès",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LivreDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Données invalides ou ISBN déjà existant", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @PostMapping("")
     public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
@@ -107,16 +127,25 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Modification d'un livre",
-            description = "Modification d'un livre."
+            summary = "Modifier un livre",
+            description = "Met à jour les champs d'un livre existant. Seuls les champs fournis sont modifiés. Requiert le rôle LIBRARIAN ou ADMIN.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Livre mis à jour",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LivreDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Données invalides", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<LivreDTO> updateLivre(@PathVariable Long id, @RequestBody CreateLivreDTO payload)
+    public ResponseEntity<LivreDTO> updateLivre(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id,
+            @RequestBody CreateLivreDTO payload)
     {
         LivreDTO updatedLivre = livreService.updateLivre(id, payload);
 
@@ -128,16 +157,22 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Suppression d'un livre",
-            description = "Suppression d'un livre."
+            summary = "Supprimer un livre",
+            description = "Supprime un livre uniquement s'il n'a aucun emprunt en cours. Requiert le rôle ADMIN.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Livre supprimé", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Suppression impossible (emprunts en cours)", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLivre(@PathVariable Long id)
+    public ResponseEntity<?> deleteLivre(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id)
     {
         livreService.deleteLivre(id);
 
@@ -145,17 +180,24 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Mise à jour de la couverture d'un livre",
-            description = "Mise à jour de la couverture d'un livre."
+            summary = "Mettre à jour la couverture d'un livre",
+            description = "Téléverse une nouvelle image de couverture (JPG, JPEG ou PNG). Remplace l'image précédente si elle existe. Requiert le rôle LIBRARIAN ou ADMIN.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Couverture mise à jour, livre retourné",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LivreDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Format de fichier non supporté ou livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @PutMapping("/{id}/cover")
     public ResponseEntity<LivreDTO> handleFileUpload(
+            @Parameter(description = "Identifiant du livre", required = true)
             @PathVariable Long id,
+            @Parameter(description = "Fichier image (JPG, JPEG ou PNG)", required = true)
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes)
     {
@@ -168,16 +210,19 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Modification de la couverture d'un livre",
-            description = "Modification de la couverture d'un livre."
+            summary = "Récupérer la couverture d'un livre",
+            description = "Retourne l'image de couverture du livre au format JPEG/PNG. Retourne la couverture par défaut si aucune image n'est associée."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Image de couverture",
+                    content = @Content(mediaType = MediaType.IMAGE_JPEG_VALUE)),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @GetMapping("/{id}/cover")
-    public ResponseEntity<?> getImage(@PathVariable Long id) throws Exception {
+    public ResponseEntity<?> getImage(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id) throws Exception {
         Optional<LivreDTO> livre = livreService.getById(id);
 
         if (livre.isEmpty()) {
@@ -205,14 +250,25 @@ public class LivreController {
                 .body(resource);
     }
 
-    /**
-     * Ajoute une évaluation
-     * @param id id du livre
-     * @param payload le commentaire et la note de l'évaluation
-     * @return ok si l'évaluation a été ajoutée, sinon une erreur
-     */
+    @Operation(
+            summary = "Ajouter une évaluation",
+            description = "Publie une note et/ou un commentaire sur un livre. Requiert d'être authentifié.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Évaluation enregistrée",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = EvaluationDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Impossible d'évaluer ce livre", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
+    })
     @PostMapping("/{id}/ratings")
-    public ResponseEntity<?> addRating(@PathVariable Long id, @RequestBody EvaluationDTO payload){
+    public ResponseEntity<?> addRating(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id,
+            @RequestBody EvaluationDTO payload) {
         try{
             EvaluationDTO ajoutEval = evaluationService.createEvaluation(id, payload);
             return ResponseEntity.ok(ajoutEval);
@@ -224,13 +280,22 @@ public class LivreController {
         }
     }
 
-    /**
-     * Les évaluations d'un livre
-     * @param id Id du livre
-     * @return La liste des évaluations du livre
-     */
+    @Operation(
+            summary = "Lister les évaluations d'un livre",
+            description = "Retourne toutes les évaluations publiées et modérées associées à un livre."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste des évaluations",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = EvaluationDTO.class)))),
+            @ApiResponse(responseCode = "400", description = "Impossible de récupérer les évaluations", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
+    })
     @GetMapping("/{id}/ratings")
-    public ResponseEntity<?> lesEvaluationsParLivre(@PathVariable Long id){
+    public ResponseEntity<?> lesEvaluationsParLivre(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id) {
         try{
             List<EvaluationDTO> evaluations = evaluationService.getEvaluationsParLivre(id);
             return ResponseEntity.ok(evaluations);
@@ -243,31 +308,45 @@ public class LivreController {
     }
 
     @Operation(
-            summary = "Récupération de la liste des exemplaires",
-            description = "Récupération de la liste des exemplaires."
+            summary = "Lister les exemplaires d'un livre",
+            description = "Retourne tous les exemplaires associés à un livre avec leur état et leur disponibilité.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Liste des exemplaires",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = ExemplaireDTO.class)))),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @GetMapping("/{id}/exemplaires")
-    public ResponseEntity<List<ExemplaireDTO>> modificationExemplaires(@PathVariable Long id)
+    public ResponseEntity<List<ExemplaireDTO>> getExemplaires(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id)
     {
         return ResponseEntity.ok().body(exemplaireService.getExemplairesParLivreId(id));
     }
 
     @Operation(
-            summary = "Modification des exemplaires",
-            description = "Modification des exemplaires."
+            summary = "Mettre à jour les exemplaires d'un livre",
+            description = "Crée ou modifie les exemplaires d'un livre (code-barre, état, disponibilité). Requiert le rôle LIBRARIAN ou ADMIN.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Le livre"),
-            @ApiResponse(responseCode = "400", description = "Paramètres de requête invalides", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erreur interne", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Exemplaires mis à jour", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Données invalides", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Non authentifié", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Droits insuffisants", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Livre introuvable", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @PostMapping("/{id}/exemplaires")
-    public ResponseEntity<?> modificationExemplaires(@PathVariable Long id, @RequestBody List<ExemplaireDTO> payload)
+    public ResponseEntity<?> updateExemplaires(
+            @Parameter(description = "Identifiant du livre", required = true)
+            @PathVariable Long id,
+            @RequestBody List<ExemplaireDTO> payload)
     {
         exemplaireService.updateExemplairesParLivreId(id,  payload);
 

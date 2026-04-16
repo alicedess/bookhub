@@ -1,6 +1,6 @@
 package fr.eni.bookhub.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface LivreProjection {
     Long getId();
@@ -8,8 +8,8 @@ public interface LivreProjection {
     String getTitre();
     String getResume();
     String getImageCouverture();
-    Long getNbPage();
-    Date getDateParution();
+    Integer getNbPage();
+    LocalDate getDateParution();
     Long getAuteurId();
     String getAuteurNom();
     String getAuteurPrenom();

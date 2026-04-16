@@ -30,6 +30,10 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     List<Emprunt> findByUtilisateurAndStatutAndDateRetourPrevueBefore(Utilisateur utilisateur, StatutEnum statutEnum, LocalDateTime now);
 
 
+    long countByStatut(StatutEnum statut);
+
+    long countByStatutAndDateRetourPrevueBefore(StatutEnum statut, LocalDateTime date);
+
     /**
      * Retourne si des emprunts sont en cours sur le livre.
      */

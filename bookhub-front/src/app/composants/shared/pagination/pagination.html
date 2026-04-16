@@ -1,0 +1,37 @@
+@if (totalPages() > 0) {
+  <div class="flex items-center justify-center gap-3 py-6 border-t border-[#D9A066]/30 mt-8">
+
+    <button
+      [disabled]="currentPage() === 0"
+      (click)="precedent()"
+      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+             enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span class="hidden sm:inline">Précédent</span>
+    </button>
+
+    <div class="flex items-center gap-2 bg-white/60 px-5 py-2 rounded-full shadow-inner border border-[#D9A066]/20">
+      <span class="text-[#8B5E3C] font-medium text-sm">Page</span>
+      <span class="bg-[#D9A066] text-white w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm">
+        {{ currentPage() + 1 }}
+      </span>
+      <span class="text-[#8B5E3C] text-sm">sur {{ totalPages() }}</span>
+    </div>
+
+    <button
+      [disabled]="currentPage() >= totalPages() - 1"
+      (click)="suivant()"
+      class="flex items-center gap-2 px-4 py-2 rounded-md font-bold transition-all
+             enabled:bg-[#2D3A18] enabled:text-[#FDF8E1] enabled:hover:bg-[#3d4d22] enabled:shadow-md
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      <span class="hidden sm:inline">Suivant</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+
+  </div>
+}
