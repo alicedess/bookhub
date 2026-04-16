@@ -1,5 +1,5 @@
 export interface EmpruntDTO {
-  id: number;
+  idEmprunt: number;
   dateDebut: Date;
   dateRetourPrevue: Date;
   dateRetourEffective?: Date;
@@ -16,7 +16,7 @@ export interface MesEmpruntsResponse {
   historique: EmpruntDTO[];
 }
 
-export interface EmpruntCreationResponse {
+export interface EmpruntResponse {
   message: string;
   emprunt: EmpruntDTO;
 }

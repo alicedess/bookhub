@@ -4,10 +4,11 @@ import fr.eni.bookhub.entity.Emprunt;
 import fr.eni.bookhub.entity.Livre;
 import fr.eni.bookhub.entity.Utilisateur;
 import fr.eni.bookhub.enumeration.StatutEnum;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -47,4 +48,9 @@ WHERE l = :livre AND e.statut = :statut
             @Param("livre") Livre livre,
             @Param("statut") StatutEnum statut
     );
+
+    /**
+     * Emprunts filtrés par statuts, paginés et triés via Pageable.
+     */
+    Page<Emprunt> findByStatutIn(List<StatutEnum> statuts, Pageable pageable);
 }
