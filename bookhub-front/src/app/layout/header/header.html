@@ -13,10 +13,12 @@
              class="text-white hover:text-orange-300 transition duration-200 font-medium">
             Catalogue
           </a>
-          <a routerLink="/loans/my" routerLinkActive="text-yellow-400"
-             class="text-white hover:text-orange-300 transition duration-200 font-medium">
-            Mes Emprunts
-          </a>
+          @if (isLoggedIn) {
+            <a routerLink="/loans/my" routerLinkActive="text-yellow-400"
+               class="text-white hover:text-orange-300 transition duration-200 font-medium">
+              Mes Emprunts
+            </a>
+          }
           @if (isLibrairian || isAdmin) {
             <a routerLink="/librarian" routerLinkActive="text-yellow-400"
                class="text-white hover:text-orange-300 transition duration-200 font-medium">
@@ -77,10 +79,12 @@
            class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
           Catalogue
         </a>
-        <a routerLink="/loans/my" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
-           class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
-          Mes Emprunts
-        </a>
+        @if (isLoggedIn) {
+          <a routerLink="/loans/my" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
+             class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
+            Mes Emprunts
+          </a>
+        }
         @if (isLibrairian || isAdmin) {
           <a routerLink="/librarian" (click)="isMobileMenuOpen = false" routerLinkActive="bg-lime-700"
            class="block px-3 py-2 rounded-lg text-white hover:bg-lime-700 transition duration-200">
