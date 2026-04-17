@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 // Books
-                                .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole( "LIBRARIAN")
-                                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole( "LIBRARIAN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole( "LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole( "LIBRARIAN", "ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("LIBRARIAN", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
 
                                 // Swagger
