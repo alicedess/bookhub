@@ -125,7 +125,7 @@ VALUES
     (4, 'Un peu long par moments, mais quelle histoire !', '2024-02-10', 3, 1),
 
     -- Évaluations pour 1984 (Livre 5)
-    (5, 'Effrayant de réalisme, même encore aujourd hui.', '2024-03-05', 4, 5),
+    (3, 'Effrayant de réalisme, même encore aujourd hui.', '2024-03-05', 4, 5),
     (5, 'À lire absolument une fois dans sa vie.', '2024-03-12', 7, 5),
 
     -- Évaluations pour Fondation (Livre 7)
