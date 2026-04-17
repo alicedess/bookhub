@@ -108,3 +108,7 @@ ALTER TABLE
 
 ALTER TABLE livre ADD nb_page INT;
 ALTER TABLE livre ADD date_parution DATE;
+
+CREATE INDEX idx_auteur_nom ON auteur(nom);
+CREATE INDEX idx_auteur_prenom ON auteur(prenom);
+CREATE INDEX idx_livre_titre ON livre(titre);
