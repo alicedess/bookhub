@@ -1,6 +1,7 @@
 @startuml MCD
 skinparam linetype ortho
 skinparam entityStyle plain
+!pragma layout smetana
 
 entity "UTILISATEUR" {
   pseudo
