@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -115,7 +116,7 @@ public class LivreController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
     })
     @PostMapping("")
-    public ResponseEntity<?> createLivre(@RequestBody CreateLivreDTO payload)
+    public ResponseEntity<?> createLivre(@Valid @RequestBody CreateLivreDTO payload)
     {
         LivreDTO createdLivre = livreService.createLivre(payload);
 
@@ -145,7 +146,7 @@ public class LivreController {
     public ResponseEntity<LivreDTO> updateLivre(
             @Parameter(description = "Identifiant du livre", required = true)
             @PathVariable Long id,
-            @RequestBody CreateLivreDTO payload)
+            @Valid @RequestBody CreateLivreDTO payload)
     {
         LivreDTO updatedLivre = livreService.updateLivre(id, payload);
 
@@ -346,7 +347,7 @@ public class LivreController {
     public ResponseEntity<?> updateExemplaires(
             @Parameter(description = "Identifiant du livre", required = true)
             @PathVariable Long id,
-            @RequestBody List<ExemplaireDTO> payload)
+            @Valid @RequestBody List<ExemplaireDTO> payload)
     {
         exemplaireService.updateExemplairesParLivreId(id,  payload);
 
