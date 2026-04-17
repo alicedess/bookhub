@@ -74,7 +74,7 @@ CREATE TABLE "reservation"(
 
 CREATE TABLE "evaluation"(
     "id" INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-    "note" INT NULL,
+    "note" INT NULL CONSTRAINT chk_note CHECK (note IS NULL OR note >= 0 AND note <= 5),
     "commentaire" NVARCHAR(1000) NULL,
     "est_modere" BIT NULL,
     "date_publication" DATETIME2 NULL DEFAULT GETDATE(), "id_utilisateur" INT NOT NULL, "id_livre" INT NOT NULL);

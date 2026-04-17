@@ -76,14 +76,14 @@ INSERT INTO utilisateur
 VALUES
     ('admin_hub', 'admin@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Admin', 'Système', '1990-01-01', '0102030405', 1, NULL, 1),
     ('librarian_hub', 'librarian@bookhub.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Dupont', 'Jean', '1985-05-12', '0612345678', 2, NULL, 1),
-    ('msmith', 'marie.smith@gmail.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Smith', 'Marie', '1992-11-20', '0623456789', 2, NULL, 1),
-    ('lartigaud', 'lucas.a@outlook.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Artigaud', 'Lucas', '1998-03-15', '0634567890', 2, NULL, 0),
-    ('bibliophile', 'sophie.biblio@yahoo.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Morel', 'Sophie', '1978-07-22', '0645678901', 2, NULL, 1),
-    ('thomas_eni', 'thomas.c@eni.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Ciles', 'Thomas', '1995-12-30', '0656789012', 1, NULL, 1),
-    ('book_lover', 'emma.l@test.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Lefebvre', 'Emma', '2001-09-05', '0667890123', 2, NULL, 1),
-    ('v_hugo_fan', 'victor.fan@culture.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Durand', 'Paul', '1988-04-18', '0678901234', 2, NULL, 0),
-    ('julie_dev', 'julie.dev@code.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Gauthier', 'Julie', '1993-02-28', '0689012345', 2, NULL, 1),
-    ('reader99', 'marc.reader@mail.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Bernard', 'Marc', '1982-10-10', '0690123456', 2, NULL, 1);
+    ('msmith', 'user@gmail.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Smith', 'Marie', '1992-11-20', '0623456789', 3, NULL, 1),
+    ('lartigaud', 'lucas.a@outlook.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Artigaud', 'Lucas', '1998-03-15', '0634567890', 3, NULL, 0),
+    ('bibliophile', 'sophie.biblio@yahoo.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Morel', 'Sophie', '1978-07-22', '0645678901', 3, NULL, 1),
+    ('thomas_eni', 'thomas.c@eni.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Ciles', 'Thomas', '1995-12-30', '0656789012', 3, NULL, 1),
+    ('book_lover', 'emma.l@test.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Lefebvre', 'Emma', '2001-09-05', '0667890123', 3, NULL, 1),
+    ('v_hugo_fan', 'victor.fan@culture.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Durand', 'Paul', '1988-04-18', '0678901234', 3, NULL, 0),
+    ('julie_dev', 'julie.dev@code.com', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Gauthier', 'Julie', '1993-02-28', '0689012345', 3, NULL, 1),
+    ('reader99', 'marc.reader@mail.fr', '$2a$10$.QzCBRCaqi7e.uxSmdvrf.RJf.f8OBXAL1rOa78t1d5t3iPVVhE5i', 'Bernard', 'Marc', '1982-10-10', '0690123456', 3, NULL, 1);
 
 
 -- 4. GÉNÉRATION DES EXEMPLAIRES (2 à 3 par livre)
@@ -125,7 +125,7 @@ VALUES
     (4, 'Un peu long par moments, mais quelle histoire !', '2024-02-10', 3, 1),
 
     -- Évaluations pour 1984 (Livre 5)
-    (5, 'Effrayant de réalisme, même encore aujourd hui.', '2024-03-05', 4, 5),
+    (3, 'Effrayant de réalisme, même encore aujourd hui.', '2024-03-05', 4, 5),
     (5, 'À lire absolument une fois dans sa vie.', '2024-03-12', 7, 5),
 
     -- Évaluations pour Fondation (Livre 7)
